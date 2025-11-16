@@ -1,0 +1,32 @@
+<div class="card text-center border-0">
+    <div class="card-header fw-bold bg-transparent">
+        Validação de e-mail
+    </div>
+    <div class="card-body">
+        <p>Para sua segurança, vamos validar o seu e-mail</p>
+
+        <form class="formularioAjax" action="{{url('cadastro')}}" method="post">
+
+            <div class="mb-3">
+                <div class="form-floating mb-3">
+                    <input type="text" name="nome" value="{{usuario.nome}}" class="form-control" placeholder="Nome">
+                    <label for="nome">Nome</label>
+                </div>
+            </div>
+            <div class="mb-3">
+                <div class="form-floating mb-3">
+                    <input type="email" name="email" value="{{usuario.email}}" class="form-control" placeholder="E-mail">
+                    <label for="email">E-mail</label>
+                </div> 
+            </div>
+
+            <button class="w-100 btn btn-dark mb-2" type="submit">Cadastrar</button>
+            
+            <div class="text-center">
+                <a class="btn" data-bs-target="#modalLogin" data-bs-toggle="modal" title="Login">
+                    já tem cadastro? entrar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

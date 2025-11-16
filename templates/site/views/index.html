@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+
+<main>
+    <div class="album py-5 bg-light">
+        <div class="container">
+
+            {% if posts.posts %}
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                {% for post in posts.posts %}
+
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <div class="overflow">
+                            <div class="zoom slide">
+                                {% if post.capa %}
+                                <img src="{{ url('uploads/imagens/thumbs/'~post.capa) }}" class="card-img-top"
+                                    alt="{{ post.titulo }}">
+                                {% else %}
+                                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1888&auto=format&fit=crop"
+                                    class="card-img-top" alt="Imagem padrão">
+                                {% endif %}
+
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">{{ resumirTexto(post.titulo, 50) }}</p>
+
+                            <div class="d-flex justify-content-center">
+                                <div class="btn-group">
+
+                                    <a href="{{ url('post/'~post.slug) }}"
+                                        class="btn btn-outline-secondary my-2">Votar</a>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% endfor %}
+
+            </div>
+            {% else %}
+            <div class="alert alert-warning" role="alert">
+                Nenhum post cadastrado para exibir!
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</main>
+
+{% endblock %}
