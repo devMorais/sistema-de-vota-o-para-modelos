@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-//    BUSCA
+    //    BUSCA
     $("#busca").keyup(function () {
         var busca = $(this).val();
         if (busca.length > 0) {
@@ -12,7 +12,7 @@ $(document).ready(function () {
                 },
                 success: function (resultado) {
                     if (resultado) {
-                        $('#buscaResultado').html("<div class='card'><div class='card-body'><ul class='list-group list-group-flush'>"+resultado+"</ul></div></div>");
+                        $('#buscaResultado').html("<div class='card'><div class='card-body'><ul class='list-group list-group-flush'>" + resultado + "</ul></div></div>");
                     } else {
                         $('#buscaResultado').html('<div class="alert alert-warning">Nenhum resultado encontrado!</div>');
                     }
@@ -23,7 +23,7 @@ $(document).ready(function () {
             $('#buscaResultado').hide();
         }
     });
-//    FIM BUSCA
+    //    FIM BUSCA
 
 });
 

@@ -5,6 +5,7 @@ namespace sistema\Controlador\Admin;
 use sistema\Modelo\CategoriaModelo;
 use sistema\Nucleo\Helpers;
 use sistema\Modelo\PostModelo;
+use sistema\Suporte\XDebug;
 
 /**
  * Classe AdminCategorias

@@ -2,12 +2,14 @@ $(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip();
     var url = $('table').attr('url');
 
+    console.log(url);
+
     $.extend($.fn.dataTable.defaults, {
         language: {
             url: '//cdn.datatables.net/plug-ins/1.13.3/i18n/pt-BR.json'
         },
         initComplete: function (settings, json) {
-            $('[tooltip="tooltip"]').tooltip( );
+            $('[tooltip="tooltip"]').tooltip();
         }
     });
 
@@ -27,7 +29,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: url + 'admin/posts/datatable',
+            url: url + '/admin/posts/datatable',
             type: 'POST',
             error: function (xhr, resp, text) {
                 console.log(xhr, resp, text);
@@ -93,7 +95,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: url + 'admin/usuarios/datatable',
+            url: url + '/admin/usuarios/datatable',
             type: 'POST',
             error: function (xhr, resp, text) {
                 console.log(xhr, resp, text);

@@ -26,27 +26,13 @@ class SiteControlador extends Controlador
     {
         $postModelo = new PostModelo();
 
-        $slides = $postModelo->busca("status = 1")
-            ->ordem('id DESC')
-            ->limite(3)
-            ->resultado(true);
-
         $postsParaCards = $postModelo->busca("status = 1")
             ->ordem('id DESC')
-            ->limite(4)
-            ->resultado(true);
-
-        $maisLidos = (new PostModelo())->busca("status = 1")
-            ->ordem('visitas DESC')
-            ->limite(5)
+            ->limite(20)
             ->resultado(true);
 
         echo $this->template->renderizar('index.html', [
-            'posts' => [
-                'slides' => $slides,
-                'posts' => $postsParaCards,
-                'maisLidos' => $maisLidos,
-            ],
+            'posts' => $postsParaCards,
             'categorias' => $this->categorias(),
         ]);
     }
@@ -74,12 +60,15 @@ class SiteControlador extends Controlador
      * @param string $slug
      * @return void
      */
-    public function post(string $slug): void
+    // Correto
+    public function post(string $categoria, string $slug): void
     {
         $post = (new PostModelo())->buscaPorSlug($slug);
+
         if (!$post) {
             Helpers::redirecionar('404');
         }
+
         $post->salvarVisitas();
 
         echo $this->template->renderizar('post.html', [

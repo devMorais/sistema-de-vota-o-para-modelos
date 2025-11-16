@@ -31,7 +31,8 @@ a:hover {
 
 .tempoCarregamento {
     font-size: .7em;
-    float: right
+    float: right;
+    color: white;
 }
 
 .overflow {
