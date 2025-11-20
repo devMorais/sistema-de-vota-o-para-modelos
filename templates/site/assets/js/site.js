@@ -64,6 +64,14 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+function copiarPix() {
+    var copyText = document.getElementById("pixCopiaCola");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(copyText.value);
+    alert("Código PIX copiado!");
+}
+
 
 
 

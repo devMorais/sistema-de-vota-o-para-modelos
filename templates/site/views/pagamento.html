@@ -8,17 +8,14 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card bg-dark text-white border border-secondary rounded-3 text-center p-4">
-
                 <div class="mb-4">
                     <i class="fa-brands fa-pix text-success fa-3x mb-3"></i>
                     <h2 class="fw-light">Pagamento via PIX</h2>
                     <p class="text-muted">Escaneie o QR Code ou use o Copia e Cola</p>
                 </div>
-
                 <div class="bg-white p-3 d-inline-block rounded mb-4">
                     <img src="data:image/png;base64,{{ imagemQrcode }}" class="img-fluid" style="max-width: 250px;">
                 </div>
-
                 <div class="mb-4">
                     <label class="small text-muted mb-2">Pix Copia e Cola</label>
                     <div class="input-group">
@@ -29,25 +26,14 @@
                         </button>
                     </div>
                 </div>
-
                 <div class="alert alert-warning bg-opacity-10 text-warning border-warning small">
                     <i class="fa-solid fa-clock me-1"></i>
                     Assim que pagar, seu voto será computado automaticamente em alguns segundos.
                 </div>
-
                 <a href="{{ url() }}" class="btn btn-outline-light btn-sm mt-3">Voltar para o Início</a>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-    function copiarPix() {
-        var copyText = document.getElementById("pixCopiaCola");
-        copyText.select();
-        copyText.setSelectionRange(0, 99999);
-        navigator.clipboard.writeText(copyText.value);
-        alert("Código PIX copiado!");
-    }
-</script>
 {% endblock %}
