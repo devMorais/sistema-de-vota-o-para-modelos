@@ -2,6 +2,7 @@
 
 namespace sistema\Controlador\Admin;
 
+use sistema\Suporte\Constants;
 use sistema\Nucleo\Helpers;
 use sistema\Modelo\UsuarioModelo;
 
@@ -53,7 +54,7 @@ class AdminUsuarios extends AdminControlador
                     $usuario->nome = $dados['nome'];
                     $usuario->email = $dados['email'];
                     $usuario->senha = Helpers::gerarSenha($dados['senha']);
-                    $usuario->level = $dados['level'];
+                    $usuario->level = 3; //ADMIN
                     $usuario->status = $dados['status'];
 
                     if ($usuario->salvar()) {
@@ -196,7 +197,7 @@ class AdminUsuarios extends AdminControlador
 
         $dados = [];
 
-        if($usuarios->resultado(true)) {
+        if ($usuarios->resultado(true)) {
             foreach ($usuarios->resultado(true) as $usuario) {
                 $dados[] = [
                     $usuario->id,
@@ -217,5 +218,4 @@ class AdminUsuarios extends AdminControlador
 
         echo json_encode($retorno);
     }
-
 }

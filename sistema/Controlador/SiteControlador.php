@@ -8,7 +8,9 @@ use sistema\Nucleo\Helpers;
 use sistema\Modelo\CategoriaModelo;
 use sistema\Biblioteca\Paginar;
 use sistema\Suporte\Email;
-use sistema\Suporte\XDebug;
+use sistema\Modelo\PedidoModelo;
+use sistema\Biblioteca\Asaas;
+use sistema\Modelo\PacoteModelo;
 
 class SiteControlador extends Controlador
 {
@@ -28,7 +30,7 @@ class SiteControlador extends Controlador
 
         $postsParaCards = $postModelo->busca("status = 1")
             ->ordem('id DESC')
-            ->limite(20)
+            ->limite(25)
             ->resultado(true);
 
         echo $this->template->renderizar('index.html', [
@@ -60,7 +62,6 @@ class SiteControlador extends Controlador
      * @param string $slug
      * @return void
      */
-    // Correto
     public function post(string $categoria, string $slug): void
     {
         $post = (new PostModelo())->buscaPorSlug($slug);
@@ -70,10 +71,11 @@ class SiteControlador extends Controlador
         }
 
         $post->salvarVisitas();
-
+        $pacotes = (new \sistema\Modelo\PacoteModelo())->busca("status = 1")->ordem("ordem ASC")->resultado(true);
         echo $this->template->renderizar('post.html', [
             'post' => $post,
             'categorias' => $this->categorias(),
+            'pacotes' => $pacotes
         ]);
     }
 
@@ -133,6 +135,133 @@ class SiteControlador extends Controlador
         echo $this->template->renderizar('404.html', [
             'titulo' => 'Página não encontrada',
             'categorias' => $this->categorias(),
+        ]);
+    }
+
+    /**
+     * Processa o pré-checkout e exibe a tela de pagamento
+     * @return void
+     */
+    public function checkout(): void
+    {
+        $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+        if (!isset($dados['pacotes']) || !isset($dados['post_id'])) {
+            Helpers::redirecionar();
+            return;
+        }
+
+        $postBusca = (new PostModelo())->busca("id = :id", "id={$dados['post_id']}")->resultado(true);
+        if (!$postBusca) {
+            Helpers::redirecionar('404');
+            return;
+        }
+        $post = $postBusca[0];
+        $pacotesDb = (new PacoteModelo())->busca("status = 1")->resultado(true);
+
+        $tabelaPrecos = [];
+        if ($pacotesDb) {
+            foreach ($pacotesDb as $pct) {
+                $tabelaPrecos[$pct->quantidade] = [
+                    'valor' => $pct->valor,
+                    'taxa'  => $pct->taxa
+                ];
+            }
+        }
+
+        $subtotal = 0;
+        $totalTaxas = 0;
+        $totalVotos = 0;
+        $itensCarrinho = false;
+
+        foreach ($dados['pacotes'] as $tipo => $quantidade) {
+            $quantidade = intval($quantidade);
+
+            if ($quantidade > 0 && isset($tabelaPrecos[$tipo])) {
+                $precoUnitario = $tabelaPrecos[$tipo]['valor'];
+                $taxaUnitaria  = $tabelaPrecos[$tipo]['taxa'];
+
+                $subtotal   += $precoUnitario * $quantidade;
+                $totalTaxas += $taxaUnitaria * $quantidade;
+                $totalVotos += $tipo * $quantidade;
+
+                $itensCarrinho = true;
+            }
+        }
+
+        if (!$itensCarrinho) {
+            Helpers::redirecionar('post/' . $post->categoria()->slug . '/' . $post->slug);
+            return;
+        }
+
+        $totalGeral = $subtotal + $totalTaxas;
+
+        echo $this->template->renderizar('checkout.html', [
+            'titulo'     => 'Checkout - ' . $post->titulo,
+            'post'       => $post,
+            'totalVotos' => $totalVotos,
+            'subtotal'   => number_format($subtotal, 2, ',', '.'),
+            'totalTaxas' => number_format($totalTaxas, 2, ',', '.'),
+            'totalGeral' => number_format($totalGeral, 2, ',', '.'),
+            'totalFloat' => $totalGeral
+        ]);
+    }
+
+    public function pagamentoProcessar(): void
+    {
+        $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+
+        if (!isset($dados['post_id']) || !isset($dados['cpf'])) {
+            $this->mensagem->alerta('Dados incompletos. Tente novamente.');
+            Helpers::redirecionar();
+            return;
+        }
+
+        $pedido = new PedidoModelo();
+
+        $pedido->post_id = $dados['post_id'];
+        $pedido->valor_total = $dados['valor_total'];
+        $pedido->total_votos = $dados['total_votos'];
+
+        $pedido->cliente_nome = $dados['nome'] . ' ' . $dados['sobrenome'];
+        $pedido->cliente_cpf = preg_replace('/[^0-9]/', '', $dados['cpf']);
+        $pedido->cliente_email = $dados['email'];
+        $pedido->status = 'AGUARDANDO';
+
+        if (!$pedido->salvar()) {
+            $this->mensagem->erro('Erro ao salvar pedido. Tente novamente.');
+            Helpers::redirecionar();
+            return;
+        }
+
+        $asaas = new Asaas();
+
+        $resultado = $asaas->gerarPixVenda(
+            [
+                'nome' => $pedido->cliente_nome,
+                'cpf' => $pedido->cliente_cpf,
+                'email' => $pedido->cliente_email
+            ],
+            (float) $pedido->valor_total,
+            "Votos para " . $dados['post_titulo'],
+            $pedido->id
+        );
+
+        if ($resultado['erro']) {
+            $this->mensagem->erro('Erro no Asaas: ' . $resultado['mensagem']);
+            Helpers::redirecionar();
+            return;
+        }
+
+        $pedido->asaas_id = $resultado['id_transacao'];
+        $pedido->pix_qrcode = $resultado['payload'];
+        $pedido->pix_img = $resultado['encodedImage'];
+        $pedido->salvar();
+
+        echo $this->template->renderizar('pagamento.html', [
+            'titulo' => 'Pagamento PIX',
+            'pedido' => $pedido,
+            'copiaCola' => $resultado['payload'],
+            'imagemQrcode' => $resultado['encodedImage']
         ]);
     }
 

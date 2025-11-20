@@ -1,0 +1,280 @@
+{% extends 'base.html' %}
+
+{% block topo %}{% endblock %}
+{% block rodape %}{% endblock %}
+
+{% block conteudo %}
+
+<style>
+    /* --- ESTILOS GERAIS --- */
+    body {
+        background-color: #000;
+        color: #fff;
+    }
+
+    /* --- HEADER CUSTOMIZADO (WhatsApp + M.Pago) --- */
+    .checkout-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 4rem;
+        margin-top: 2rem;
+    }
+
+    .btn-whatsapp {
+        background-color: #fff;
+        color: #000;
+        font-weight: 600;
+        border-radius: 4px;
+        padding: 10px 30px;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        border: none;
+        transition: opacity 0.2s;
+    }
+
+    .btn-whatsapp:hover {
+        opacity: 0.9;
+    }
+
+    .mp-banner {
+        background-color: #1a1a1a;
+        color: #aaa;
+        font-size: 0.8rem;
+        padding: 8px 40px;
+        border-radius: 4px;
+        font-weight: 500;
+    }
+
+    /* --- FORMULÁRIO (ESQUERDA) --- */
+    .section-title {
+        font-size: 1.75rem;
+        font-weight: 300;
+        margin-bottom: 2rem;
+        color: #eee;
+    }
+
+    .form-label {
+        font-size: 0.9rem;
+        color: #ccc;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Inputs quadrados e minimalistas */
+    .form-control-dark {
+        background-color: #000;
+        border: 1px solid #333;
+        color: #fff;
+        border-radius: 0px;
+        /* Quadrado igual a imagem */
+        padding: 12px;
+    }
+
+    .form-control-dark:focus {
+        background-color: #000;
+        border-color: #fff;
+        /* Foco branco */
+        color: #fff;
+        box-shadow: none;
+    }
+
+    .btn-votar {
+        background-color: #fff;
+        color: #000;
+        border-radius: 50px;
+        /* Botão arredondado igual a imagem */
+        width: 100%;
+        padding: 15px;
+        font-weight: 600;
+        font-size: 1rem;
+        margin-top: 1.5rem;
+        border: none;
+    }
+
+    .step-disabled {
+        opacity: 0.3;
+        margin-top: 3rem;
+        font-size: 1.75rem;
+        font-weight: 300;
+    }
+
+    /* --- RESUMO (DIREITA) --- */
+    .summary-box {
+        border: 1px solid #333;
+        background-color: #161616;
+    }
+
+    .timer-box {
+        background-color: #1a1a1a;
+        border: 1px solid #333;
+        color: #ddd;
+        text-align: center;
+        padding: 15px;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .summary-content {
+        padding: 20px;
+    }
+
+    .summary-title {
+        font-size: 1.1rem;
+        color: #ddd;
+        margin-bottom: 5px;
+    }
+
+    .summary-subtitle {
+        font-size: 0.8rem;
+        color: #777;
+        margin-bottom: 20px;
+    }
+
+    .coupon-link {
+        display: block;
+        color: #aaa;
+        text-decoration: underline;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+        cursor: pointer;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+        color: #ccc;
+    }
+
+    .summary-row.total {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #333;
+        font-size: 1.1rem;
+        color: #fff;
+        background-color: #2a2a2a;
+        margin: 0 -20px -20px -20px;
+        padding: 20px;
+    }
+</style>
+
+<div class="container mb-5">
+    <div class="checkout-header">
+        <button class="btn-whatsapp">
+            Peça Ajuda pelo WhatsApp - CLIQUE AQUI
+        </button>
+    </div>
+    <div class="row g-5">
+        <div class="col-lg-7">
+
+            <h2 class="section-title">1. Suas Informações</h2>
+
+            <form action="{{ url('pagamento/processar') }}" method="POST">
+
+                <input type="hidden" name="post_id" value="{{ post.id }}">
+                <input type="hidden" name="post_titulo" value="{{ post.titulo }}">
+                <input type="hidden" name="valor_total" value="{{ totalFloat }}">
+                <input type="hidden" name="total_votos" value="{{ totalVotos }}">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">*Nome</label>
+                        <input type="text" name="nome" class="form-control form-control-dark" placeholder="Seu nome"
+                            required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">*Sobrenome</label>
+                        <input type="text" name="sobrenome" class="form-control form-control-dark"
+                            placeholder="Seu sobrenome" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">*CPF (Obrigatório para o PIX)</label>
+                    <input type="text" name="cpf" class="form-control form-control-dark" placeholder="000.000.000-00"
+                        required maxlength="14">
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">*Email</label>
+                    <input type="email" name="email" class="form-control form-control-dark" placeholder="seu@email.com"
+                        required>
+                </div>
+
+                <button type="submit" class="btn btn-votar">
+                    <i class="fa-brands fa-pix me-2"></i> Gerar PIX e Finalizar
+                </button>
+            </form>
+
+            <div class="step-disabled">
+                2. Pagamento
+            </div>
+
+        </div>
+        <div class="col-lg-5">
+            <div class="timer-box">
+                Tempo restante: <span id="countdown">10:00</span>
+            </div>
+            <div class="summary-box">
+                <div class="summary-content">
+                    <h4 class="summary-title">{{ post.titulo }}</h4>
+                    <hr style="border-color: #333;">
+                    <div class="summary-row mt-3">
+                        <div>
+                            <div class="text-white">{{ totalVotos }} VOTOS</div>
+                            <small class="text-white">Pacote de Votos</small>
+                        </div>
+                        <div>R$ {{ subtotal }}</div>
+                    </div>
+                    <hr style="border-color: #333;">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span>R$ {{ subtotal }}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax. Banc.</span>
+                        <span>R$ {{ totalTaxas }}</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span>R$ {{ totalGeral }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Tenta pegar o tempo do localStorage para não reiniciar se ele der F5
+        // Se não tiver, começa com 600 segundos (10 min)
+        var timer = localStorage.getItem('checkout_timer') ? parseInt(localStorage.getItem('checkout_timer')) : 600;
+        var display = document.querySelector('#countdown');
+
+        var interval = setInterval(function () {
+            var minutes = parseInt(timer / 60, 10);
+            var seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            if (display) {
+                display.textContent = minutes + ":" + seconds;
+            }
+
+            // Salva o tempo atual no navegador
+            localStorage.setItem('checkout_timer', timer);
+
+            if (--timer < 0) {
+                // Quando acaba:
+                localStorage.removeItem('checkout_timer'); // Limpa a memória
+                clearInterval(interval);
+                window.location.reload(); // Recarrega a página
+            }
+        }, 1000);
+    });
+</script>
+
+{% endblock %}

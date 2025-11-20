@@ -1,47 +1,47 @@
 {% extends 'base.html' %}
+
+{% block topo %}
+{% include 'topo.html' %}
+{% endblock %}
+
 {% block conteudo %}
 
-<div class="album py-5">
+<div class="album py-3 pb-5">
     <div class="container">
         {% if posts %}
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3 g-md-4">
             {% for post in posts %}
             <div class="col">
-                <div class="card shadow-sm">
-                    <div class="overflow">
-                        <div class="zoom slide">
-                            {% if post.capa %}
-                            <img src="{{ url('uploads/imagens/thumbs/'~post.capa) }}" class="card-img-top"
-                                alt="{{ post.titulo }}">
-                            {% else %}
-                            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1888&auto=format&fit=crop"
-                                class="card-img-top" alt="Imagem padrão">
-                            {% endif %}
+                <div class="candidate-card shadow-sm">
+                    <a href="{{ url('uploads/imagens/thumbs/'~post.capa) }}" data-fancybox="gallery"
+                        data-caption="{{ post.titulo }}" class="d-block img-container">
+                        {% if post.capa %}
+                        <img src="{{ url('uploads/imagens/thumbs/'~post.capa) }}" alt="{{ post.titulo }}">
+                        {% else %}
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop"
+                            alt="Imagem padrão">
+                        {% endif %}
+                        <div class="zoom-icon">
+                            <i class="fa-solid fa-magnifying-glass-plus fa-xs"></i>
                         </div>
-                    </div>
-                    <div class="card-body bg-dark text-white">
-                        <p class="card-text lead text-center">{{ resumirTexto(post.titulo, 20) }}</p>
-                        <div class="d-flex justify-content-center">
-                            <div class="btn-group">
-                                <a href="{{url('post/'~post.categoria.slug~'/'~post.slug)}}"
-                                    class="btn btn-light my-3">Votar</a>
-                            </div>
-                        </div>
+                    </a>
+                    <div class="card-info">
+                        <h5 class="candidate-name">{{ resumirTexto(post.titulo, 25) }}</h5>
+
+                        <a href="{{url('post/'~post.categoria.slug~'/'~post.slug)}}" class="btn-vote">
+                            Votar
+                        </a>
                     </div>
                 </div>
             </div>
-
             {% endfor %}
-
         </div>
         {% else %}
-        <div class="alert alert-warning" role="alert">
-            Nenhum post cadastrado para exibir!
+        <div class="alert alert-dark text-center border-secondary" role="alert">
+            <i class="fa-solid fa-info-circle me-2"></i> Nenhum participante cadastrado para exibir!
         </div>
         {% endif %}
-
     </div>
 </div>
-
 
 {% endblock %}

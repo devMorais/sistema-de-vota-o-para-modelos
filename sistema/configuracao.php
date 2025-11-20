@@ -26,6 +26,8 @@ if (Helpers::localhost()) {
 
     define('URL_SITE', '/');
     define('URL_ADMIN', '/admin/');
+    define('ASAAS_KEY', 'SUA_CHAVE_SANDBOX_AQUI');
+    define('ASAAS_URL', 'https://sandbox.asaas.com/api/v3');
 } else {
     //dados de acesso ao banco de dados na hospedagem
     define('DB_HOST', 'localhost');
@@ -33,9 +35,10 @@ if (Helpers::localhost()) {
     define('DB_NOME', '');
     define('DB_USUARIO', '');
     define('DB_SENHA', '');
-
     define('URL_SITE', '/');
     define('URL_ADMIN', '/admin/');
+    define('ASAAS_KEY', 'SUA_CHAVE_PRODUCAO_AQUI');
+    define('ASAAS_URL', 'https://api.asaas.com/v3');
 }
 
 //autenticação do servidor de emails

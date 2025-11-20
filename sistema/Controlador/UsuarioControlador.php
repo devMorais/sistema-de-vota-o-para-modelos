@@ -59,10 +59,10 @@ class UsuarioControlador extends Controlador
                         ]);
 
                         $email->criar(
-                                'Confirmação de Cadastro - ' . SITE_NOME,
-                                $view,
-                                $dados['email'],
-                                $dados['nome']
+                            'Confirmação de Cadastro - ' . SITE_NOME,
+                            $view,
+                            $dados['email'],
+                            $dados['nome']
                         );
 
                         $email->enviar(EMAIL_REMETENTE['email'], EMAIL_REMETENTE['nome']);
@@ -70,7 +70,6 @@ class UsuarioControlador extends Controlador
                         $this->mensagem->sucesso('Cadastrado realizado com sucesso')->flash();
                         Helpers::json('redirecionar', Helpers::url());
                     } catch (\PHPMailer\PHPMailer\Exception $ex) {
-                        //deleta o último usuário cadastrado
                         $id = $usuario->ultimoId();
                         $usuario = (new UsuarioModelo())->buscaPorId($id);
                         $usuario->deletar();

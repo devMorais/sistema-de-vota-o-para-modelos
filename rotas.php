@@ -14,6 +14,8 @@ try {
     SimpleRouter::get(URL_SITE . 'post/{categoria}/{slug}', 'SiteControlador@post');
     SimpleRouter::get(URL_SITE . 'categoria/{slug}/{pagina?}', 'SiteControlador@categoria');
     SimpleRouter::post(URL_SITE . 'buscar', 'SiteControlador@buscar');
+    SimpleRouter::post(URL_SITE . 'checkout', 'SiteControlador@checkout');
+    SimpleRouter::post(URL_SITE . 'pagamento/processar', 'SiteControlador@pagamentoProcessar');
     SimpleRouter::get(URL_SITE . '404', 'SiteControlador@erro404');
     SimpleRouter::match(['get', 'post'], URL_SITE . 'contato', 'SiteControlador@contato');
 

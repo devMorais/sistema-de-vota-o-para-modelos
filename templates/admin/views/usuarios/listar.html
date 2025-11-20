@@ -1,6 +1,6 @@
 {% extends "dashboard.html" %}
 
-{% block conteudo %}  
+{% block conteudo %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item">
@@ -17,21 +17,9 @@
 {{ flash() }}
 
 <div class="card border-0 shadow-sm">
-    <div class="card-header bg-light border d-flex justify-content-between align-items-center">
-        <div>
-            <span class="badge bg-white text-secondary border">
-                <span class="text-dark">{{total.usuarios}} usuário</span><br><br>
-                Ativo: <span class="text-success">{{total.usuariosAtivo}}</span> |
-                Inativo: <span class="text-danger">{{total.usuariosInativo}}</span>
-            </span> 
-
-            <span class="badge bg-white text-secondary border">
-                <span class="text-dark">{{total.admin}} admin:</span><br><br>
-                Ativo: <span class="text-success">{{total.adminAtivo}}</span> |
-                Inativo: <span class="text-danger">{{total.adminInativo}}</span>
-            </span>
-        </div>
-        <a href="{{url('admin/usuarios/cadastrar')}}" class="btn btn-dark" tooltip="tooltip" title="Cadastrar Post">
+    <div class="card-header bg-light border d-flex justify-content-between">
+        <a href="{{url('admin/usuarios/cadastrar')}}" class="btn btn-dark" tooltip="tooltip"
+            title="Cadastrar Post">
             Cadastrar
         </a>
     </div>
@@ -59,7 +47,7 @@
                     </tr>
                 </tfoot>
             </table>
-        </div>     
+        </div>
 
 
     </div>

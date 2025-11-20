@@ -2,8 +2,6 @@ $(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip();
     var url = $('table').attr('url');
 
-    console.log(url);
-
     $.extend($.fn.dataTable.defaults, {
         language: {
             url: '//cdn.datatables.net/plug-ins/1.13.3/i18n/pt-BR.json'
@@ -42,7 +40,7 @@ $(document).ready(function () {
                 data: null,
                 render: function (data, type, row) {
                     if (row[1]) {
-                        return '<a data-fancybox data-caption="Capa" class="overflow zoom" href="' + url + 'uploads/imagens/' + row[1] + '"><img class="thumb" src=" ' + url + 'uploads/imagens/thumbs/' + row[1] + ' " /></a>';
+                        return '<a data-fancybox data-caption="Capa" class="overflow zoom" href="' + url + '/uploads/imagens/thumbs/' + row[1] + '"><img class="thumb" src=" ' + url + '/uploads/imagens/thumbs/' + row[1] + ' " /></a>';
                     } else {
                         return '<i class="fa-regular fa-images fs-1 text-secondary"></i>';
                     }
@@ -64,9 +62,9 @@ $(document).ready(function () {
                 render: function (data, type, row) {
                     var html = '';
 
-                    html += ' <a href=" ' + url + 'admin/posts/editar/' + row[0] + ' " tooltip="tooltip" title="Editar"><i class="fa-solid fa-pen m-1"></i></a> ';
+                    html += ' <a href=" ' + url + '/admin/posts/editar/' + row[0] + ' " tooltip="tooltip" title="Editar"><i class="fa-solid fa-pen m-1"></i></a> ';
 
-                    html += '<a href=" ' + url + 'admin/posts/deletar/' + row[0] + ' "><i class="fa-solid fa-trash m-1" tooltip="tooltip" title="Deletar"></i></a>';
+                    html += '<a href=" ' + url + '/admin/posts/deletar/' + row[0] + ' "><i class="fa-solid fa-trash m-1" tooltip="tooltip" title="Deletar"></i></a>';
 
                     return html;
                 }
@@ -129,9 +127,9 @@ $(document).ready(function () {
                 render: function (data, type, row) {
                     var html = '';
 
-                    html += ' <a href=" ' + url + 'admin/usuarios/editar/' + row[0] + ' " tooltip="tooltip" title="Editar"><i class="fa-solid fa-pen m-1"></i></a> ';
+                    html += ' <a href=" ' + url + '/admin/usuarios/editar/' + row[0] + ' " tooltip="tooltip" title="Editar"><i class="fa-solid fa-pen m-1"></i></a> ';
 
-                    html += '<a href=" ' + url + 'admin/usuarios/deletar/' + row[0] + ' "><i class="fa-solid fa-trash m-1" tooltip="tooltip" title="Deletar"></i></a>';
+                    html += '<a href=" ' + url + '/admin/usuarios/deletar/' + row[0] + ' "><i class="fa-solid fa-trash m-1" tooltip="tooltip" title="Deletar"></i></a>';
 
                     return html;
                 }

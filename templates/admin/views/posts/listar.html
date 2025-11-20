@@ -1,6 +1,6 @@
 {% extends "dashboard.html" %}
 
-{% block conteudo %}  
+{% block conteudo %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item">
@@ -22,20 +22,20 @@
             <span class="badge">
                 <span class="text-secondary">
                     {{formatarNumero(total.posts)}} posts
-                </span>                
+                </span>
             </span>
             <span class="text-secondary">|</span>
             <span class="badge text-secondary">
                 <span class="text-success">
-                    {{formatarNumero(total.postsAtivo)}} 
+                    {{formatarNumero(total.postsAtivo)}}
                 </span>ativo
             </span>
             <span class="text-secondary">|</span>
             <span class="badge text-secondary">
                 <span class="text-danger">
-                    {{formatarNumero(total.postsInativo)}} 
-                </span>       inativo         
-            </span> 
+                    {{formatarNumero(total.postsInativo)}}
+                </span> inativo
+            </span>
         </div>
         <a href="{{url('admin/posts/cadastrar')}}" class="btn btn-dark" tooltip="tooltip" title="Cadastrar Post">
             Cadastrar
@@ -50,7 +50,7 @@
                     <tr>
                         <th>id</th>
                         <th>Capa</th>
-                        <th class="text-center">Título</th>
+                        <th class="text-center">Nome</th>
                         <th>Categoria</th>
                         <th>Visitas</th>
                         <th>Status</th>
@@ -60,7 +60,7 @@
 
             </table>
 
-        </div>     
+        </div>
 
 
     </div>
