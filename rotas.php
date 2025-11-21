@@ -58,6 +58,13 @@ try {
         SimpleRouter::match(['get', 'post'], URL_ADMIN . 'categorias/cadastrar', 'AdminCategorias@cadastrar');
         SimpleRouter::match(['get', 'post'], URL_ADMIN . 'categorias/editar/{id}', 'AdminCategorias@editar');
         SimpleRouter::get(URL_ADMIN . 'categorias/deletar/{id}', 'AdminCategorias@deletar');
+
+        //ADMIN INGRESSOS
+        SimpleRouter::get(URL_ADMIN . 'ingressos/listar', 'AdminPacotes@listar');
+        SimpleRouter::match(['get', 'post'], URL_ADMIN . 'ingressos/cadastrar', 'AdminPacotes@cadastrar');
+        SimpleRouter::match(['get', 'post'], URL_ADMIN . 'ingressos/editar/{id}', 'AdminPacotes@editar');
+        SimpleRouter::get(URL_ADMIN . 'ingressos/deletar/{id}', 'AdminPacotes@deletar');
+        SimpleRouter::post(URL_ADMIN . 'ingressos/datatable', 'AdminPacotes@datatable');
     });
 
     SimpleRouter::start();

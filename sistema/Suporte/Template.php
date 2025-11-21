@@ -84,6 +84,11 @@ class Template
                 })
             ),
             $this->twig->addFunction(
+                new \Twig\TwigFunction('formatarValor', function ($valor) {
+                    return Helpers::formatarValor($valor);
+                })
+            ),
+            $this->twig->addFunction(
                 new \Twig\TwigFunction('tempoCarregamento', function () {
 
                     $tempoTotal = microtime(true) - filter_var($_SERVER["REQUEST_TIME_FLOAT"], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);

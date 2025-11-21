@@ -2,6 +2,8 @@ $(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip();
     var url = $('table').attr('url');
 
+    console.log(url);
+
     $.extend($.fn.dataTable.defaults, {
         language: {
             url: '//cdn.datatables.net/plug-ins/1.13.3/i18n/pt-BR.json'
@@ -73,11 +75,11 @@ $(document).ready(function () {
         columnDefs: [
             {
                 className: 'dt-body-left',
-                targets: [2]
+                targets: [0]
             },
             {
                 className: 'dt-center',
-                targets: [0, 1, 3, 4, 5, 6]
+                targets: [1, 2, 3, 4, 5, 6]
             },
             {
                 orderable: false,
@@ -152,4 +154,65 @@ $(document).ready(function () {
         ]
     });
 
+
+    // TABELA INGRESSOS
+    $('#tabelaIngressos').DataTable({
+        order: [[0, 'desc']],
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: url + '/admin/ingressos/datatable',
+            type: 'POST',
+            error: function (xhr, resp, text) {
+                console.log(xhr, resp, text);
+            }
+        },
+        columns: [
+            null,
+            null,
+            null,
+            {
+                data: null,
+                render: function (data, type, row) {
+
+                    return 'R$ ' + row[3];
+                }
+            },
+            {
+                data: null,
+                render: function (data, type, row) {
+                    return 'R$ ' + row[4];
+                }
+            },
+            {
+                data: null,
+                render: function (data, type, row) {
+                    if (row[5] == 1) {
+                        return '<i class="fa-solid fa-circle text-success" tooltip="tooltip" title="Ativo"></i>';
+                    } else {
+                        return '<i class="fa-solid fa-circle text-danger" tooltip="tooltip" title="Inativo"></i>';
+                    }
+                }
+            },
+            {
+                data: null,
+                render: function (data, type, row) {
+                    var html = '';
+                    html += ' <a href=" ' + url + '/admin/ingressos/editar/' + row[0] + ' " tooltip="tooltip" title="Editar"><i class="fa-solid fa-pen m-1"></i></a> ';
+                    html += '<a href=" ' + url + '/admin/ingressos/deletar/' + row[0] + ' "><i class="fa-solid fa-trash m-1" tooltip="tooltip" title="Deletar"></i></a>';
+                    return html;
+                }
+            }
+        ],
+        columnDefs: [
+            {
+                className: 'dt-center',
+                targets: [0, 1, 2, 3, 4, 5, 6]
+            },
+            {
+                orderable: false,
+                targets: [-1]
+            }
+        ]
+    });
 });

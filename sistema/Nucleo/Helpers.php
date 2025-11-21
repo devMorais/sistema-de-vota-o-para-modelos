@@ -364,4 +364,16 @@ class Helpers
 
         return $resumirTexto . $continue;
     }
+
+    public static function limparValor(string $valor): float
+    {
+        if (empty($valor)) {
+            return 0.00;
+        }
+
+        $valor = str_replace('.', '', $valor);
+        $valor = str_replace(',', '.', $valor);
+
+        return (float) $valor;
+    }
 }

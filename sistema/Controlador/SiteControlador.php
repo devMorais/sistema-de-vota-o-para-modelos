@@ -11,6 +11,7 @@ use sistema\Suporte\Email;
 use sistema\Modelo\PedidoModelo;
 use sistema\Biblioteca\Asaas;
 use sistema\Modelo\PacoteModelo;
+use sistema\Suporte\XDebug;
 
 class SiteControlador extends Controlador
 {
@@ -71,7 +72,9 @@ class SiteControlador extends Controlador
         }
 
         $post->salvarVisitas();
-        $pacotes = (new \sistema\Modelo\PacoteModelo())->busca("status = 1")->ordem("ordem ASC")->resultado(true);
+
+        $pacotes = (new PacoteModelo())->busca('status = :s', 's=1')->resultado(true);
+
         echo $this->template->renderizar('post.html', [
             'post' => $post,
             'categorias' => $this->categorias(),

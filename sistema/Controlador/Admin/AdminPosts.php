@@ -72,7 +72,6 @@ class AdminPosts extends AdminControlador
             }
         }
 
-
         $retorno = [
             "draw" => $datatable['draw'],
             "recordsTotal" => $total,
@@ -90,7 +89,6 @@ class AdminPosts extends AdminControlador
     public function listar(): void
     {
         $posts = new PostModelo();
-
         echo $this->template->renderizar('posts/listar.html', [
             'total' => [
                 'posts' => $posts->busca(null, 'COUNT(id)', 'id')->total(),

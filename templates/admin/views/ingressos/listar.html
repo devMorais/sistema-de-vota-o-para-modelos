@@ -9,7 +9,7 @@
             </a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">
-            Posts
+            Pacotes de Votos
         </li>
     </ol>
 </nav>
@@ -21,48 +21,43 @@
         <div>
             <span class="badge">
                 <span class="text-secondary">
-                    {{formatarNumero(total.posts)}} modelos
+                    {{formatarNumero(total.ingressos)}} Pacotes de Votos
                 </span>
             </span>
             <span class="text-secondary">|</span>
             <span class="badge text-secondary">
                 <span class="text-success">
-                    {{formatarNumero(total.postsAtivo)}}
-                </span>ativas
+                    {{formatarNumero(total.ingressosAtivo)}}
+                </span>ativo
             </span>
             <span class="text-secondary">|</span>
             <span class="badge text-secondary">
                 <span class="text-danger">
-                    {{formatarNumero(total.postsInativo)}}
-                </span> inativas
+                    {{formatarNumero(total.ingressosInativo)}}
+                </span> inativo
             </span>
         </div>
-        <a href="{{url('admin/posts/cadastrar')}}" class="btn btn-dark" tooltip="tooltip" title="Cadastrar Post">
+        <a href="{{url('admin/ingressos/cadastrar')}}" class="btn btn-dark" tooltip="tooltip"
+            title="Cadastrar Pacote de Ingresso">
             Cadastrar
         </a>
     </div>
     <div class="card-body">
-
         <div class="table-responsive">
-
-            <table id="tabelaPosts" url="{{url()}}" class="table table-striped" style="width:100%">
+            <table id="tabelaIngressos" url="{{url()}}" class="table table-striped" style="width:100%">
                 <thead>
                     <tr>
                         <th>id</th>
-                        <th>Capa</th>
                         <th class="text-center">Nome</th>
-                        <th>Categoria</th>
-                        <th>Visitas</th>
+                        <th>Quantidade</th>
+                        <th>Valor</th>
+                        <th>Taxa</th>
                         <th>Status</th>
                         <th>Ação</th>
                     </tr>
                 </thead>
-
             </table>
-
         </div>
-
-
     </div>
 </div>
 {% endblock %}

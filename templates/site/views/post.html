@@ -54,11 +54,9 @@
 
                         <select name="pacotes[{{ pacote.quantidade }}]" class="minimal-select qtd-select w-100"
                             data-preco="{{ pacote.valor }}" data-taxa="{{ pacote.taxa }}">
-
                             {% for i in 0..50 %}
                             <option value="{{ i }}" {% if i==0 %}selected{% endif %}>{{ i }}</option>
                             {% endfor %}
-
                         </select>
                     </div>
                 </div>
