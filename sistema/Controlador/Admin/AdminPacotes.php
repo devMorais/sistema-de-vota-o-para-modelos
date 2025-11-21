@@ -60,9 +60,9 @@ class AdminPacotes extends AdminControlador
                 $dados[] = [
                     $voto->id,
                     $voto->titulo,
-                    $voto->quantidade,
-                    $voto->valor,
-                    $voto->taxa,
+                    Helpers::formatarNumero($voto->quantidade),
+                    Helpers::formatarValor($voto->valor),
+                    Helpers::formatarValor($voto->taxa),
                     $voto->status
                 ];
             }

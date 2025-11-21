@@ -170,11 +170,15 @@ $(document).ready(function () {
         columns: [
             null,
             null,
-            null,
             {
                 data: null,
                 render: function (data, type, row) {
-
+                    return '<span class="fw-bold">' + row[2] + '</span>';
+                }
+            },
+            {
+                data: null,
+                render: function (data, type, row) {
                     return 'R$ ' + row[3];
                 }
             },
