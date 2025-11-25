@@ -15,9 +15,10 @@ $(document).ready(function () {
                     data: { busca: busca },
                     success: function (resultado) {
                         if (resultado) {
-                            $('#buscaResultado').html("<div class='card'><div class='card-body'><ul class='list-group list-group-flush'>" + resultado + "</ul></div></div>");
+                            $('#buscaResultado').html(resultado);
+                            $('#buscaResultado').fadeIn(200); // Efeito suave
                         } else {
-                            $('#buscaResultado').html('<div class="alert alert-warning">Nenhum resultado encontrado!</div>');
+                            $('#buscaResultado').fadeOut(200);
                         }
                     }
                 });

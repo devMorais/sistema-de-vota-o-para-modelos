@@ -54,11 +54,29 @@ class SiteControlador extends Controlador
     {
         $busca = filter_input(INPUT_POST, 'busca', FILTER_DEFAULT);
         if (isset($busca)) {
-            $posts = (new PostModelo())->busca("status = 1 AND titulo LIKE '%{$busca}%'")->limite(20)->resultado(true);
+            // Limitei a 5 resultados para não poluir
+            $posts = (new PostModelo())->busca("status = 1 AND titulo LIKE '%{$busca}%'")->limite(5)->resultado(true);
+
             if ($posts) {
+                // Início do Card Escuro
+                echo "<div class='list-group'>";
+
                 foreach ($posts as $post) {
-                    echo "<li class='list-group-item fw-bold'><a href=" . Helpers::url('post/') . $post->categoria()->slug . '/' . $post->slug . ">$post->titulo</a></li>";
+                    $imagemUrl = $post->capa ? Helpers::url('uploads/imagens/thumbs/' . $post->capa) : 'https://placehold.co/50';
+                    $link = Helpers::url('post/') . $post->categoria()->slug . '/' . $post->slug;
+
+                    echo "
+                    <a href='{$link}' class='list-group-item list-group-item-action d-flex align-items-center gap-3 bg-dark text-light border-secondary'>
+                        <div style='width: 40px; height: 40px; min-width: 40px;'>
+                            <img src='{$imagemUrl}' alt='{$post->titulo}' class='rounded-circle' style='width: 100%; height: 100%; object-fit: cover;'>
+                        </div>
+                        <div class='flex-grow-1'>
+                            <h6 class='mb-0 text-white' style='font-size: 14px;'>{$post->titulo}</h6>
+                            <small class='text-secondary' style='font-size: 11px;'>Ver perfil &rsaquo;</small>
+                        </div>
+                    </a>";
                 }
+                echo "</div>";
             }
         }
     }

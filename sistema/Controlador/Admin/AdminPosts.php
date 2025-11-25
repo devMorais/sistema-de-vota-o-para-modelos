@@ -4,6 +4,8 @@ namespace sistema\Controlador\Admin;
 
 use sistema\Modelo\PostModelo;
 use sistema\Modelo\CategoriaModelo;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 use sistema\Nucleo\Helpers;
 use sistema\Biblioteca\Upload;
 
@@ -132,7 +134,6 @@ class AdminPosts extends AdminControlador
             'post' => $dados
         ]);
     }
-
     /**
      * Edita post pelo ID
      * @param int $id
@@ -142,6 +143,7 @@ class AdminPosts extends AdminControlador
     {
         $post = (new PostModelo())->buscaPorId($id);
         $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+
         if (isset($dados)) {
             if ($this->validarDados($dados)) {
                 $post = (new PostModelo())->buscaPorId($id);
@@ -155,8 +157,9 @@ class AdminPosts extends AdminControlador
                 $post->atualizado_em = date('Y-m-d H:i:s');
 
                 if (!empty($_FILES['capa']["name"])) {
+
                     if ($post->capa && file_exists("uploads/imagens/thumbs/{$post->capa}")) {
-                        unlink("/uploads/imagens/thumbs/{$post->capa}");
+                        unlink("uploads/imagens/thumbs/{$post->capa}");
                     }
 
                     $post->capa = $this->capa ?? null;
@@ -177,15 +180,13 @@ class AdminPosts extends AdminControlador
             'categorias' => (new CategoriaModelo())->busca('status = 1')->resultado(true)
         ]);
     }
-
     /**
-     * Valida os dados do formulário
+     * Valida os dados e processa a imagem convertendo para WEBP
      * @param array $dados
      * @return bool
      */
     public function validarDados(array $dados): bool
     {
-
         if (empty($dados['titulo'])) {
             $this->mensagem->alerta('Escreva um título para o Post!')->flash();
             return false;
@@ -196,15 +197,25 @@ class AdminPosts extends AdminControlador
         }
 
         if (!empty($_FILES['capa']) && $_FILES['capa']['error'] === UPLOAD_ERR_OK) {
-            $upload = new Upload('uploads');
-            $nomeArquivo = Helpers::slug($dados['titulo']);
-            $upload->arquivo($_FILES['capa'], $nomeArquivo, 'imagens/thumbs', 2);
 
-            if ($upload->getErro()) {
-                $this->mensagem->alerta($upload->getErro())->flash();
+            try {
+                $manager = new ImageManager(new Driver());
+                $image = $manager->read($_FILES['capa']['tmp_name']);
+
+                $nomeArquivo = Helpers::slug($dados['titulo']) . '-' . uniqid() . '.webp';
+                $caminhoDiretorio = 'uploads/imagens/thumbs/';
+
+                if (!is_dir($caminhoDiretorio)) {
+                    mkdir($caminhoDiretorio, 0755, true);
+                }
+
+                $image->cover(600, 600);
+                $image->toWebp(80)->save($caminhoDiretorio . $nomeArquivo);
+
+                $this->capa = $nomeArquivo;
+            } catch (\Exception $e) {
+                $this->mensagem->erro('Erro ao processar imagem: ' . $e->getMessage())->flash();
                 return false;
-            } else {
-                $this->capa = $upload->getResultado();
             }
         }
 

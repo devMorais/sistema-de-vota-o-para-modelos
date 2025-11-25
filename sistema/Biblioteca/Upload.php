@@ -40,7 +40,7 @@ class Upload
      * Verifica e cria o diretório padrão de uploads! Opcionalmente defina um diretório para envio dos arquivos
      * @param string $diretorio
      */
-    public function __construct(string $diretorio = null)
+    public function __construct(?string $diretorio = null)
     {
         $this->diretorio = $diretorio ?? 'uploads';
 
@@ -56,7 +56,7 @@ class Upload
      * @param string $subDiretorio
      * @param int $tamanho
      */
-    public function arquivo(array $arquivo, string $nome = null, string $subDiretorio = null, int $tamanho = null)
+    public function arquivo(array $arquivo, ?string $nome = null, ?string $subDiretorio = null, ?int $tamanho = null)
     {
         $this->arquivo = $arquivo;
         $this->nome = $nome ?? pathinfo($this->arquivo['name'], PATHINFO_FILENAME);
