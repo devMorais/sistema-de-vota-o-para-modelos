@@ -122,4 +122,13 @@ class Asaas
 
         return json_decode($resultado);
     }
+
+    /**
+     * Consulta o status de uma cobrança no Asaas
+     * @param string $idTransacao Ex: pay_123456
+     */
+    public function consultarCobranca($idTransacao)
+    {
+        return $this->get("/payments/{$idTransacao}");
+    }
 }

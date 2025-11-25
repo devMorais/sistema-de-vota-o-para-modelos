@@ -11,7 +11,7 @@ use sistema\Suporte\Email;
 use sistema\Modelo\PedidoModelo;
 use sistema\Biblioteca\Asaas;
 use sistema\Modelo\PacoteModelo;
-use sistema\Suporte\XDebug;
+use sistema\Nucleo\Conexao;
 
 class SiteControlador extends Controlador
 {
@@ -25,17 +25,23 @@ class SiteControlador extends Controlador
      * Home Page
      * @return void
      */
-    public function index(): void
+    public function index(?int $pagina = null): void
     {
-        $postModelo = new PostModelo();
+        $pagina = $pagina ?? 1;
 
+        $postModelo = new PostModelo();
+        $total = $postModelo->busca("status = :s", "s=1")->total();
+        $paginar = new Paginar(Helpers::url('page'), $pagina, 24, 3, $total);
         $postsParaCards = $postModelo->busca("status = 1")
             ->ordem('id DESC')
-            ->limite(25)
+            ->limite($paginar->limite())
+            ->offset($paginar->offset())
             ->resultado(true);
 
         echo $this->template->renderizar('index.html', [
             'posts' => $postsParaCards,
+            'paginacao' => $paginar->renderizar(),
+            'paginacaoInfo' => $paginar->info(),
             'categorias' => $this->categorias(),
         ]);
     }
@@ -266,6 +272,69 @@ class SiteControlador extends Controlador
             'copiaCola' => $resultado['payload'],
             'imagemQrcode' => $resultado['encodedImage']
         ]);
+    }
+
+    public function pagamentoVerificar(): void
+    {
+        // 1. Recebe o ID do pedido via POST
+        $idPedido = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+
+        if (!$idPedido) {
+            Helpers::json('erro', 'ID inválido');
+        }
+
+        // 2. Busca o pedido no banco
+        $pedidoModelo = new PedidoModelo();
+        $pedido = $pedidoModelo->buscaPorId($idPedido);
+
+        if (!$pedido) {
+            Helpers::json('erro', 'Pedido não encontrado');
+        }
+
+        // 3. Se já estiver PAGO, retorna sucesso
+        if ($pedido->status == 'PAGO') {
+            Helpers::json('pago', 'Pagamento já confirmado');
+        }
+
+        // 4. Se estiver AGUARDANDO, consulta o Asaas
+        $asaas = new Asaas();
+        $cobranca = $asaas->consultarCobranca($pedido->asaas_id);
+
+        // 5. Verifica resposta do Asaas
+        if (isset($cobranca->status) && ($cobranca->status == 'RECEIVED' || $cobranca->status == 'CONFIRMED')) {
+
+            $pdo = Conexao::getInstancia();
+            $pdo->beginTransaction();
+
+            try {
+                // 1. Atualiza o Pedido para PAGO
+                $stmtPedido = $pdo->prepare("UPDATE pedidos SET status = 'PAGO', pago_em = NOW() WHERE id = :id");
+                $stmtPedido->bindValue(':id', $pedido->id);
+                $stmtPedido->execute();
+
+                // Instancia o modelo do Post (Candidata)
+                $post = new PostModelo();
+                $post->id = $pedido->post_id;
+
+                // 2. Atualiza os Votos (Soma segura)
+                if (!$post->adicionarVotos($pedido->total_votos)) {
+                    throw new \Exception("Erro ao somar votos");
+                }
+
+                // 3. Atualiza a Receita Financeira (NOVO - Soma segura)
+                if (!$post->adicionarReceita((float)$pedido->valor_total)) {
+                    throw new \Exception("Erro ao somar receita");
+                }
+
+                $pdo->commit();
+                Helpers::json('pago', 'Pagamento confirmado!');
+            } catch (\Exception $e) {
+                $pdo->rollBack();
+                Helpers::json('erro', 'Erro: ' . $e->getMessage());
+            }
+        } else {
+            Helpers::json('aguardando', 'Aguardando...');
+        }
     }
 
     /**

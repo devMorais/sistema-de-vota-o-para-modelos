@@ -27,11 +27,15 @@ class AdminDashboard extends AdminControlador
         $categorias = new CategoriaModelo();
 
         echo $this->template->renderizar('dashboard.html', [
+            'ranking' => $posts->busca('status = 1')
+                ->ordem('votos DESC')
+                ->limite(5)
+                ->resultado(true),
             'posts' => [
                 'posts' => $posts->busca()->ordem('id DESC')->limite(5)->resultado(true),
-                'total' => $posts->busca(null,'COUNT(id)','id')->total(),
-                'ativo' => $posts->busca('status = :s','s=1 COUNT(status)','status')->total(),
-                'inativo' => $posts->busca('status = :s','s=0 COUNT(status)','status')->total()
+                'total' => $posts->busca(null, 'COUNT(id)', 'id')->total(),
+                'ativo' => $posts->busca('status = :s', 's=1 COUNT(status)', 'status')->total(),
+                'inativo' => $posts->busca('status = :s', 's=0 COUNT(status)', 'status')->total()
             ],
             'categorias' => [
                 'categorias' => $categorias->busca()->ordem('id DESC')->limite(5)->resultado(true),
@@ -63,5 +67,4 @@ class AdminDashboard extends AdminControlador
         $this->mensagem->informa('Você saiu do painel de controle!')->flash();
         Helpers::redirecionar('admin/login');
     }
-
 }

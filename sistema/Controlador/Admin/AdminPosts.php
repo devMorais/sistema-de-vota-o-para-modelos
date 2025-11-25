@@ -6,7 +6,6 @@ use sistema\Modelo\PostModelo;
 use sistema\Modelo\CategoriaModelo;
 use sistema\Nucleo\Helpers;
 use sistema\Biblioteca\Upload;
-use sistema\Suporte\XDebug;
 
 /**
  * Classe AdminPosts
@@ -226,18 +225,15 @@ class AdminPosts extends AdminControlador
                 Helpers::redirecionar('admin/posts/listar');
             } else {
                 if ($post->deletar()) {
-
-                    // Lógica de deletar arquivos (ajustada)
-                    // Como só salvamos na 'thumbs', só precisamos deletar de lá
                     if ($post->capa && file_exists("uploads/imagens/thumbs/{$post->capa}")) {
                         unlink("uploads/imagens/thumbs/{$post->capa}");
                     }
-                    // Garante que a imagem original (se existir) também seja deletada
+
                     if ($post->capa && file_exists("uploads/imagens/{$post->capa}")) {
                         unlink("uploads/imagens/{$post->capa}");
                     }
 
-                    $this->mensagem->sucesso('Post deletado com sucesso!')->flash();
+                    $this->mensagem->sucesso('Modelo deletada(o) com sucesso!')->flash();
                     Helpers::redirecionar('admin/posts/listar');
                 } else {
                     $this->mensagem->erro($post->erro())->flash();

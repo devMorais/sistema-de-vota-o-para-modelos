@@ -5,6 +5,7 @@ namespace sistema\Controlador\Admin;
 use sistema\Suporte\Constants;
 use sistema\Nucleo\Helpers;
 use sistema\Modelo\UsuarioModelo;
+use sistema\Suporte\XDebug;
 
 /**
  * Classe AdminUsuarios
@@ -43,7 +44,6 @@ class AdminUsuarios extends AdminControlador
     {
         $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
         if (isset($dados)) {
-            //checa os dados 
             if ($this->validarDados($dados)) {
 
                 if (empty($dados['senha'])) {
@@ -54,7 +54,7 @@ class AdminUsuarios extends AdminControlador
                     $usuario->nome = $dados['nome'];
                     $usuario->email = $dados['email'];
                     $usuario->senha = Helpers::gerarSenha($dados['senha']);
-                    $usuario->level = 3; //ADMIN
+                    $usuario->level = 3;
                     $usuario->status = $dados['status'];
 
                     if ($usuario->salvar()) {
@@ -80,7 +80,6 @@ class AdminUsuarios extends AdminControlador
     public function editar(int $id): void
     {
         $usuario = (new UsuarioModelo())->buscaPorId($id);
-
         $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
         if (isset($dados)) {
             if ($this->validarDados($dados)) {
@@ -89,7 +88,7 @@ class AdminUsuarios extends AdminControlador
                 $usuario->nome = $dados['nome'];
                 $usuario->email = $dados['email'];
                 $usuario->senha = (!empty($dados['senha']) ? Helpers::gerarSenha($dados['senha']) : $usuario->senha);
-                $usuario->level = $dados['level'];
+                $usuario->level = 3;
                 $usuario->status = $dados['status'];
                 $usuario->atualizado_em = date('Y-m-d H:i:s');
 

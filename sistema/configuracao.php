@@ -8,11 +8,11 @@ use sistema\Suporte\XDebug;
 date_default_timezone_set('America/Sao_Paulo');
 
 //informações do sistema
-define('SITE_NOME', 'Modelo');
-define('SITE_DESCRICAO', 'Modelo - Sistema de votação online');
+define('SITE_NOME', 'Votação');
+define('SITE_DESCRICAO', 'Modelos - Sistema de votação online');
 
 //urls do sistema
-define('URL_PRODUCAO', 'https://votar.com.br');
+define('URL_PRODUCAO', 'https://escrever.devmorais.com.br/');
 define('URL_DESENVOLVIMENTO', 'https://votar.test/');
 define('SERVIDORES_LOCAIS', ['localhost',  '127.0.0.1', 'votar.test']);
 
@@ -26,7 +26,7 @@ if (Helpers::localhost()) {
 
     define('URL_SITE', '/');
     define('URL_ADMIN', '/admin/');
-    define('ASAAS_KEY', 'SUA_CHAVE_SANDBOX_AQUI');
+    define('ASAAS_KEY', '$aact_hmlg_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6OmQ3YzMzODg5LTVjMTgtNDBkZS1iNTE0LTQzY2VjMmNhYzNkYjo6JGFhY2hfYjg2ODhhN2YtZDlkYi00OWFiLWEwMjktOWM3NWJkMjRmNDRj');
     define('ASAAS_URL', 'https://sandbox.asaas.com/api/v3');
 } else {
     //dados de acesso ao banco de dados na hospedagem
@@ -37,8 +37,10 @@ if (Helpers::localhost()) {
     define('DB_SENHA', '');
     define('URL_SITE', '/');
     define('URL_ADMIN', '/admin/');
-    define('ASAAS_KEY', 'SUA_CHAVE_PRODUCAO_AQUI');
-    define('ASAAS_URL', 'https://api.asaas.com/v3');
+    // define('ASAAS_KEY', '$aact_prod_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6OjE0NWJmOTIxLTkwYTItNDk5ZS1iN2Q0LTJkZGFjMjY4YTYzNDo6JGFhY2hfZjA3YmRiNjgtOTc4NC00NzkwLWIzZTctYzE2ODY0ZjlmMDA0');
+    // define('ASAAS_URL', 'https://api.asaas.com/v3');
+    define('ASAAS_KEY', '$aact_hmlg_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6OmQ3YzMzODg5LTVjMTgtNDBkZS1iNTE0LTQzY2VjMmNhYzNkYjo6JGFhY2hfYjg2ODhhN2YtZDlkYi00OWFiLWEwMjktOWM3NWJkMjRmNDRj');
+    define('ASAAS_URL', 'https://sandbox.asaas.com/api/v3');
 }
 
 //autenticação do servidor de emails

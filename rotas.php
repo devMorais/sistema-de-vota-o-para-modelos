@@ -13,9 +13,11 @@ try {
     SimpleRouter::get(URL_SITE . 'sobre-nos', 'SiteControlador@sobre');
     SimpleRouter::get(URL_SITE . 'post/{categoria}/{slug}', 'SiteControlador@post');
     SimpleRouter::get(URL_SITE . 'categoria/{slug}/{pagina?}', 'SiteControlador@categoria');
+    SimpleRouter::get(URL_SITE . 'page/{pagina}', 'SiteControlador@index');
     SimpleRouter::post(URL_SITE . 'buscar', 'SiteControlador@buscar');
     SimpleRouter::post(URL_SITE . 'checkout', 'SiteControlador@checkout');
     SimpleRouter::post(URL_SITE . 'pagamento/processar', 'SiteControlador@pagamentoProcessar');
+    SimpleRouter::post(URL_SITE . 'pagamento/verificar', 'SiteControlador@pagamentoVerificar');
     SimpleRouter::get(URL_SITE . '404', 'SiteControlador@erro404');
     SimpleRouter::match(['get', 'post'], URL_SITE . 'contato', 'SiteControlador@contato');
 

@@ -1,101 +1,112 @@
 $(document).ready(function () {
 
-    //    BUSCA
-    $("#busca").keyup(function () {
-        var busca = $(this).val();
-        if (busca.length > 0) {
-            $.ajax({
-                url: $('form').attr('data-url-busca'),
-                method: 'POST',
-                data: {
-                    busca: busca
-                },
-                success: function (resultado) {
-                    if (resultado) {
-                        $('#buscaResultado').html("<div class='card'><div class='card-body'><ul class='list-group list-group-flush'>" + resultado + "</ul></div></div>");
-                    } else {
-                        $('#buscaResultado').html('<div class="alert alert-warning">Nenhum resultado encontrado!</div>');
+    // -------------------------------------------------------------------------
+    // 1. BUSCA AJAX
+    // -------------------------------------------------------------------------
+    if ($("#busca").length) {
+        $("#busca").keyup(function () {
+            var busca = $(this).val();
+            var urlBusca = $('form').attr('data-url-busca');
+
+            if (busca.length > 0 && urlBusca) {
+                $.ajax({
+                    url: urlBusca,
+                    method: 'POST',
+                    data: { busca: busca },
+                    success: function (resultado) {
+                        if (resultado) {
+                            $('#buscaResultado').html("<div class='card'><div class='card-body'><ul class='list-group list-group-flush'>" + resultado + "</ul></div></div>");
+                        } else {
+                            $('#buscaResultado').html('<div class="alert alert-warning">Nenhum resultado encontrado!</div>');
+                        }
                     }
-                }
-            });
-            $('#buscaResultado').show();
-        } else {
-            $('#buscaResultado').hide();
-        }
-    });
-    //    FIM BUSCA
-
-
-
-
+                });
+                $('#buscaResultado').show();
+            } else {
+                $('#buscaResultado').hide();
+            }
+        });
+    }
 });
 
+// -------------------------------------------------------------------------
+// 2. FUNÇÕES AO CARREGAR A PÁGINA (DOM)
+// -------------------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", function () {
+
+    // A. CALCULADORA DO CHECKOUT
+    // ---------------------------------------------------------------------
     const selects = document.querySelectorAll('.qtd-select');
     const totalDisplay = document.getElementById('totalDisplay');
 
-    function calcularTotal() {
-        let totalGeral = 0;
+    if (totalDisplay) {
+        function calcularTotal() {
+            let totalGeral = 0;
+
+            selects.forEach(select => {
+                const quantidade = parseInt(select.value);
+                const card = select.closest('.pacote-card');
+
+                if (quantidade > 0) {
+                    const preco = parseFloat(select.getAttribute('data-preco') || 0);
+                    const taxa = parseFloat(select.getAttribute('data-taxa') || 0);
+                    totalGeral += (preco + taxa) * quantidade;
+
+                    if (card) card.classList.add('ativo');
+                } else {
+                    if (card) card.classList.remove('ativo');
+                }
+            });
+
+            totalDisplay.innerText = totalGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
 
         selects.forEach(select => {
-            const quantidade = parseInt(select.value);
-            const card = select.closest('.pacote-card');
-
-            if (quantidade > 0) {
-                const preco = parseFloat(select.getAttribute('data-preco'));
-                const taxa = parseFloat(select.getAttribute('data-taxa'));
-                totalGeral += (preco + taxa) * quantidade;
-
-                card.classList.add('ativo');
-            } else {
-                card.classList.remove('ativo');
-            }
+            select.addEventListener('change', calcularTotal);
         });
 
-        totalDisplay.innerText = totalGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        calcularTotal();
     }
 
-    selects.forEach(select => {
-        select.addEventListener('change', calcularTotal);
-    });
-
-    // Garante que o total inicial seja calculado ao carregar a página (caso tenha valor pré-selecionado)
-    calcularTotal();
+    // B. HIGHLIGHT JS (Colorir códigos)
+    // ---------------------------------------------------------------------
+    if (typeof hljs !== 'undefined') {
+        document.querySelectorAll('pre').forEach((el) => {
+            hljs.highlightElement(el);
+        });
+    }
 });
 
-
+// -------------------------------------------------------------------------
+// 3. FUNÇÃO DE COPIAR PIX (GLOBAL)
+// -------------------------------------------------------------------------
 function copiarPix() {
     var copyText = document.getElementById("pixCopiaCola");
-    copyText.select();
-    copyText.setSelectionRange(0, 99999);
-    navigator.clipboard.writeText(copyText.value);
-    alert("Código PIX copiado!");
+
+    if (copyText) {
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); // Mobile
+
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(copyText.value).then(mostrarNotificacaoCopia);
+        } else {
+            document.execCommand("copy");
+            mostrarNotificacaoCopia();
+        }
+    }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-document.addEventListener('DOMContentLoaded', (event) => {
-    document.querySelectorAll('pre').forEach((el) => {
-        hljs.highlightElement(el);
-    });
-});
-
+function mostrarNotificacaoCopia() {
+    if (typeof jBox !== 'undefined') {
+        new jBox('Notice', {
+            content: 'Código PIX copiado!',
+            color: 'green',
+            attributes: {
+                x: 'right',
+                y: 'bottom'
+            }
+        });
+    } else {
+        alert("Código PIX copiado!");
+    }
+}

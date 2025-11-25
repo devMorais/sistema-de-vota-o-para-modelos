@@ -2,8 +2,6 @@ $(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip();
     var url = $('table').attr('url');
 
-    console.log(url);
-
     $.extend($.fn.dataTable.defaults, {
         language: {
             url: '//cdn.datatables.net/plug-ins/1.13.3/i18n/pt-BR.json'
@@ -13,6 +11,9 @@ $(document).ready(function () {
         }
     });
 
+    // ---------------------------------------------------------
+    // TABELA CATEGORIAS
+    // ---------------------------------------------------------
     $('#tabelaCategorias').DataTable({
         paging: false,
         columnDefs: [
@@ -24,6 +25,9 @@ $(document).ready(function () {
         order: [[1, 'asc']]
     });
 
+    // ---------------------------------------------------------
+    // TABELA POSTS
+    // ---------------------------------------------------------
     $('#tabelaPosts').DataTable({
         order: [[0, 'desc']],
         processing: true,
@@ -35,7 +39,6 @@ $(document).ready(function () {
                 console.log(xhr, resp, text);
             }
         },
-
         columns: [
             null,
             {
@@ -63,33 +66,22 @@ $(document).ready(function () {
                 data: null,
                 render: function (data, type, row) {
                     var html = '';
-
                     html += ' <a href=" ' + url + '/admin/posts/editar/' + row[0] + ' " tooltip="tooltip" title="Editar"><i class="fa-solid fa-pen m-1"></i></a> ';
-
-                    html += '<a href=" ' + url + '/admin/posts/deletar/' + row[0] + ' "><i class="fa-solid fa-trash m-1" tooltip="tooltip" title="Deletar"></i></a>';
-
+                    html += '<a href="javascript:void(0)" class="btn-deletar" data-url="' + url + '/admin/posts/deletar/' + row[0] + '"><i class="fa-solid fa-trash m-1 text-danger" tooltip="tooltip" title="Deletar"></i></a>';
                     return html;
                 }
             }
         ],
         columnDefs: [
-            {
-                className: 'dt-body-left',
-                targets: [0]
-            },
-            {
-                className: 'dt-center',
-                targets: [1, 2, 3, 4, 5, 6]
-            },
-            {
-                orderable: false,
-                targets: [1, -1]
-            }
-
+            { className: 'dt-body-left', targets: [0] },
+            { className: 'dt-center', targets: [1, 2, 3, 4, 5, 6] },
+            { orderable: false, targets: [1, -1] }
         ]
     });
 
-    //TABELA USUÁRIOS
+    // ---------------------------------------------------------
+    // TABELA USUÁRIOS
+    // ---------------------------------------------------------
     $('#tabelaUsuarios').DataTable({
         order: [[0, 'desc']],
         processing: true,
@@ -101,7 +93,6 @@ $(document).ready(function () {
                 console.log(xhr, resp, text);
             }
         },
-
         columns: [
             null, null, null,
             {
@@ -128,34 +119,22 @@ $(document).ready(function () {
                 data: null,
                 render: function (data, type, row) {
                     var html = '';
-
                     html += ' <a href=" ' + url + '/admin/usuarios/editar/' + row[0] + ' " tooltip="tooltip" title="Editar"><i class="fa-solid fa-pen m-1"></i></a> ';
-
-                    html += '<a href=" ' + url + '/admin/usuarios/deletar/' + row[0] + ' "><i class="fa-solid fa-trash m-1" tooltip="tooltip" title="Deletar"></i></a>';
-
+                    html += '<a href="javascript:void(0)" class="btn-deletar" data-url="' + url + '/admin/usuarios/deletar/' + row[0] + '"><i class="fa-solid fa-trash m-1 text-danger" tooltip="tooltip" title="Deletar"></i></a>';
                     return html;
                 }
             }
         ],
         columnDefs: [
-            {
-                className: 'dt-body-left',
-                targets: [1, 2]
-            },
-            {
-                className: 'dt-center',
-                targets: [3, 4, 5]
-            },
-            {
-                orderable: false,
-                targets: [-1]
-            }
-
+            { className: 'dt-body-left', targets: [1, 2] },
+            { className: 'dt-center', targets: [3, 4, 5] },
+            { orderable: false, targets: [-1] }
         ]
     });
 
-
+    // ---------------------------------------------------------
     // TABELA INGRESSOS
+    // ---------------------------------------------------------
     $('#tabelaIngressos').DataTable({
         order: [[0, 'desc']],
         processing: true,
@@ -203,20 +182,42 @@ $(document).ready(function () {
                 render: function (data, type, row) {
                     var html = '';
                     html += ' <a href=" ' + url + '/admin/ingressos/editar/' + row[0] + ' " tooltip="tooltip" title="Editar"><i class="fa-solid fa-pen m-1"></i></a> ';
-                    html += '<a href=" ' + url + '/admin/ingressos/deletar/' + row[0] + ' "><i class="fa-solid fa-trash m-1" tooltip="tooltip" title="Deletar"></i></a>';
+                    html += '<a href="javascript:void(0)" class="btn-deletar" data-url="' + url + '/admin/ingressos/deletar/' + row[0] + '"><i class="fa-solid fa-trash m-1 text-danger" tooltip="tooltip" title="Deletar"></i></a>';
                     return html;
                 }
             }
         ],
         columnDefs: [
-            {
-                className: 'dt-center',
-                targets: [0, 1, 2, 3, 4, 5, 6]
-            },
-            {
-                orderable: false,
-                targets: [-1]
-            }
+            { className: 'dt-center', targets: [0, 1, 2, 3, 4, 5, 6] },
+            { orderable: false, targets: [-1] }
         ]
+    });
+
+    // ---------------------------------------------------------
+    // LÓGICA DE CONFIRMAÇÃO (JBOX)
+    // ---------------------------------------------------------
+    $('body').on('click', '.btn-deletar', function (e) {
+        e.preventDefault();
+        var urlParaDeletar = $(this).data('url');
+
+        if (!urlParaDeletar) {
+            console.error('URL não encontrada!');
+            return;
+        }
+
+        new jBox('Confirm', {
+            attach: $(this),
+            minWidth: 300,
+            confirmButton: 'Sim, excluir',
+            cancelButton: 'Cancelar',
+            content: 'Você tem certeza que deseja excluir este registro?',
+            closeOnConfirm: false,
+            confirm: function () {
+                window.location.href = urlParaDeletar;
+            },
+            onCloseComplete: function () {
+                this.destroy();
+            }
+        }).open();
     });
 });

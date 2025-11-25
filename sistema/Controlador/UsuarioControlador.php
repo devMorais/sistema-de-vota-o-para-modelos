@@ -10,6 +10,7 @@ use sistema\Suporte\Email;
 
 class UsuarioControlador extends Controlador
 {
+    private static ?UsuarioModelo $usuarioLogado = null;
 
     public function __construct()
     {
@@ -17,17 +18,23 @@ class UsuarioControlador extends Controlador
     }
 
     /**
-     * Busca usuário pela sessão
+     * Busca usuário pela sessão (COM CACHE DE MEMÓRIA)
      * @return UsuarioModelo|null
      */
     public static function usuario(): ?UsuarioModelo
     {
+        if (self::$usuarioLogado) {
+            return self::$usuarioLogado;
+        }
+
         $sessao = new Sessao();
         if (!$sessao->checar('usuarioId')) {
             return null;
         }
 
-        return (new UsuarioModelo())->buscaPorId($sessao->usuarioId);
+        self::$usuarioLogado = (new UsuarioModelo())->buscaPorId($sessao->usuarioId);
+
+        return self::$usuarioLogado;
     }
 
     /**
@@ -72,7 +79,9 @@ class UsuarioControlador extends Controlador
                     } catch (\PHPMailer\PHPMailer\Exception $ex) {
                         $id = $usuario->ultimoId();
                         $usuario = (new UsuarioModelo())->buscaPorId($id);
-                        $usuario->deletar();
+                        if ($usuario) {
+                            $usuario->deletar();
+                        }
 
                         Helpers::json('erro', 'Erro ao enviar e-mail. Tente novamente mais tarde! ' . $ex->getMessage());
                     }
@@ -107,10 +116,13 @@ class UsuarioControlador extends Controlador
 
                     $usuario->senha = Helpers::gerarSenha($dados['senha']);
                     $usuario->status = 1;
-                    $usuario->token = null;
+                    $usuario->token = null; // Limpa o token para não usar de novo
                     $usuario->cadastrado_em = date('Y-m-d H:i:s');
 
                     if ($usuario->salvar()) {
+                        // Logar o usuário automaticamente após confirmar (opcional)
+                        // (new Sessao())->criar('usuarioId', $usuario->id);
+
                         $this->mensagem->sucesso('Cadastrado confirmado com sucesso!')->flash();
                         Helpers::json('redirecionar', Helpers::url());
                     }

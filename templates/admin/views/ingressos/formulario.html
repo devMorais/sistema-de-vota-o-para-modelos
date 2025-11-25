@@ -14,7 +14,7 @@
             </a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">
-            {% if ingresso.id %}Atualizar{%else%}Cadastrar{%endif%}
+            {{ ingresso.id ? 'Atualizar' : 'Cadastrar' }}
         </li>
     </ol>
 </nav>
@@ -24,31 +24,31 @@
 <div class="card border-0 shadow-sm">
     <div class="card-body">
         <form
-            action="{% if ingresso.id %}{{url('admin/ingressos/editar/'~ingresso.id)}}{%else%}{{url('admin/ingressos/cadastrar')}}{%endif%}"
+            action="{{ ingresso.id ? url('admin/ingressos/editar/' ~ ingresso.id) : url('admin/ingressos/cadastrar') }}"
             method="POST" enctype="multipart/form-data">
 
             <div class="mb-3">
                 <label for="titulo" class="form-label">Nome</label>
-                <input type="text" placeholder="1000 Votos" name="titulo" id="titulo" value="{{ingresso.titulo}}"
+                <input type="text" placeholder="Ex: 1000 Votos" name="titulo" id="titulo" value="{{ ingresso.titulo }}"
                     class="form-control">
             </div>
 
             <div class="mb-3">
                 <label for="quantidade" class="form-label">Quantidade</label>
-                <input title="Quantidade" type="text" name="quantidade" id="quantidade"
-                    value="{{formatarNumero(ingresso.quantidade)}}" class="form-control">
+                <input title="Quantidade" placeholder="Ex: 1000" type="text" name="quantidade" id="quantidade"
+                    value="{{ ingresso.quantidade ? formatarNumero(ingresso.quantidade) : '' }}" class="form-control">
             </div>
 
             <div class="mb-3">
                 <label for="valor" class="form-label">Valor</label>
-                <input title="Valor" type="text" name="valor" id="valor" value="{{formatarValor(ingresso.valor)}}"
-                    class="form-control">
+                <input title="Valor" placeholder="Ex: Valor do pacote: 1.000,00" type="text" name="valor" id="valor"
+                    value="{{ ingresso.valor ? formatarValor(ingresso.valor) : '' }}" class="form-control">
             </div>
 
             <div class="mb-3">
                 <label for="taxa" class="form-label">Taxa</label>
-                <input title="Taxa" type="text" name="taxa" id="taxa" value="{{formatarValor(ingresso.taxa)}}"
-                    class="form-control">
+                <input title="Taxa" placeholder="Ex: Taxa do pacote: 150,00" type="text" name="taxa" id="taxa"
+                    value="{{ ingresso.taxa ? formatarValor(ingresso.taxa) : '' }}" class="form-control">
             </div>
 
             <div class="row">
@@ -56,15 +56,15 @@
                     <div class="mb-3">
                         <label for="status" class="form-label">Status</label>
                         <select title="Status" class="form-select" name="status">
-                            <option value="1" {% if ingresso.status=='1' %}selected{%endif%}>Ativo</option>
-                            <option value="0" {% if ingresso.status=='0' %}selected{%endif%}>Inativo</option>
+                            <option value="1" {{ ingresso.status=='1' ? 'selected' : '' }}>Ativo</option>
+                            <option value="0" {{ ingresso.status=='0' ? 'selected' : '' }}>Inativo</option>
                         </select>
                     </div>
                 </div>
             </div>
+
             <div class="d-grid">
-                <input type="submit" class="btn btn-dark"
-                    value="{% if ingresso.id %}Atualizar{%else%}Cadastrar{%endif%}">
+                <input type="submit" class="btn btn-dark" value="{{ ingresso.id ? 'Atualizar' : 'Cadastrar' }}">
             </div>
         </form>
     </div>

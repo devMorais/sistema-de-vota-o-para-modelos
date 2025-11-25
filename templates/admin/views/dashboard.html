@@ -14,100 +14,171 @@
         {{ flash() }}
 
         <div class="row">
-            <div class="col-xl-6 col-xxl-5 mb-4 d-flex">
-                <div class="w-100">
-                    <div class="row">
-                        <!--INICIO POSTS-->
-                        <div class="col-sm-6">
-                            <div class="card border-0 shadow-sm mb-3">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col">
-                                            <h6 class="fw-bold text-secondary">Modelos</h6>
-                                        </div>
-
-                                        <div class="col-auto text-secondary">
-                                            <a href="{{url('admin/posts/cadastrar')}}" tooltip="tooltip"
-                                                title="Cadastrar Post">
-                                                <i class="fa-solid fa-file-pen"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <h1 class="mt-1 mb-3">{{formatarNumero(posts.total)}}</h1>
-
-                                    <div class="row">
-                                        <div class="col-auto">
-                                            <span class="badge text-bg-success bg-opacity-10"> <span
-                                                    class="text-success fw-bold">{{formatarNumero(posts.ativo)}}</span>
-                                                <span class="badge text-secondary">Ativo</span> </span>
-                                        </div>
-                                        <div class="col-auto">
-                                            <span class="badge text-bg-danger bg-opacity-10"> <span
-                                                    class="text-danger fw-bold">{{formatarNumero(posts.inativo)}}</span>
-                                                <span class="badge text-secondary">Inativo</span> </span>
-                                        </div>
-                                    </div>
-
+            <div class="col-12 mb-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm mb-3 h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="fw-bold text-secondary mb-0">Modelos Cadastradas</h6>
+                                    <a href="{{url('admin/posts/cadastrar')}}" class="text-decoration-none"
+                                        tooltip="tooltip" title="Cadastrar Post">
+                                        <i class="fa-solid fa-file-pen text-primary"></i>
+                                    </a>
+                                </div>
+                                <h1 class="mt-2 mb-3 display-6 fw-bold">{{formatarNumero(posts.total)}}</h1>
+                                <div class="d-flex gap-2">
+                                    <span
+                                        class="badge text-bg-success bg-opacity-10 text-success border border-success border-opacity-25">
+                                        {{formatarNumero(posts.ativo)}} Ativas
+                                    </span>
+                                    <span
+                                        class="badge text-bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25">
+                                        {{formatarNumero(posts.inativo)}} Inativas
+                                    </span>
                                 </div>
                             </div>
                         </div>
-                        <!--INICIO ADMIN-->
-                        <div class="col-sm-6">
-                            <div class="card border-0 shadow-sm mb-3">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col">
-                                            <h6 class="fw-bold text-secondary">Admin</h6>
-                                        </div>
+                    </div>
 
-                                        <div class="col-auto text-secondary">
-                                            <i class="fa-solid fa-screwdriver-wrench"></i>
-                                        </div>
-                                    </div>
-                                    <h1 class="mt-1 mb-3">{{usuarios.admin}}</h1>
-
-                                    <div class="row">
-                                        <div class="col-auto">
-                                            <span class="badge text-bg-success bg-opacity-10"> <span
-                                                    class="text-success fw-bold">{{usuarios.adminAtivo}}</span> <span
-                                                    class="badge text-secondary">Ativo</span> </span>
-                                        </div>
-                                        <div class="col-auto">
-                                            <span class="badge text-bg-danger bg-opacity-10"> <span
-                                                    class="text-danger fw-bold">{{usuarios.adminInativo}}</span> <span
-                                                    class="badge text-secondary">Inativo</span> </span>
-                                        </div>
-                                    </div>
-
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm mb-3 h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="fw-bold text-secondary mb-0">Administradores</h6>
+                                    <i class="fa-solid fa-screwdriver-wrench text-muted"></i>
+                                </div>
+                                <h1 class="mt-2 mb-3 display-6 fw-bold">{{usuarios.admin}}</h1>
+                                <div class="d-flex gap-2">
+                                    <span
+                                        class="badge text-bg-success bg-opacity-10 text-success border border-success border-opacity-25">
+                                        {{usuarios.adminAtivo}} Ativos
+                                    </span>
+                                    <span
+                                        class="badge text-bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25">
+                                        {{usuarios.adminInativo}} Inativos
+                                    </span>
                                 </div>
                             </div>
                         </div>
-                        <!--FIM ADMIN-->
-
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="col-xl-6 col-xxl-7 mb-4">
+        <div class="row">
+            <div class="col-12 mb-4">
                 <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center mt-2">
+                    <div
+                        class="card-header bg-white border-0 d-flex justify-content-between align-items-center mt-3 mx-2">
                         <div>
-                            <h6 class="fw-bold text-secondary">
-                                Últimos Cadastros
-                            </h6>
+                            <h5 class="fw-bold text-dark mb-1">
+                                <i class="fa-solid fa-trophy text-warning me-2"></i> Ranking de Votação (Top 5)
+                            </h5>
+                            <p class="text-muted small mb-0">Listando as modelos com maior número de votos confirmados.
+                            </p>
                         </div>
-                        <a href="{{url('admin/posts/cadastrar')}}" class="fs-5" tooltip="tooltip"
-                            title="Cadastrar Post">
-                            <i class="fa-solid fa-circle-plus"></i>
+                    </div>
+                    <div class="card-body p-4">
+                        {% if ranking %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th></th>
+                                        <th width="80px">Foto</th>
+                                        <th>Nome da Modelo</th>
+                                        <th class="text-center">Total de Votos</th>
+                                        <th class="text-end">Arrecadação (Total)</th>
+                                        <th class="text-center">Ação</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for modelo in ranking %}
+                                    <tr>
+                                        <td class="text-center">
+                                            {% if loop.index == 1 %}
+                                            <i class="fa-solid fa-crown text-warning fs-4" title="1º Lugar"></i>
+                                            {% elseif loop.index == 2 %}
+                                            <span class="badge bg-secondary rounded-pill">2º</span>
+                                            {% elseif loop.index == 3 %}
+                                            <span class="badge bg-brown rounded-pill"
+                                                style="background-color: #cd7f32;">3º</span>
+                                            {% else %}
+                                            <span class="fw-bold text-muted">#{{ loop.index }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if modelo.capa %}
+                                            <img src="{{ url('uploads/imagens/thumbs/'~modelo.capa) }}"
+                                                class="rounded-circle border shadow-sm" width="50" height="50"
+                                                style="object-fit: cover;">
+                                            {% else %}
+                                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center text-secondary border"
+                                                style="width: 50px; height: 50px;">
+                                                <i class="fa-solid fa-image"></i>
+                                            </div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold text-dark">{{ modelo.titulo }}</div>
+                                            <small class="text-muted"><i class="fa-solid fa-tag me-1"></i>{{
+                                                modelo.categoria.titulo }}</small>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-primary fs-6 rounded-pill px-4 py-2">
+                                                {{ modelo.votos }} votos
+                                            </span>
+                                        </td>
+                                        <td class="text-end fw-bold text-success">
+                                            R$ {{ modelo.receita|number_format(2, ',', '.') }}
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{{ url('admin/posts/editar/'~modelo.id) }}"
+                                                class="btn btn-sm btn-light border" tooltip="tooltip"
+                                                title="Ver Detalhes">
+                                                <i class="fa-solid fa-eye text-secondary"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info text-center py-5 bg-light border-0">
+                            <i class="fa-solid fa-chart-line fa-3x mb-3 text-info opacity-50"></i><br>
+                            <h6 class="fw-bold text-secondary">Sem dados no momento</h6>
+                            <p class="text-muted small">Assim que os votos forem confirmados, o ranking aparecerá aqui.
+                            </p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div
+                        class="card-header bg-white border-0 d-flex justify-content-between align-items-center mt-2 mx-2">
+                        <h6 class="fw-bold text-secondary mb-0">
+                            <i class="fa-solid fa-clock-rotate-left me-2"></i> Últimos Cadastros
+                        </h6>
+                        <a href="{{url('admin/posts/cadastrar')}}" class="btn btn-sm btn-outline-primary"
+                            tooltip="tooltip" title="Novo Cadastro">
+                            <i class="fa-solid fa-plus me-1"></i> Novo
                         </a>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body p-4">
                         {% if posts.posts %}
                         <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
                                     <tr>
-                                        <th>Nome</th>
+                                        <th class="py-3">Nome / Detalhes</th>
+                                        <th class="text-center">Status</th>
                                         <th class="text-center">Visitas</th>
                                         <th class="text-center">Ação</th>
                                     </tr>
@@ -115,37 +186,54 @@
                                 <tbody>
                                     {% for post in posts.posts %}
                                     <tr>
-                                        <th>
+                                        <td>
+                                            <div class="d-flex align-items-center">
 
-                                            <div>
-                                                <span>
-                                                    {% if post.status == 1 %}
-                                                    <i class="fa-solid fa-circle text-success" tooltip="tooltip"
-                                                        title="Ativo"></i>
+                                                <div class="me-3">
+                                                    {% if post.capa %}
+                                                    <img src="{{ url('uploads/imagens/thumbs/'~post.capa) }}"
+                                                        class="rounded-circle border" width="45" height="45"
+                                                        style="object-fit: cover;">
                                                     {% else %}
-                                                    <i class="fa-solid fa-circle text-danger" tooltip="tooltip"
-                                                        title="Inativo"></i>
+                                                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center text-secondary border"
+                                                        style="width: 45px; height: 45px;">
+                                                        <i class="fa-solid fa-image"></i>
+                                                    </div>
                                                     {% endif %}
-                                                </span>
-                                                {{resumirTexto(post.titulo, 100)}}
+                                                </div>
+
+                                                <div>
+                                                    <div class="fw-bold text-dark">{{resumirTexto(post.titulo, 60)}}
+                                                    </div>
+                                                    <small class="text-muted">
+                                                        Cadastrado <i class="fa-regular fa-clock me-1"></i> {{
+                                                        contarTempo(post.cadastrado_em) }}
+                                                    </small>
+                                                </div>
                                             </div>
-                                            <small class="text-muted fw-normal">
-                                                Escrito por {{post.usuario.nome}} {{ contarTempo(post.cadastrado_em) }}
-                                                {{post.categoria.titulo}}
-                                            </small>
-                                        </th>
-                                        <td class="text-center">{{formatarNumero(post.visitas)}}</td>
+                                        </td>
+
                                         <td class="text-center">
-
-                                            <a href="{{ url('admin/posts/editar/'~post.id) }}" tooltip="tooltip"
+                                            {% if post.status == 1 %}
+                                            <span
+                                                class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill">Ativo</span>
+                                            {% else %}
+                                            <span
+                                                class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 rounded-pill">Inativo</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center text-muted fw-bold">{{formatarNumero(post.visitas)}}</td>
+                                        <td class="text-center">
+                                            <a href="{{ url('admin/posts/editar/'~post.id) }}"
+                                                class="btn btn-sm btn-light text-primary me-1" tooltip="tooltip"
                                                 title="Editar">
-                                                <i class="fa-solid fa-pen m-1"></i>
+                                                <i class="fa-solid fa-pen"></i>
                                             </a>
-                                            <a href="{{ url('admin/posts/deletar/'~post.id) }}" tooltip="tooltip"
+                                            <a href="{{ url('admin/posts/deletar/'~post.id) }}"
+                                                class="btn btn-sm btn-light text-danger" tooltip="tooltip"
                                                 title="Deletar">
-                                                <i class="fa-solid fa-trash m-1"></i>
+                                                <i class="fa-solid fa-trash"></i>
                                             </a>
-
                                         </td>
                                     </tr>
                                     {%endfor%}
@@ -153,15 +241,15 @@
                             </table>
                         </div>
                         {% else %}
-                        <div class="alert alert-warning" role="alert">
-                            Nenhum post cadastrado para exibir!
+                        <div class="alert alert-warning border-0 text-center" role="alert">
+                            Nenhum cadastro recente para exibir!
                         </div>
                         {% endif %}
-
                     </div>
                 </div>
             </div>
         </div>
+
         {% endblock %}
     </main>
     {% include 'rodape.html' %}
