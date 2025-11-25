@@ -16,7 +16,8 @@
         <div class="row">
             <div class="col-12 mb-4">
                 <div class="row">
-                    <div class="col-md-6">
+
+                    <div class="col-md-4">
                         <div class="card border-0 shadow-sm mb-3 h-100">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -41,7 +42,32 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm mb-3 h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="fw-bold text-secondary mb-0">Categorias</h6>
+                                    <a href="{{url('admin/categorias/cadastrar')}}" class="text-decoration-none"
+                                        tooltip="tooltip" title="Nova Categoria">
+                                        <i class="fa-solid fa-layer-group text-warning"></i>
+                                    </a>
+                                </div>
+                                <h1 class="mt-2 mb-3 display-6 fw-bold">{{formatarNumero(categorias.total)}}</h1>
+                                <div class="d-flex gap-2">
+                                    <span
+                                        class="badge text-bg-success bg-opacity-10 text-success border border-success border-opacity-25">
+                                        {{formatarNumero(categorias.categoriasAtiva)}} Ativas
+                                    </span>
+                                    <span
+                                        class="badge text-bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25">
+                                        {{formatarNumero(categorias.categoriasInativa)}} Inativas
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
                         <div class="card border-0 shadow-sm mb-3 h-100">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -62,10 +88,12 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
-
+        {% if rankingPorCategoria %}
+        {% for ranking in rankingPorCategoria %}
         <div class="row">
             <div class="col-12 mb-4">
                 <div class="card border-0 shadow-sm">
@@ -73,30 +101,31 @@
                         class="card-header bg-white border-0 d-flex justify-content-between align-items-center mt-3 mx-2">
                         <div>
                             <h5 class="fw-bold text-dark mb-1">
-                                <i class="fa-solid fa-trophy text-warning me-2"></i> Ranking de Votação (Top 5)
+                                <i class="fa-solid fa-trophy text-warning me-2"></i> Ranking: {{ ranking.titulo }}
                             </h5>
-                            <p class="text-muted small mb-0">Listando as modelos com maior número de votos confirmados.
-                            </p>
+                            <p class="text-muted small mb-0">Top 5 candidatas desta categoria.</p>
                         </div>
                     </div>
                     <div class="card-body p-4">
-                        {% if ranking %}
+                        {% if ranking.candidatas %}
                         <div class="table-responsive">
                             <table class="table table-hover align-middle">
                                 <thead class="table-light">
                                     <tr>
-                                        <th></th>
+                                        <th class="text-center" width="50px">#</th>
                                         <th width="80px">Foto</th>
                                         <th>Nome da Modelo</th>
                                         <th class="text-center">Total de Votos</th>
-                                        <th class="text-end">Arrecadação (Total)</th>
+                                        <th class="text-end text-muted">Bruto</th>
+                                        <th class="text-end">Líquido (Real)</th>
                                         <th class="text-center">Ação</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for modelo in ranking %}
+                                    {% for modelo in ranking.candidatas %}
                                     <tr>
                                         <td class="text-center">
+                                            {% if modelo.votos > 0 %}
                                             {% if loop.index == 1 %}
                                             <i class="fa-solid fa-crown text-warning fs-4" title="1º Lugar"></i>
                                             {% elseif loop.index == 2 %}
@@ -107,7 +136,11 @@
                                             {% else %}
                                             <span class="fw-bold text-muted">#{{ loop.index }}</span>
                                             {% endif %}
+                                            {% else %}
+                                            <span class="text-muted">-</span>
+                                            {% endif %}
                                         </td>
+
                                         <td>
                                             {% if modelo.capa %}
                                             <img src="{{ url('uploads/imagens/thumbs/'~modelo.capa) }}"
@@ -120,19 +153,31 @@
                                             </div>
                                             {% endif %}
                                         </td>
+
                                         <td>
                                             <div class="fw-bold text-dark">{{ modelo.titulo }}</div>
-                                            <small class="text-muted"><i class="fa-solid fa-tag me-1"></i>{{
-                                                modelo.categoria.titulo }}</small>
                                         </td>
+
                                         <td class="text-center">
+                                            {% if modelo.votos > 0 %}
                                             <span class="badge bg-primary fs-6 rounded-pill px-4 py-2">
                                                 {{ modelo.votos }} votos
                                             </span>
+                                            {% else %}
+                                            <span class="badge bg-light text-secondary border rounded-pill px-3">
+                                                0 votos
+                                            </span>
+                                            {% endif %}
                                         </td>
+
+                                        <td class="text-end text-muted">
+                                            <small>R$ {{ modelo.receita|number_format(2, ',', '.') }}</small>
+                                        </td>
+
                                         <td class="text-end fw-bold text-success">
-                                            R$ {{ modelo.receita|number_format(2, ',', '.') }}
+                                            R$ {{ modelo.receita_liquida|number_format(2, ',', '.') }}
                                         </td>
+
                                         <td class="text-center">
                                             <a href="{{ url('admin/posts/editar/'~modelo.id) }}"
                                                 class="btn btn-sm btn-light border" tooltip="tooltip"
@@ -146,17 +191,18 @@
                             </table>
                         </div>
                         {% else %}
-                        <div class="alert alert-info text-center py-5 bg-light border-0">
-                            <i class="fa-solid fa-chart-line fa-3x mb-3 text-info opacity-50"></i><br>
-                            <h6 class="fw-bold text-secondary">Sem dados no momento</h6>
-                            <p class="text-muted small">Assim que os votos forem confirmados, o ranking aparecerá aqui.
-                            </p>
+                        <div class="alert alert-light text-center border py-3">
+                            <small class="text-muted">Nenhuma candidata cadastrada nesta categoria ainda.</small>
                         </div>
                         {% endif %}
                     </div>
                 </div>
             </div>
         </div>
+        {% endfor %}
+        {% else %}
+        <div class="alert alert-info">Nenhuma categoria ativa para exibir o ranking.</div>
+        {% endif %}
 
         <div class="row">
             <div class="col-12 mb-4">

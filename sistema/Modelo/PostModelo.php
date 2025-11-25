@@ -59,7 +59,6 @@ class PostModelo extends Modelo
      */
     public function adicionarVotos(int $quantidade): bool
     {
-        // Garante que temos um ID definido
         if (empty($this->id)) {
             return false;
         }
@@ -94,7 +93,7 @@ class PostModelo extends Modelo
 
         try {
             $stmt = Conexao::getInstancia()->prepare($query);
-            $stmt->bindValue(':valor', $valor); // O PDO trata float/decimal automaticamente
+            $stmt->bindValue(':valor', $valor);
             $stmt->bindValue(':id', $this->id, \PDO::PARAM_INT);
             $stmt->execute();
 

@@ -453,3 +453,189 @@ input[type="file"].form-control-dark:hover::file-selector-button {
 .btn-send:hover {
     background-color: #e0e0e0;
 }
+
+.checkout-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4rem;
+    margin-top: 2rem;
+}
+
+.btn-whatsapp {
+    background-color: #fff;
+    color: #000;
+    font-weight: 600;
+    border-radius: 4px;
+    padding: 10px 30px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    border: none;
+    transition: opacity 0.2s;
+}
+
+.btn-whatsapp:hover {
+    opacity: 0.9;
+}
+
+.mp-banner {
+    background-color: #1a1a1a;
+    color: #aaa;
+    font-size: 0.8rem;
+    padding: 8px 40px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.section-title {
+    font-size: 1.75rem;
+    font-weight: 300;
+    margin-bottom: 2rem;
+    color: #eee;
+}
+
+.form-label {
+    font-size: 0.9rem;
+    color: #ccc;
+    margin-bottom: 0.5rem;
+}
+
+.form-control-dark {
+    background-color: #000;
+    border: 1px solid #333;
+    color: #fff;
+    border-radius: 0px;
+    padding: 12px;
+}
+
+.form-control-dark:focus {
+    background-color: #000;
+    border-color: #fff;
+    color: #fff;
+    box-shadow: none;
+}
+
+.btn-votar {
+    background-color: #fff;
+    color: #000;
+    border-radius: 50px;
+    width: 100%;
+    padding: 15px;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-top: 1.5rem;
+    border: none;
+}
+
+.btn-votar:hover {
+    background-color: #e6e6e6;
+    color: #000;
+    transition: background-color 0.3s ease;
+}
+
+.step-disabled {
+    opacity: 0.3;
+    margin-top: 3rem;
+    font-size: 1.75rem;
+    font-weight: 300;
+}
+
+.summary-box {
+    border: 1px solid #333;
+    background-color: #161616;
+}
+
+.timer-box {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    color: #ddd;
+    text-align: center;
+    padding: 15px;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.summary-content {
+    padding: 20px;
+}
+
+.summary-title {
+    font-size: 1.1rem;
+    color: #ddd;
+    margin-bottom: 5px;
+}
+
+.summary-subtitle {
+    font-size: 0.8rem;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+.coupon-link {
+    display: block;
+    color: #aaa;
+    text-decoration: underline;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.summary-row.total {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #333;
+    font-size: 1.1rem;
+    color: #fff;
+    background-color: #2a2a2a;
+    margin: 0 -20px -20px -20px;
+    padding: 20px;
+}
+
+.payment-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-dark {
+    background-color: #111;
+    border: 1px solid #333;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+.form-control-dark {
+    background-color: #000;
+    border: 1px solid #333;
+    color: #fff;
+    font-family: monospace;
+}
+
+.form-control-dark:focus {
+    background-color: #000;
+    color: #fff;
+    border-color: #555;
+    box-shadow: none;
+}
+
+.jBox-wrapper .jBox-container,
+.jBox-wrapper .jBox-title,
+.jBox-wrapper .jBox-content {
+    background-color: #1e1e1e !important;
+    color: white !important;
+    border-color: #333 !important;
+}
+
+.jBox-overlay {
+    background: rgba(0, 0, 0, 0.9) !important;
+}

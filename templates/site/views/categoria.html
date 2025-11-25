@@ -9,6 +9,31 @@
 <div class="py-4 pb-5">
     <div class="container">
 
+        <div class="row mb-4">
+            <div class="col-12">
+                <nav aria-label="breadcrumb" class="mb-2">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url() }}" class="text-secondary text-decoration-none small">
+                                <i class="fa-solid fa-house me-1"></i>Início
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active text-secondary small" aria-current="page">Categoria</li>
+                    </ol>
+                </nav>
+
+                <div class="border-bottom border-secondary pb-3">
+                    <span class="text-secondary text-uppercase fw-semibold"
+                        style="font-size: 0.75rem; letter-spacing: 1px;">
+                        Visualizando Categoria
+                    </span>
+                    <h2 class="text-white display-6 fw-bold mt-1 mb-0">
+                        {{ categoriaAtual.titulo }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-lg-9 col-md-12 mb-4">
 
@@ -21,7 +46,7 @@
                             <a href="{{ url('uploads/imagens/thumbs/'~post.capa) }}" data-fancybox="gallery"
                                 data-caption="{{ post.titulo }}" class="d-block img-container position-relative">
 
-                                <span class="badge text-bg-secondary position-absolute top-0 start-0 m-3 z-1">
+                                <span class="badge text-bg-secondary position-absolute top-0 start-0 m-3 z-1 shadow-sm">
                                     {{ post.categoria().titulo }}
                                 </span>
 
@@ -59,9 +84,13 @@
                 </div>
 
                 {% else %}
-                <div class="alert alert-dark text-center border-secondary py-5" role="alert">
-                    <i class="fa-solid fa-info-circle fa-2x mb-3 text-secondary"></i>
-                    <p class="text-muted">Nenhum participante cadastrado para exibir!</p>
+                <div class="alert alert-dark text-center border-secondary py-5 mt-3" role="alert">
+                    <i class="fa-solid fa-folder-open fa-3x mb-3 text-secondary opacity-50"></i>
+                    <h4 class="text-white h5">Ops!</h4>
+                    <p class="text-secondary mb-3">Não encontramos participantes nesta categoria no momento.</p>
+                    <a href="{{ url() }}" class="btn btn-outline-light btn-sm">
+                        <i class="fa-solid fa-arrow-left me-2"></i>Voltar para o Início
+                    </a>
                 </div>
                 {% endif %}
             </div>

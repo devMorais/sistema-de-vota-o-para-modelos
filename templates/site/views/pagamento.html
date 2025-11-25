@@ -4,81 +4,25 @@
 {% block rodape %}{% endblock %}
 
 {% block conteudo %}
-
-<style>
-    body {
-        background-color: #000;
-        /* Fundo preto absoluto igual seu site */
-        color: #fff;
-    }
-
-    .payment-container {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .card-dark {
-        background-color: #111;
-        /* Cinza muito escuro */
-        border: 1px solid #333;
-        border-radius: 8px;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
-    }
-
-    .form-control-dark {
-        background-color: #000;
-        border: 1px solid #333;
-        color: #fff;
-        font-family: monospace;
-    }
-
-    .form-control-dark:focus {
-        background-color: #000;
-        color: #fff;
-        border-color: #555;
-        box-shadow: none;
-    }
-
-    /* Estilização Dark para o Modal do jBox */
-    .jBox-wrapper .jBox-container,
-    .jBox-wrapper .jBox-title,
-    .jBox-wrapper .jBox-content {
-        background-color: #1e1e1e !important;
-        color: white !important;
-        border-color: #333 !important;
-    }
-
-    .jBox-overlay {
-        background: rgba(0, 0, 0, 0.9) !important;
-    }
-</style>
-
 <div class="payment-container">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-5 col-lg-4">
-
                 <div class="text-center mb-4">
                     <i class="fa-brands fa-pix text-success fa-3x mb-2"></i>
                     <h4 class="fw-light text-uppercase ls-2">Pagamento</h4>
                 </div>
-
                 <div class="card card-dark p-4 text-center">
-
                     <div class="mb-4">
                         <p class="text-secondary small text-uppercase mb-1">Total a pagar</p>
                         <h1 class="fw-bold text-white">R$ {{ pedido.valor_total|number_format(2, ',', '.') }}</h1>
                     </div>
-
                     <div class="mb-4 d-flex justify-content-center">
                         <div class="bg-white p-2 rounded-1">
                             <img src="data:image/png;base64,{{ imagemQrcode }}" class="img-fluid"
                                 style="max-width: 200px;">
                         </div>
                     </div>
-
                     <div class="input-group mb-3">
                         <input type="text" class="form-control form-control-dark" value="{{ copiaCola }}"
                             id="pixCopiaCola" readonly>
@@ -86,20 +30,16 @@
                             COPIAR
                         </button>
                     </div>
-
                     <div class="mt-4">
                         <div class="spinner-border spinner-border-sm text-success mb-2" role="status"></div>
                         <p class="text-secondary small mb-0">Aguardando confirmação automática...</p>
                     </div>
-
                 </div>
-
                 <div class="text-center mt-4">
                     <a href="{{ url() }}" class="text-secondary text-decoration-none small">
                         <i class="fa-solid fa-arrow-left me-1"></i> Cancelar e Voltar
                     </a>
                 </div>
-
             </div>
         </div>
     </div>

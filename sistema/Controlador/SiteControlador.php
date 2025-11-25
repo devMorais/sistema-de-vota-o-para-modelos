@@ -53,18 +53,22 @@ class SiteControlador extends Controlador
     public function buscar(): void
     {
         $busca = filter_input(INPUT_POST, 'busca', FILTER_DEFAULT);
+
         if (isset($busca)) {
-            // Limitei a 5 resultados para não poluir
-            $posts = (new PostModelo())->busca("status = 1 AND titulo LIKE '%{$busca}%'")->limite(5)->resultado(true);
+            // A Lógica: Busca posts ativos (status=1) ONDE:
+            // O título parece com a busca OU o ID da categoria está na lista de categorias com esse nome
+            $termo = "%{$busca}%";
+            $query = "status = 1 AND (titulo LIKE '{$termo}' OR categoria_id IN (SELECT id FROM categorias WHERE titulo LIKE '{$termo}'))";
+
+            $posts = (new PostModelo())->busca($query)->limite(5)->resultado(true);
 
             if ($posts) {
-                // Início do Card Escuro
                 echo "<div class='list-group'>";
-
                 foreach ($posts as $post) {
                     $imagemUrl = $post->capa ? Helpers::url('uploads/imagens/thumbs/' . $post->capa) : 'https://placehold.co/50';
                     $link = Helpers::url('post/') . $post->categoria()->slug . '/' . $post->slug;
 
+                    // Adicionei a Categoria no visual da busca para ajudar o usuário
                     echo "
                     <a href='{$link}' class='list-group-item list-group-item-action d-flex align-items-center gap-3 bg-dark text-light border-secondary'>
                         <div style='width: 40px; height: 40px; min-width: 40px;'>
@@ -72,7 +76,7 @@ class SiteControlador extends Controlador
                         </div>
                         <div class='flex-grow-1'>
                             <h6 class='mb-0 text-white' style='font-size: 14px;'>{$post->titulo}</h6>
-                            <small class='text-secondary' style='font-size: 11px;'>Ver perfil &rsaquo;</small>
+                            <small class='text-primary' style='font-size: 11px;'>{$post->categoria()->titulo}</small>
                         </div>
                     </a>";
                 }
@@ -138,6 +142,7 @@ class SiteControlador extends Controlador
             'paginacao' => $paginar->renderizar(),
             'paginacaoInfo' => $paginar->info(),
             'categorias' => $this->categorias(),
+            'categoriaAtual' => $categoria
         ]);
     }
 
@@ -294,14 +299,12 @@ class SiteControlador extends Controlador
 
     public function pagamentoVerificar(): void
     {
-        // 1. Recebe o ID do pedido via POST
         $idPedido = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
 
         if (!$idPedido) {
             Helpers::json('erro', 'ID inválido');
         }
 
-        // 2. Busca o pedido no banco
         $pedidoModelo = new PedidoModelo();
         $pedido = $pedidoModelo->buscaPorId($idPedido);
 
@@ -309,37 +312,30 @@ class SiteControlador extends Controlador
             Helpers::json('erro', 'Pedido não encontrado');
         }
 
-        // 3. Se já estiver PAGO, retorna sucesso
         if ($pedido->status == 'PAGO') {
             Helpers::json('pago', 'Pagamento já confirmado');
         }
 
-        // 4. Se estiver AGUARDANDO, consulta o Asaas
         $asaas = new Asaas();
         $cobranca = $asaas->consultarCobranca($pedido->asaas_id);
 
-        // 5. Verifica resposta do Asaas
         if (isset($cobranca->status) && ($cobranca->status == 'RECEIVED' || $cobranca->status == 'CONFIRMED')) {
 
             $pdo = Conexao::getInstancia();
             $pdo->beginTransaction();
 
             try {
-                // 1. Atualiza o Pedido para PAGO
                 $stmtPedido = $pdo->prepare("UPDATE pedidos SET status = 'PAGO', pago_em = NOW() WHERE id = :id");
                 $stmtPedido->bindValue(':id', $pedido->id);
                 $stmtPedido->execute();
 
-                // Instancia o modelo do Post (Candidata)
                 $post = new PostModelo();
                 $post->id = $pedido->post_id;
 
-                // 2. Atualiza os Votos (Soma segura)
                 if (!$post->adicionarVotos($pedido->total_votos)) {
                     throw new \Exception("Erro ao somar votos");
                 }
 
-                // 3. Atualiza a Receita Financeira (NOVO - Soma segura)
                 if (!$post->adicionarReceita((float)$pedido->valor_total)) {
                     throw new \Exception("Erro ao somar receita");
                 }
