@@ -194,6 +194,66 @@ $(document).ready(function () {
     });
 
     // ---------------------------------------------------------
+    // TABELA PEDIDOS
+    // ---------------------------------------------------------
+    $('#tabelaPedidos').DataTable({
+        order: [[0, 'desc']],
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: url + '/admin/pedidos/datatable',
+            type: 'POST',
+            error: function (xhr, resp, text) {
+                console.log(xhr, resp, text);
+            }
+        },
+        columns: [
+            { data: 0 }, // ID
+            { data: 1 }, // Nome
+            { data: 2 }, // CPF (Novo)
+            {
+                data: null, // Subtotal (Novo)
+                render: function (data, type, row) {
+                    return 'R$ ' + row[3];
+                }
+            },
+            {
+                data: null, // Taxa (Novo)
+                render: function (data, type, row) {
+                    return '<span class="text-danger small">R$ ' + row[4] + '</span>';
+                }
+            },
+            {
+                data: null, // Total
+                render: function (data, type, row) {
+                    return '<strong>R$ ' + row[5] + '</strong>';
+                }
+            },
+            {
+                data: null, // Status
+                render: function (data, type, row) {
+                    var status = row[6];
+                    if (status === 'PAGO') {
+                        return '<span class="badge bg-success">PAGO</span>';
+                    } else if (status === 'AGUARDANDO') {
+                        return '<span class="badge bg-warning text-dark">AGUARDANDO</span>';
+                    } else if (status === 'ERRO') {
+                        return '<span class="badge bg-danger">ERRO</span>';
+                    } else {
+                        return '<span class="badge bg-secondary">' + status + '</span>';
+                    }
+                }
+            },
+            { data: 7 }, // Data
+            { data: 8 }  // Ação (Botão)
+        ],
+        columnDefs: [
+            { className: 'dt-center', targets: [0, 2, 3, 4, 5, 6, 7, 8] }, // Centraliza quase tudo
+            { orderable: false, targets: [-1] }
+        ]
+    });
+
+    // ---------------------------------------------------------
     // LÓGICA DE CONFIRMAÇÃO (JBOX)
     // ---------------------------------------------------------
     $('body').on('click', '.btn-deletar', function (e) {

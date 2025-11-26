@@ -23,7 +23,8 @@ class Asaas
         $clienteId = $this->obterIdCliente(
             $dadosCliente['nome'],
             $dadosCliente['cpf'],
-            $dadosCliente['email']
+            $dadosCliente['email'],
+            $dadosCliente['telefone'] ?? null
         );
 
         if (!$clienteId) {
@@ -34,7 +35,7 @@ class Asaas
             'customer' => $clienteId,
             'billingType' => 'PIX',
             'value' => $valor,
-            'dueDate' => date('Y-m-d'),
+            'dueDate' => date('Y-m-d', strtotime('+2 days')),
             'description' => $descricao,
             'externalReference' => $referenciaExterna
         ];
@@ -59,7 +60,7 @@ class Asaas
     /**
      * Verifica se o cliente já existe pelo CPF, se não, cria um novo.
      */
-    private function obterIdCliente($nome, $cpf, $email)
+    private function obterIdCliente($nome, $cpf, $email, $telefone = null)
     {
         $cpfLimpo = Helpers::limparNumero($cpf);
         $busca = $this->get("/customers?cpfCnpj={$cpfLimpo}");
@@ -71,7 +72,8 @@ class Asaas
         $novoCliente = [
             'name' => $nome,
             'cpfCnpj' => $cpfLimpo,
-            'email' => $email
+            'email' => $email,
+            'mobilePhone' => $telefone
         ];
 
         $criacao = $this->post('/customers', $novoCliente);

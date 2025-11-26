@@ -56,6 +56,13 @@
                         placeholder="seu@email.com" required>
                 </div>
 
+                <div class="mb-4">
+                    <label class="form-label">*Celular / WhatsApp</label>
+                    <input type="text" name="telefone" value="{{ form.telefone }}"
+                        class="form-control form-control-dark" placeholder="(00) 00000-0000" required maxlength="15"
+                        id="telefoneInput">
+                </div>
+
                 <button type="submit" class="btn btn-votar">
                     <i class="fa-brands fa-pix me-2"></i> Gerar PIX e Finalizar
                 </button>

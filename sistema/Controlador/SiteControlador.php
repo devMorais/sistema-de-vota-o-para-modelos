@@ -301,6 +301,7 @@ class SiteControlador extends Controlador
         $pedido->cliente_nome = $dados['nome'] . ' ' . $dados['sobrenome'];
         $pedido->cliente_cpf = preg_replace('/[^0-9]/', '', $dados['cpf']);
         $pedido->cliente_email = $dados['email'];
+        $pedido->cliente_telefone = preg_replace('/[^0-9]/', '', $dados['telefone']);
         $pedido->status = 'AGUARDANDO';
 
         if (!$pedido->salvar()) {
@@ -318,7 +319,8 @@ class SiteControlador extends Controlador
             [
                 'nome' => $pedido->cliente_nome,
                 'cpf' => $pedido->cliente_cpf,
-                'email' => $pedido->cliente_email
+                'email' => $pedido->cliente_email,
+                'telefone' => $pedido->cliente_telefone
             ],
             (float) $pedido->valor_total,
             "Votos para " . $dados['post_titulo'],
@@ -438,6 +440,49 @@ class SiteControlador extends Controlador
         }
     }
 
+    public function webhook(): void
+    {
+        $json = file_get_contents('php://input');
+        $dados = json_decode($json, true);
+        
+        if (isset($dados['event']) && ($dados['event'] == 'PAYMENT_CONFIRMED' || $dados['event'] == 'PAYMENT_RECEIVED')) {
+            $pagamento = $dados['payment'];
+            $idTransacaoAsaas = $pagamento['id'];
+            $pedidoModelo = new PedidoModelo();
+            $pedidos = $pedidoModelo->busca("asaas_id = :id", "id={$idTransacaoAsaas}")->resultado(true);
+
+            if ($pedidos) {
+                $pedido = $pedidos[0];
+                if ($pedido->status != 'PAGO') {
+                    $pdo = Conexao::getInstancia();
+                    $pdo->beginTransaction();
+
+                    try {
+                        $stmt = $pdo->prepare("UPDATE pedidos SET status = 'PAGO', pago_em = NOW() WHERE id = :id");
+                        $stmt->bindValue(':id', $pedido->id);
+                        $stmt->execute();
+                        $post = new PostModelo();
+                        $post->id = $pedido->post_id;
+
+                        $post->adicionarVotos($pedido->total_votos);
+                        $post->adicionarReceita((float)$pedido->valor_total);
+
+                        $pdo->commit();
+                        http_response_code(200);
+                        echo json_encode(['status' => 'sucesso']);
+                    } catch (\Exception $e) {
+                        $pdo->rollBack();
+                        http_response_code(500);
+                    }
+                } else {
+                    http_response_code(200);
+                }
+            }
+        } else {
+            http_response_code(200);
+        }
+    }
+
     public function contato(): void
     {
         $dados = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
@@ -495,12 +540,12 @@ class SiteControlador extends Controlador
      */
     private function validarDadosPagamento(?array $dados): bool
     {
-        if (!$dados || !isset($dados['post_id']) || !isset($dados['cpf']) || !isset($dados['email'])) {
+        if (!$dados || !isset($dados['post_id']) || !isset($dados['cpf']) || !isset($dados['email']) || !isset($dados['telefone'])) {
             $this->mensagem->alerta('Dados incompletos. Tente novamente.')->flash();
             return false;
         }
 
-        if (empty($dados['nome']) || empty($dados['sobrenome']) || empty($dados['cpf'])) {
+        if (empty($dados['nome']) || empty($dados['sobrenome']) || empty($dados['cpf']) || empty($dados['telefone'])) {
             $this->mensagem->erro('Por favor, preencha todos os campos obrigatórios.')->flash();
             return false;
         }
@@ -518,6 +563,12 @@ class SiteControlador extends Controlador
 
         if (!isset($dados['valor_total']) || (float)$dados['valor_total'] <= 0 || (int)$dados['total_votos'] <= 0) {
             $this->mensagem->erro('Erro nos valores do pedido. Tente novamente.')->flash();
+            return false;
+        }
+
+        $telefoneLimpo = preg_replace('/[^0-9]/', '', $dados['telefone']);
+        if (strlen($telefoneLimpo) < 10) {
+            $this->mensagem->erro('O telefone informado é inválido.')->flash();
             return false;
         }
 

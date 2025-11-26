@@ -21,6 +21,7 @@ try {
     SimpleRouter::get(URL_SITE . 'pagamento/{id}', 'SiteControlador@pagamento');
     SimpleRouter::get(URL_SITE . '404', 'SiteControlador@erro404');
     SimpleRouter::match(['get', 'post'], URL_SITE . 'contato', 'SiteControlador@contato');
+    SimpleRouter::post(URL_SITE . 'webhook/asaas', 'SiteControlador@webhook');
 
     //USUARIO
     SimpleRouter::match(['get', 'post'], URL_SITE . 'cadastro', 'UsuarioControlador@cadastro');
@@ -68,6 +69,11 @@ try {
         SimpleRouter::match(['get', 'post'], URL_ADMIN . 'ingressos/editar/{id}', 'AdminPacotes@editar');
         SimpleRouter::get(URL_ADMIN . 'ingressos/deletar/{id}', 'AdminPacotes@deletar');
         SimpleRouter::post(URL_ADMIN . 'ingressos/datatable', 'AdminPacotes@datatable');
+
+        // ADMIN PEDIDOS (PAGAMENTOS)
+        SimpleRouter::get(URL_ADMIN . 'pedidos/listar', 'AdminPedidos@listar');
+        SimpleRouter::post(URL_ADMIN . 'pedidos/datatable', 'AdminPedidos@datatable');
+        SimpleRouter::get(URL_ADMIN . 'pedidos/ver/{id}', 'AdminPedidos@ver');
     });
 
     SimpleRouter::start();
