@@ -23,7 +23,6 @@ class SiteControlador extends Controlador
 
     /**
      * Home Page
-     * @return void
      */
     public function index(?int $pagina = null): void
     {
@@ -48,15 +47,12 @@ class SiteControlador extends Controlador
 
     /**
      * Busca posts 
-     * @return void
      */
     public function buscar(): void
     {
         $busca = filter_input(INPUT_POST, 'busca', FILTER_DEFAULT);
 
         if (isset($busca)) {
-            // A Lógica: Busca posts ativos (status=1) ONDE:
-            // O título parece com a busca OU o ID da categoria está na lista de categorias com esse nome
             $termo = "%{$busca}%";
             $query = "status = 1 AND (titulo LIKE '{$termo}' OR categoria_id IN (SELECT id FROM categorias WHERE titulo LIKE '{$termo}'))";
 
@@ -68,7 +64,6 @@ class SiteControlador extends Controlador
                     $imagemUrl = $post->capa ? Helpers::url('uploads/imagens/thumbs/' . $post->capa) : 'https://placehold.co/50';
                     $link = Helpers::url('post/') . $post->categoria()->slug . '/' . $post->slug;
 
-                    // Adicionei a Categoria no visual da busca para ajudar o usuário
                     echo "
                     <a href='{$link}' class='list-group-item list-group-item-action d-flex align-items-center gap-3 bg-dark text-light border-secondary'>
                         <div style='width: 40px; height: 40px; min-width: 40px;'>
@@ -87,9 +82,6 @@ class SiteControlador extends Controlador
 
     /**
      * Busca post por ID
-     * @param string $categoria apenas para o slug da categoria
-     * @param string $slug
-     * @return void
      */
     public function post(string $categoria, string $slug): void
     {
@@ -112,7 +104,6 @@ class SiteControlador extends Controlador
 
     /**
      * Categorias
-     * @return array|null
      */
     public function categorias(): ?array
     {
@@ -121,8 +112,6 @@ class SiteControlador extends Controlador
 
     /**
      * Lista posts por categoria
-     * @param string $slug
-     * @return void
      */
     public function categoria(string $slug, ?int $pagina = null): void
     {
@@ -148,7 +137,6 @@ class SiteControlador extends Controlador
 
     /**
      * Sobre
-     * @return void
      */
     public function sobre(): void
     {
@@ -160,7 +148,6 @@ class SiteControlador extends Controlador
 
     /**
      * ERRO 404
-     * @return void
      */
     public function erro404(): void
     {
@@ -172,7 +159,6 @@ class SiteControlador extends Controlador
 
     /**
      * Processa o pré-checkout e exibe a tela de pagamento
-     * @return void
      */
     public function checkout(): void
     {
@@ -194,6 +180,7 @@ class SiteControlador extends Controlador
         if ($pacotesDb) {
             foreach ($pacotesDb as $pct) {
                 $tabelaPrecos[$pct->quantidade] = [
+                    'id'    => $pct->id,
                     'valor' => $pct->valor,
                     'taxa'  => $pct->taxa
                 ];
@@ -201,9 +188,12 @@ class SiteControlador extends Controlador
         }
 
         $subtotal = 0;
-        $totalTaxas = 0;
+        $taxaUnicaAplicada = 0;
         $totalVotos = 0;
         $itensCarrinho = false;
+
+        $pacoteIdParaSalvar = null;
+        $tiposDiferentesSelecionados = 0;
 
         foreach ($dados['pacotes'] as $tipo => $quantidade) {
             $quantidade = intval($quantidade);
@@ -212,10 +202,16 @@ class SiteControlador extends Controlador
                 $precoUnitario = $tabelaPrecos[$tipo]['valor'];
                 $taxaUnitaria  = $tabelaPrecos[$tipo]['taxa'];
 
-                $subtotal   += $precoUnitario * $quantidade;
-                $totalTaxas += $taxaUnitaria * $quantidade;
-                $totalVotos += $tipo * $quantidade;
+                $pacoteIdParaSalvar = $tabelaPrecos[$tipo]['id'];
+                $tiposDiferentesSelecionados++;
 
+                $subtotal += $precoUnitario * $quantidade;
+
+                if ($taxaUnitaria > $taxaUnicaAplicada) {
+                    $taxaUnicaAplicada = $taxaUnitaria;
+                }
+
+                $totalVotos += $tipo * $quantidade;
                 $itensCarrinho = true;
             }
         }
@@ -225,33 +221,81 @@ class SiteControlador extends Controlador
             return;
         }
 
-        $totalGeral = $subtotal + $totalTaxas;
+        if ($tiposDiferentesSelecionados > 1) {
+            $pacoteIdParaSalvar = null;
+        }
+
+        $totalGeral = $subtotal + $taxaUnicaAplicada;
 
         echo $this->template->renderizar('checkout.html', [
-            'titulo'     => 'Checkout - ' . $post->titulo,
-            'post'       => $post,
-            'totalVotos' => $totalVotos,
-            'subtotal'   => number_format($subtotal, 2, ',', '.'),
-            'totalTaxas' => number_format($totalTaxas, 2, ',', '.'),
-            'totalGeral' => number_format($totalGeral, 2, ',', '.'),
-            'totalFloat' => $totalGeral
+            'titulo'        => 'Checkout - ' . $post->titulo,
+            'post'          => $post,
+            'totalVotos'    => $totalVotos,
+            'subtotal'      => number_format($subtotal, 2, ',', '.'),
+            'totalTaxas'    => number_format($taxaUnicaAplicada, 2, ',', '.'),
+            'totalGeral'    => number_format($totalGeral, 2, ',', '.'),
+            'subtotalFloat' => $subtotal,
+            'taxaFloat'     => $taxaUnicaAplicada,
+            'totalFloat'    => $totalGeral,
+            'pacoteId'      => $pacoteIdParaSalvar
         ]);
     }
 
+    /**
+     * Processa o pagamento e gera o PIX
+     */
     public function pagamentoProcessar(): void
     {
         $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
 
-        if (!isset($dados['post_id']) || !isset($dados['cpf'])) {
-            $this->mensagem->alerta('Dados incompletos. Tente novamente.');
-            Helpers::redirecionar();
-            return;
+        // ---------------------------------------------------------
+        // 1. VALIDAÇÃO (Se der erro, RECARREGA A TELA)
+        // ---------------------------------------------------------
+        if (!$this->validarDadosPagamento($dados)) {
+
+            $post = (new PostModelo())->buscaPorId($dados['post_id']);
+
+            if (!$post) {
+                Helpers::redirecionar();
+                return;
+            }
+
+            // RE-RENDERIZA O CHECKOUT COM OS DADOS E A MENSAGEM DE ERRO
+            echo $this->template->renderizar('checkout.html', [
+                'titulo'        => 'Checkout - ' . $post->titulo,
+                'post'          => $post,
+
+                // Mantém valores ocultos
+                'totalVotos'    => $dados['total_votos'],
+                'pacoteId'      => $dados['pacote_id'] ?? null,
+                'subtotalFloat' => $dados['valor_subtotal'],
+                'taxaFloat'     => $dados['valor_taxa'],
+                'totalFloat'    => $dados['valor_total'],
+
+                // Mantém formatação visual
+                'subtotal'      => number_format((float)$dados['valor_subtotal'], 2, ',', '.'),
+                'totalTaxas'    => number_format((float)$dados['valor_taxa'], 2, ',', '.'),
+                'totalGeral'    => number_format((float)$dados['valor_total'], 2, ',', '.'),
+
+                // Devolve o formulário preenchido
+                'form'          => $dados
+            ]);
+
+            return; // STOP
         }
 
+        // ---------------------------------------------------------
+        // 2. CRIAÇÃO DO PEDIDO
+        // ---------------------------------------------------------
         $pedido = new PedidoModelo();
 
         $pedido->post_id = $dados['post_id'];
-        $pedido->valor_total = $dados['valor_total'];
+        $pedido->pacote_id = !empty($dados['pacote_id']) ? $dados['pacote_id'] : null;
+
+        $pedido->valor_subtotal = $dados['valor_subtotal'];
+        $pedido->valor_taxa     = $dados['valor_taxa'];
+        $pedido->valor_total    = $dados['valor_total'];
+
         $pedido->total_votos = $dados['total_votos'];
 
         $pedido->cliente_nome = $dados['nome'] . ' ' . $dados['sobrenome'];
@@ -260,11 +304,14 @@ class SiteControlador extends Controlador
         $pedido->status = 'AGUARDANDO';
 
         if (!$pedido->salvar()) {
-            $this->mensagem->erro('Erro ao salvar pedido. Tente novamente.');
+            $this->mensagem->erro('Erro ao salvar pedido no banco. Tente novamente.')->flash();
             Helpers::redirecionar();
             return;
         }
 
+        // ---------------------------------------------------------
+        // 3. GERAÇÃO DO PIX NO ASAAS
+        // ---------------------------------------------------------
         $asaas = new Asaas();
 
         $resultado = $asaas->gerarPixVenda(
@@ -278,22 +325,62 @@ class SiteControlador extends Controlador
             $pedido->id
         );
 
+        // --- AQUI ESTÁ A LÓGICA DE ERRO DO ASAAS ---
         if ($resultado['erro']) {
-            $this->mensagem->erro('Erro no Asaas: ' . $resultado['mensagem']);
-            Helpers::redirecionar();
+
+            // 1. Marca o pedido como erro no banco
+            $pedido->status = 'ERRO';
+            $pedido->salvar();
+
+            // 2. Cria a mensagem Flash com o motivo do erro
+            $this->mensagem->erro('Erro no Asaas: ' . $resultado['mensagem'])->flash();
+
+            // 3. Redireciona o usuário de volta para a tela da candidata
+            $post = (new PostModelo())->buscaPorId($dados['post_id']);
+            if ($post) {
+                Helpers::redirecionar('post/' . $post->categoria()->slug . '/' . $post->slug);
+            } else {
+                Helpers::redirecionar();
+            }
+
             return;
         }
+        // -------------------------------------------
 
+        // 4. SUCESSO: ATUALIZA E REDIRECIONA
         $pedido->asaas_id = $resultado['id_transacao'];
         $pedido->pix_qrcode = $resultado['payload'];
         $pedido->pix_img = $resultado['encodedImage'];
         $pedido->salvar();
 
+        // Redireciona para a página de visualização (Evita problema do F5)
+        Helpers::redirecionar('pagamento/' . $pedido->id);
+    }
+
+    /**
+     * Exibe a tela de pagamento de um pedido existente (GET)
+     */
+    public function pagamento(int $idPedido): void
+    {
+        $pedido = (new PedidoModelo())->buscaPorId($idPedido);
+
+        if (!$pedido) {
+            $this->mensagem->alerta('Pedido não encontrado.')->flash();
+            Helpers::redirecionar();
+            return;
+        }
+
+        if (empty($pedido->pix_qrcode)) {
+            $this->mensagem->erro('Este pedido não possui dados de pagamento válidos.')->flash();
+            Helpers::redirecionar();
+            return;
+        }
+
         echo $this->template->renderizar('pagamento.html', [
-            'titulo' => 'Pagamento PIX',
-            'pedido' => $pedido,
-            'copiaCola' => $resultado['payload'],
-            'imagemQrcode' => $resultado['encodedImage']
+            'titulo'       => 'Pagamento PIX',
+            'pedido'       => $pedido,
+            'copiaCola'    => $pedido->pix_qrcode,
+            'imagemQrcode' => $pedido->pix_img
         ]);
     }
 
@@ -351,10 +438,6 @@ class SiteControlador extends Controlador
         }
     }
 
-    /**
-     * Contato
-     * @return void
-     */
     public function contato(): void
     {
         $dados = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
@@ -367,7 +450,6 @@ class SiteControlador extends Controlador
             } else {
                 try {
                     $email = new Email();
-
                     $view = $this->template->renderizar('emails/contato.html', [
                         'dados' => $dados,
                     ]);
@@ -382,7 +464,6 @@ class SiteControlador extends Controlador
                     );
 
                     $anexos = $_FILES['anexos'];
-
                     foreach ($anexos['tmp_name'] as $indice => $anexo) {
                         if (!$anexo == UPLOAD_ERR_OK) {
                             $email->anexar($anexo, $anexos['name'][$indice]);
@@ -401,5 +482,45 @@ class SiteControlador extends Controlador
         echo $this->template->renderizar('contato.html', [
             'categorias' => $this->categorias(),
         ]);
+    }
+
+    // -------------------------------------------------------------------------
+    // MÉTODOS PRIVADOS (VALIDAÇÕES)
+    // -------------------------------------------------------------------------
+
+    /**
+     * Valida os dados submetidos no formulário de pagamento
+     * @param array|null $dados
+     * @return bool
+     */
+    private function validarDadosPagamento(?array $dados): bool
+    {
+        if (!$dados || !isset($dados['post_id']) || !isset($dados['cpf']) || !isset($dados['email'])) {
+            $this->mensagem->alerta('Dados incompletos. Tente novamente.')->flash();
+            return false;
+        }
+
+        if (empty($dados['nome']) || empty($dados['sobrenome']) || empty($dados['cpf'])) {
+            $this->mensagem->erro('Por favor, preencha todos os campos obrigatórios.')->flash();
+            return false;
+        }
+
+        if (!filter_var($dados['email'], FILTER_VALIDATE_EMAIL)) {
+            $this->mensagem->erro('O e-mail informado não é válido.')->flash();
+            return false;
+        }
+
+        $cpfLimpo = preg_replace('/[^0-9]/', '', $dados['cpf']);
+        if (strlen($cpfLimpo) !== 11) {
+            $this->mensagem->erro('O CPF informado é inválido.')->flash();
+            return false;
+        }
+
+        if (!isset($dados['valor_total']) || (float)$dados['valor_total'] <= 0 || (int)$dados['total_votos'] <= 0) {
+            $this->mensagem->erro('Erro nos valores do pedido. Tente novamente.')->flash();
+            return false;
+        }
+
+        return true;
     }
 }

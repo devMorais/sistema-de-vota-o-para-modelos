@@ -87,8 +87,8 @@ class Asaas
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($dados));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, ASAAS_SSL);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, ASAAS_SSL ? 2 : 0);
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Content-Type: application/json',
@@ -108,8 +108,8 @@ class Asaas
         curl_setopt($ch, CURLOPT_URL, $this->url . $endpoint);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, ASAAS_SSL);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, ASAAS_SSL ? 2 : 0);
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Content-Type: application/json',

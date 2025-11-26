@@ -42,7 +42,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (totalDisplay) {
         function calcularTotal() {
-            let totalGeral = 0;
+            let subtotalProdutos = 0;
+            let taxaUnica = 0;
+            let temItemSelecionado = false;
 
             selects.forEach(select => {
                 const quantidade = parseInt(select.value);
@@ -50,14 +52,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 if (quantidade > 0) {
                     const preco = parseFloat(select.getAttribute('data-preco') || 0);
-                    const taxa = parseFloat(select.getAttribute('data-taxa') || 0);
-                    totalGeral += (preco + taxa) * quantidade;
+                    const taxaItem = parseFloat(select.getAttribute('data-taxa') || 0);
 
+                    subtotalProdutos += (preco * quantidade);
+
+                    if (taxaItem > taxaUnica) {
+                        taxaUnica = taxaItem;
+                    }
+
+                    temItemSelecionado = true;
                     if (card) card.classList.add('ativo');
                 } else {
                     if (card) card.classList.remove('ativo');
                 }
             });
+
+            let totalGeral = temItemSelecionado ? (subtotalProdutos + taxaUnica) : 0;
 
             totalDisplay.innerText = totalGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }

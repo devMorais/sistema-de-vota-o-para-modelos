@@ -18,6 +18,7 @@ try {
     SimpleRouter::post(URL_SITE . 'checkout', 'SiteControlador@checkout');
     SimpleRouter::post(URL_SITE . 'pagamento/processar', 'SiteControlador@pagamentoProcessar');
     SimpleRouter::post(URL_SITE . 'pagamento/verificar', 'SiteControlador@pagamentoVerificar');
+    SimpleRouter::get(URL_SITE . 'pagamento/{id}', 'SiteControlador@pagamento');
     SimpleRouter::get(URL_SITE . '404', 'SiteControlador@erro404');
     SimpleRouter::match(['get', 'post'], URL_SITE . 'contato', 'SiteControlador@contato');
 

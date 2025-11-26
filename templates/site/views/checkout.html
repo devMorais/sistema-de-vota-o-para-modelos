@@ -6,6 +6,9 @@
 {% block conteudo %}
 
 <div class="container mb-5">
+    <div class="mt-4">
+        {{ flash() }}
+    </div>
     <div class="checkout-header">
         <button class="btn-whatsapp">
             Peça Ajuda pelo WhatsApp - CLIQUE AQUI
@@ -20,31 +23,37 @@
 
                 <input type="hidden" name="post_id" value="{{ post.id }}">
                 <input type="hidden" name="post_titulo" value="{{ post.titulo }}">
+
                 <input type="hidden" name="valor_total" value="{{ totalFloat }}">
+                <input type="hidden" name="valor_subtotal" value="{{ subtotalFloat }}">
+                <input type="hidden" name="valor_taxa" value="{{ taxaFloat }}">
+
                 <input type="hidden" name="total_votos" value="{{ totalVotos }}">
+                <input type="hidden" name="pacote_id" value="{{ pacoteId }}">
+
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
                         <label class="form-label">*Nome</label>
-                        <input type="text" name="nome" class="form-control form-control-dark" placeholder="Seu nome"
-                            required>
+                        <input type="text" name="nome" value="{{ form.nome }}" class="form-control form-control-dark"
+                            placeholder="Seu nome" required>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">*Sobrenome</label>
-                        <input type="text" name="sobrenome" class="form-control form-control-dark"
-                            placeholder="Seu sobrenome" required>
+                        <input type="text" name="sobrenome" value="{{ form.sobrenome }}"
+                            class="form-control form-control-dark" placeholder="Seu sobrenome" required>
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">*CPF (Obrigatório para o PIX)</label>
-                    <input type="text" name="cpf" class="form-control form-control-dark" placeholder="000.000.000-00"
-                        required maxlength="14">
+                    <input type="text" name="cpf" value="{{ form.cpf }}" class="form-control form-control-dark"
+                        placeholder="000.000.000-00" required maxlength="14">
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label">*Email</label>
-                    <input type="email" name="email" class="form-control form-control-dark" placeholder="seu@email.com"
-                        required>
+                    <input type="email" name="email" value="{{ form.email }}" class="form-control form-control-dark"
+                        placeholder="seu@email.com" required>
                 </div>
 
                 <button type="submit" class="btn btn-votar">

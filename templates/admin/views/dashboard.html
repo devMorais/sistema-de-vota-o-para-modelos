@@ -117,7 +117,7 @@
                                         <th>Nome da Modelo</th>
                                         <th class="text-center">Total de Votos</th>
                                         <th class="text-end text-muted">Bruto</th>
-                                        <th class="text-end">Líquido (Real)</th>
+                                        <!-- <th class="text-end">Líquido (Real)</th> -->
                                         <th class="text-center">Ação</th>
                                     </tr>
                                 </thead>
@@ -174,9 +174,9 @@
                                             <small>R$ {{ modelo.receita|number_format(2, ',', '.') }}</small>
                                         </td>
 
-                                        <td class="text-end fw-bold text-success">
+                                        <!-- <td class="text-end fw-bold text-success">
                                             R$ {{ modelo.receita_liquida|number_format(2, ',', '.') }}
-                                        </td>
+                                        </td> -->
 
                                         <td class="text-center">
                                             <a href="{{ url('admin/posts/editar/'~modelo.id) }}"
