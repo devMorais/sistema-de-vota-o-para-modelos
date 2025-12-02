@@ -22,7 +22,7 @@
                                 data-caption="{{ post.titulo }}" class="d-block img-container position-relative">
 
                                 <span class="badge text-bg-secondary position-absolute top-0 start-0 m-3 z-1">
-                                    {{ post.categoria().titulo }}
+                                    {{ post.categoria().titulo|raw }}
                                 </span>
 
                                 {% if post.capa %}
@@ -38,7 +38,7 @@
                             </a>
 
                             <div class="card-info d-flex flex-column h-100">
-                                <h5 class="candidate-name mb-3">{{ resumirTexto(post.titulo, 25) }}</h5>
+                                <h5 class="candidate-name mb-3">{{ resumirTexto(post.titulo, 25)|raw }}</h5>
 
                                 <div class="mt-auto w-100">
                                     <a href="{{url('post/'~post.categoria.slug~'/'~post.slug)}}" class="btn-vote w-100">

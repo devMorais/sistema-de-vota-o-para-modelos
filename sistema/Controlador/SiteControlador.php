@@ -21,6 +21,17 @@ class SiteControlador extends Controlador
         parent::__construct('templates/site/views');
     }
 
+
+    /**
+     * Landing Page (Capa do Site)
+     */
+    public function landing(): void
+    {
+        echo $this->template->renderizar('landing.html', [
+            // Se precisar passar alguma variavel global, passe aqui
+        ]);
+    }
+
     /**
      * Home Page
      */
@@ -291,7 +302,7 @@ class SiteControlador extends Controlador
         $pedido->cliente_email = null;
         // $pedido->cliente_telefone = preg_replace('/[^0-9]/', '', $dados['telefone']);
         $pedido->cliente_telefone = null;
-        $pedido->status = 'AGUARDANDO';
+        // $pedido->status = 'AGUARDANDO';
 
         if (!$pedido->salvar()) {
             $this->mensagem->erro('Erro ao salvar pedido no banco. Tente novamente.')->flash();
