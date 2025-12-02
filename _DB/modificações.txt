@@ -1,0 +1,11 @@
+1 - Ordenar de forma alfabetica ok
+2 - verificar quais campos são obrigatorios no checkout
+  Nome - CPF 
+  
+3 - Criar tela de impacto
+4 - Na tela da modelo, colocar também a historia dela
+6 - na categoria mudar o editor 
+7 - mostrar também a historia do concurso/categoria
+8 - colocar numero dinamico
+
+votepelasuamis.com.br

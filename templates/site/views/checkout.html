@@ -31,36 +31,16 @@
                 <input type="hidden" name="total_votos" value="{{ totalVotos }}">
                 <input type="hidden" name="pacote_id" value="{{ pacoteId }}">
 
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">*Nome</label>
-                        <input type="text" name="nome" value="{{ form.nome }}" class="form-control form-control-dark"
-                            placeholder="Seu nome" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">*Sobrenome</label>
-                        <input type="text" name="sobrenome" value="{{ form.sobrenome }}"
-                            class="form-control form-control-dark" placeholder="Seu sobrenome" required>
-                    </div>
+                <div class="mb-3">
+                    <label class="form-label">*Nome</label>
+                    <input type="text" name="nome" value="{{ form.nome }}" class="form-control form-control-dark"
+                        placeholder="Seu nome completo" required>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">*CPF (Obrigatório para o PIX)</label>
                     <input type="text" name="cpf" value="{{ form.cpf }}" class="form-control form-control-dark"
                         placeholder="000.000.000-00" required maxlength="14">
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label">*Email</label>
-                    <input type="email" name="email" value="{{ form.email }}" class="form-control form-control-dark"
-                        placeholder="seu@email.com" required>
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label">*Celular / WhatsApp</label>
-                    <input type="text" name="telefone" value="{{ form.telefone }}"
-                        class="form-control form-control-dark" placeholder="(00) 00000-0000" required maxlength="15"
-                        id="telefoneInput">
                 </div>
 
                 <button type="submit" class="btn btn-votar">

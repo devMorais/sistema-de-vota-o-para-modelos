@@ -366,35 +366,30 @@ footer.footer-dark a:hover {
     filter: invert(1) grayscale(100%) brightness(200%);
 }
 
-/* --- INPUTS DARK (CORREÇÃO DOS LABELS) --- */
 .form-floating>.form-control-dark {
-    background-color: #050505;
+    background-color: #222222;
     border: 1px solid #333;
     color: #fff;
     border-radius: 6px;
 }
 
 .form-floating>.form-control-dark:focus {
-    background-color: #050505;
+    background-color: #222222;
     border-color: #fff;
     color: #fff;
     box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1);
 }
 
-/* CORREÇÃO 1: Remove o fundo branco do label que cortava a borda */
+
 .form-floating>label {
-    color: #888;
+    color: #b2b2b2;
     background-color: transparent !important;
-    /* O segredo é a transparência */
 }
 
-/* Cor do label quando focado ou com texto */
 .form-floating>.form-control-dark:focus~label,
 .form-floating>.form-control-dark:not(:placeholder-shown)~label {
     color: #ccc;
     background-color: transparent !important;
-    /* Opcional: adicionar um backdrop-filter se o texto ficar ruim de ler sobre a borda, 
-           mas no preto sólido o transparente resolve */
 }
 
 /* Correção do Autocomplete amarelo do Chrome */
@@ -404,15 +399,12 @@ footer.footer-dark a:hover {
     transition: background-color 5000s ease-in-out 0s;
 }
 
-/* --- CORREÇÃO 2: INPUT DE ARQUIVO TOTALMENTE ESCURO --- */
 
-/* A label "Anexos" do lado esquerdo */
 .input-group-text-dark {
     background-color: #1a1a1a;
     border: 1px solid #333;
     color: #ccc;
     border-right: none;
-    /* Remove a borda para unir com o input */
 }
 
 /* O campo do arquivo em si */

@@ -32,7 +32,7 @@ class SiteControlador extends Controlador
         $total = $postModelo->busca("status = :s", "s=1")->total();
         $paginar = new Paginar(Helpers::url('page'), $pagina, 24, 3, $total);
         $postsParaCards = $postModelo->busca("status = 1")
-            ->ordem('id DESC')
+            ->ordem('titulo ASC')
             ->limite($paginar->limite())
             ->offset($paginar->offset())
             ->resultado(true);
@@ -248,9 +248,6 @@ class SiteControlador extends Controlador
     {
         $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
 
-        // ---------------------------------------------------------
-        // 1. VALIDAÇÃO (Se der erro, RECARREGA A TELA)
-        // ---------------------------------------------------------
         if (!$this->validarDadosPagamento($dados)) {
 
             $post = (new PostModelo())->buscaPorId($dados['post_id']);
@@ -260,33 +257,23 @@ class SiteControlador extends Controlador
                 return;
             }
 
-            // RE-RENDERIZA O CHECKOUT COM OS DADOS E A MENSAGEM DE ERRO
             echo $this->template->renderizar('checkout.html', [
                 'titulo'        => 'Checkout - ' . $post->titulo,
                 'post'          => $post,
-
-                // Mantém valores ocultos
                 'totalVotos'    => $dados['total_votos'],
                 'pacoteId'      => $dados['pacote_id'] ?? null,
                 'subtotalFloat' => $dados['valor_subtotal'],
                 'taxaFloat'     => $dados['valor_taxa'],
                 'totalFloat'    => $dados['valor_total'],
-
-                // Mantém formatação visual
                 'subtotal'      => number_format((float)$dados['valor_subtotal'], 2, ',', '.'),
                 'totalTaxas'    => number_format((float)$dados['valor_taxa'], 2, ',', '.'),
                 'totalGeral'    => number_format((float)$dados['valor_total'], 2, ',', '.'),
-
-                // Devolve o formulário preenchido
                 'form'          => $dados
             ]);
 
-            return; // STOP
+            return;
         }
 
-        // ---------------------------------------------------------
-        // 2. CRIAÇÃO DO PEDIDO
-        // ---------------------------------------------------------
         $pedido = new PedidoModelo();
 
         $pedido->post_id = $dados['post_id'];
@@ -298,10 +285,12 @@ class SiteControlador extends Controlador
 
         $pedido->total_votos = $dados['total_votos'];
 
-        $pedido->cliente_nome = $dados['nome'] . ' ' . $dados['sobrenome'];
+        $pedido->cliente_nome = $dados['nome'];
         $pedido->cliente_cpf = preg_replace('/[^0-9]/', '', $dados['cpf']);
-        $pedido->cliente_email = $dados['email'];
-        $pedido->cliente_telefone = preg_replace('/[^0-9]/', '', $dados['telefone']);
+        // $pedido->cliente_email = $dados['email'];
+        $pedido->cliente_email = null;
+        // $pedido->cliente_telefone = preg_replace('/[^0-9]/', '', $dados['telefone']);
+        $pedido->cliente_telefone = null;
         $pedido->status = 'AGUARDANDO';
 
         if (!$pedido->salvar()) {
@@ -310,9 +299,6 @@ class SiteControlador extends Controlador
             return;
         }
 
-        // ---------------------------------------------------------
-        // 3. GERAÇÃO DO PIX NO ASAAS
-        // ---------------------------------------------------------
         $asaas = new Asaas();
 
         $resultado = $asaas->gerarPixVenda(
@@ -327,17 +313,11 @@ class SiteControlador extends Controlador
             $pedido->id
         );
 
-        // --- AQUI ESTÁ A LÓGICA DE ERRO DO ASAAS ---
         if ($resultado['erro']) {
-
-            // 1. Marca o pedido como erro no banco
             $pedido->status = 'ERRO';
             $pedido->salvar();
 
-            // 2. Cria a mensagem Flash com o motivo do erro
             $this->mensagem->erro('Erro no Asaas: ' . $resultado['mensagem'])->flash();
-
-            // 3. Redireciona o usuário de volta para a tela da candidata
             $post = (new PostModelo())->buscaPorId($dados['post_id']);
             if ($post) {
                 Helpers::redirecionar('post/' . $post->categoria()->slug . '/' . $post->slug);
@@ -347,9 +327,7 @@ class SiteControlador extends Controlador
 
             return;
         }
-        // -------------------------------------------
 
-        // 4. SUCESSO: ATUALIZA E REDIRECIONA
         $pedido->asaas_id = $resultado['id_transacao'];
         $pedido->pix_qrcode = $resultado['payload'];
         $pedido->pix_img = $resultado['encodedImage'];
@@ -444,7 +422,7 @@ class SiteControlador extends Controlador
     {
         $json = file_get_contents('php://input');
         $dados = json_decode($json, true);
-        
+
         if (isset($dados['event']) && ($dados['event'] == 'PAYMENT_CONFIRMED' || $dados['event'] == 'PAYMENT_RECEIVED')) {
             $pagamento = $dados['payment'];
             $idTransacaoAsaas = $pagamento['id'];
@@ -529,10 +507,6 @@ class SiteControlador extends Controlador
         ]);
     }
 
-    // -------------------------------------------------------------------------
-    // MÉTODOS PRIVADOS (VALIDAÇÕES)
-    // -------------------------------------------------------------------------
-
     /**
      * Valida os dados submetidos no formulário de pagamento
      * @param array|null $dados
@@ -540,18 +514,13 @@ class SiteControlador extends Controlador
      */
     private function validarDadosPagamento(?array $dados): bool
     {
-        if (!$dados || !isset($dados['post_id']) || !isset($dados['cpf']) || !isset($dados['email']) || !isset($dados['telefone'])) {
+        if (!$dados || !isset($dados['post_id']) || !isset($dados['cpf'])) {
             $this->mensagem->alerta('Dados incompletos. Tente novamente.')->flash();
             return false;
         }
 
-        if (empty($dados['nome']) || empty($dados['sobrenome']) || empty($dados['cpf']) || empty($dados['telefone'])) {
+        if (empty($dados['nome'])) {
             $this->mensagem->erro('Por favor, preencha todos os campos obrigatórios.')->flash();
-            return false;
-        }
-
-        if (!filter_var($dados['email'], FILTER_VALIDATE_EMAIL)) {
-            $this->mensagem->erro('O e-mail informado não é válido.')->flash();
             return false;
         }
 
@@ -563,12 +532,6 @@ class SiteControlador extends Controlador
 
         if (!isset($dados['valor_total']) || (float)$dados['valor_total'] <= 0 || (int)$dados['total_votos'] <= 0) {
             $this->mensagem->erro('Erro nos valores do pedido. Tente novamente.')->flash();
-            return false;
-        }
-
-        $telefoneLimpo = preg_replace('/[^0-9]/', '', $dados['telefone']);
-        if (strlen($telefoneLimpo) < 10) {
-            $this->mensagem->erro('O telefone informado é inválido.')->flash();
             return false;
         }
 
