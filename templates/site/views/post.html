@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block topo %}{% endblock %}
+{% block rodape %}{% endblock %}
+
+{% block conteudo %}
+<div class="container my-5">
+
+    <div class="card mb-5 bg-dark text-white border-0 rounded-0 overflow-hidden shadow-none">
+        <div class="row g-0 align-items-center">
+            <div class="col-md-6">
+                <a href="{{ url('uploads/imagens/thumbs/'~post.capa) }}" data-fancybox data-caption="{{ post.titulo }}"
+                    class="d-block w-100 h-100 cursor-pointer position-relative group">
+                    <img src="{{ url('uploads/imagens/thumbs/'~post.capa) }}" class="img-fluid w-100 h-100 slide img"
+                        style="object-fit: cover; min-height: 400px;" alt="{{ post.titulo }}">
+                    <div
+                        class="position-absolute top-50 start-50 translate-middle text-white opacity-0 hover-opacity-100 transition-opacity pe-none">
+                        <i class="fa-solid fa-magnifying-glass-plus fa-2x drop-shadow"></i>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6">
+                <div class="card-body p-5 text-center">
+                    <h1 class="display-5 fw-normal mb-3">{{ post.titulo }}</h1>
+                    <p class="lead">
+                        {{ post.texto|raw }}
+                    </p>
+                    <p class="card-text text-light opacity-75 fw-light">
+                        Você pode adicionar quantos votos quiser no seu carrinho, quanto mais votar, maior a chance da
+                        sua participante favorita ganhar!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form action="{{ url('checkout') }}" method="post">
+
+        <input type="hidden" name="post_id" value="{{ post.id }}">
+
+        <div class="lista-pacotes">
+
+            {% if pacotes %}
+            {% for pacote in pacotes %}
+            <div class="pacote-card p-4 d-flex align-items-center">
+                <div class="row w-100 align-items-center g-3">
+                    <div class="col-md-5">
+                        <span class="tipo-ingresso d-block">Tipo de ingresso</span>
+                        <h5 class="mb-0 fw-bold text-white">{{ pacote.titulo }}</h5>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="preco-destaque">R$ {{ pacote.valor|number_format(2, ',', '.') }}</div>
+                        <div class="taxa-text">+R$ {{ pacote.taxa|number_format(2, ',', '.') }} Tax. Banc.</div>
+                    </div>
+                    <div class="col-md-3 text-end input-qtd-wrapper">
+                        <label class="d-block mb-1">Quantidade</label>
+
+                        <select name="pacotes[{{ pacote.quantidade }}]" class="minimal-select qtd-select w-100"
+                            data-preco="{{ pacote.valor }}" data-taxa="{{ pacote.taxa }}">
+                            {% for i in 0..50 %}
+                            <option value="{{ i }}" {% if i==0 %}selected{% endif %}>{{ i }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="alert alert-warning">Nenhum pacote de votos disponível no momento.</div>
+            {% endif %}
+        </div>
+
+        <div class="row mt-5 justify-content-end">
+            <div class="col-md-5 col-lg-4">
+                <div class="d-flex justify-content-between align-items-end text-white mb-3 px-2 total-summary">
+                    <span class="fs-6 text-uppercase ls-1">Total</span>
+                    <span class="fs-2 fw-bold" id="totalDisplay">R$ 0,00</span>
+                </div>
+                <button type="submit" class="btn checkout-button w-100 py-3 fw-bold text-uppercase">
+                    Checkout <i class="fa-solid fa-arrow-right ms-2"></i>
+                </button>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block topo %}{% endblock %}
+{% block rodape %}{% endblock %}
+
+{% block conteudo %}
+<div class="payment-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-4">
+                <div class="text-center mb-4">
+                    <i class="fa-brands fa-pix text-success fa-3x mb-2"></i>
+                    <h4 class="fw-light text-uppercase ls-2">Pagamento</h4>
+                </div>
+                <div class="card card-dark p-4 text-center">
+                    <div class="mb-4">
+                        <p class="text-secondary small text-uppercase mb-1">Total a pagar</p>
+                        <h1 class="fw-bold text-white">R$ {{ pedido.valor_total|number_format(2, ',', '.') }}</h1>
+                    </div>
+                    <div class="mb-4 d-flex justify-content-center">
+                        <div class="bg-white p-2 rounded-1">
+                            <img src="data:image/png;base64,{{ imagemQrcode }}" class="img-fluid"
+                                style="max-width: 200px;">
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control form-control-dark" value="{{ copiaCola }}"
+                            id="pixCopiaCola" readonly>
+                        <button class="btn btn-light fw-bold" type="button" onclick="copiarPix()">
+                            COPIAR
+                        </button>
+                    </div>
+                    <div class="mt-4">
+                        <div class="spinner-border spinner-border-sm text-success mb-2" role="status"></div>
+                        <p class="text-secondary small mb-0">Aguardando confirmação automática...</p>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="{{ url() }}" class="text-secondary text-decoration-none small">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Cancelar e Voltar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var pedidoId = "{{ pedido.id }}";
+    var urlVerificacao = "{{ url('pagamento/verificar') }}";
+    var urlRedirecionamento = "{{ url() }}";
+
+    var intervalo = setInterval(function () {
+        $.ajax({
+            url: urlVerificacao,
+            type: 'POST',
+            data: { id: pedidoId },
+            dataType: 'json',
+            success: function (response) {
+                if (response.pago || response.status === 'pago') {
+                    clearInterval(intervalo);
+                    if (response.pago === 'Pagamento já confirmado') {
+                        window.location.replace(urlRedirecionamento);
+                        return;
+                    }
+
+                    new jBox('Modal', {
+                        width: 350,
+                        overlay: true,
+                        closeButton: false,
+                        content: `
+                            <div class="text-center p-4">
+                                <i class="fa-solid fa-check-circle text-success fa-4x mb-3"></i>
+                                <h5 class="fw-bold text-white">Sucesso!</h5>
+                                <p class="text-secondary small">Votos computados.</p>
+                                <div class="mt-3 text-white small">
+                                    REDIRECIONANDO...
+                                </div>
+                            </div>
+                        `,
+                        onCreated: function () {
+                            setTimeout(function () {
+                                window.location.replace(urlRedirecionamento);
+                            }, 2000);
+                        }
+                    }).open();
+                }
+            }
+        });
+    }, 3000); 
+</script>
+
+{% endblock %}

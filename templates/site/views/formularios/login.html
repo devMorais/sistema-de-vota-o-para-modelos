@@ -1,0 +1,23 @@
+<div class="card text-center border-0">
+    <div class="card-body">
+        <p>Informe seu login e senha para entrar no seu painel</p>
+
+        <form class="formularioAjax" action="{{url('login')}}" method="post">      
+                    <div class="form-floating mb-3">
+                        <input type="email" name="email" class="form-control" placeholder="E-mail">
+                        <label for="email">E-mail</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" name="senha" class="form-control"  placeholder="Senha">
+                        <label for="senha">Senha</label>
+                    </div>
+
+                    <button class="w-100 btn btn-dark mb-2" type="submit">Entrar</button>
+                    <div class="text-center">
+                            <a class="btn" data-bs-target="#modalCadastro" data-bs-toggle="modal" title="Cadastre-se">
+                                Não tem cadastro? cadastre-se
+                            </a>
+                    </div>
+                </form>
+    </div>
+</div>

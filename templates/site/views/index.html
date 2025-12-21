@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block topo %}
+{% include 'topo.html' %}
+{% endblock %}
+
+{% block conteudo %}
+
+<div class="py-4 pb-5">
+    <div class="container">
+
+        <div class="row">
+            <div class="col-lg-9 col-md-12 mb-4">
+
+                {% if posts %}
+                <div class="row row-cols-2 row-cols-md-2 row-cols-lg-3 g-3 g-md-4">
+                    {% for post in posts %}
+                    <div class="col">
+                        <div class="candidate-card shadow-sm h-100">
+
+                            <a href="{{ url('uploads/imagens/thumbs/'~post.capa) }}" data-fancybox="gallery"
+                                data-caption="{{ post.titulo }}" class="d-block img-container position-relative">
+
+                                <span class="badge text-bg-secondary position-absolute top-0 start-0 m-3 z-1">
+                                    {{ post.categoria().titulo|raw }}
+                                </span>
+
+                                {% if post.capa %}
+                                <img src="{{ url('uploads/imagens/thumbs/'~post.capa) }}" alt="{{ post.titulo }}">
+                                {% else %}
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop"
+                                    alt="Imagem padrão">
+                                {% endif %}
+
+                                <div class="zoom-icon">
+                                    <i class="fa-solid fa-magnifying-glass-plus fa-xs"></i>
+                                </div>
+                            </a>
+
+                            <div class="card-info d-flex flex-column h-100">
+                                <h5 class="candidate-name mb-3">{{ resumirTexto(post.titulo, 25)|raw }}</h5>
+
+                                <div class="mt-auto w-100">
+                                    <a href="{{url('post/'~post.categoria.slug~'/'~post.slug)}}" class="btn-vote w-100">
+                                        Votar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-5">
+                    {{paginacao|raw}}
+                    <div class="text-center mt-2">
+                        <small class="text-white">{{paginacaoInfo}}</small>
+                    </div>
+                </div>
+
+                {% else %}
+                <div class="alert alert-dark text-center border-secondary py-5" role="alert">
+                    <i class="fa-solid fa-info-circle fa-2x mb-3 text-secondary"></i>
+                    <p class="text-muted">Nenhum participante cadastrado para exibir!</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-lg-3 col-md-12">
+                {% include 'sidebar.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block topo %}{% endblock %}
+{% block rodape %}{% endblock %}
+
+{% block conteudo %}
+
+<div class="container mb-5">
+    <div class="mt-4">
+        {{ flash() }}
+    </div>
+    <div class="checkout-header">
+        <button class="btn-whatsapp">
+            Peça Ajuda pelo WhatsApp - CLIQUE AQUI
+        </button>
+    </div>
+    <div class="row g-5">
+        <div class="col-lg-7">
+
+            <h2 class="section-title">1. Suas Informações</h2>
+
+            <form action="{{ url('pagamento/processar') }}" method="POST">
+
+                <input type="hidden" name="post_id" value="{{ post.id }}">
+                <input type="hidden" name="post_titulo" value="{{ post.titulo }}">
+
+                <input type="hidden" name="valor_total" value="{{ totalFloat }}">
+                <input type="hidden" name="valor_subtotal" value="{{ subtotalFloat }}">
+                <input type="hidden" name="valor_taxa" value="{{ taxaFloat }}">
+
+                <input type="hidden" name="total_votos" value="{{ totalVotos }}">
+                <input type="hidden" name="pacote_id" value="{{ pacoteId }}">
+
+                <div class="mb-3">
+                    <label class="form-label">*Nome</label>
+                    <input type="text" name="nome" value="{{ form.nome }}" class="form-control form-control-dark"
+                        placeholder="Seu nome completo" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">*CPF (Obrigatório para o PIX)</label>
+                    <input type="text" name="cpf" value="{{ form.cpf }}" class="form-control form-control-dark"
+                        placeholder="000.000.000-00" required maxlength="14">
+                </div>
+
+                <button type="submit" class="btn btn-votar">
+                    <i class="fa-brands fa-pix me-2"></i> Gerar PIX e Finalizar
+                </button>
+            </form>
+
+            <div class="step-disabled">
+                2. Pagamento
+            </div>
+
+        </div>
+        <div class="col-lg-5">
+            <div class="timer-box">
+                Tempo restante: <span id="countdown">10:00</span>
+            </div>
+            <div class="summary-box">
+                <div class="summary-content">
+                    <h4 class="summary-title">{{ post.titulo }}</h4>
+                    <hr style="border-color: #333;">
+                    <div class="summary-row mt-3">
+                        <div>
+                            <div class="text-white">{{ totalVotos }} VOTOS</div>
+                            <small class="text-white">Pacote de Votos</small>
+                        </div>
+                        <div>R$ {{ subtotal }}</div>
+                    </div>
+                    <hr style="border-color: #333;">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span>R$ {{ subtotal }}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax. Banc.</span>
+                        <span>R$ {{ totalTaxas }}</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span>R$ {{ totalGeral }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var timer = localStorage.getItem('checkout_timer') ? parseInt(localStorage.getItem('checkout_timer')) : 600;
+        var display = document.querySelector('#countdown');
+
+        var interval = setInterval(function () {
+            var minutes = parseInt(timer / 60, 10);
+            var seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            if (display) {
+                display.textContent = minutes + ":" + seconds;
+            }
+
+            localStorage.setItem('checkout_timer', timer);
+
+            if (--timer < 0) {
+                localStorage.removeItem('checkout_timer');
+                clearInterval(interval);
+                window.location.reload();
+            }
+        }, 1000);
+    });
+</script>
+
+{% endblock %}
