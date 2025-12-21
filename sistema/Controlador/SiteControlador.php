@@ -10,8 +10,10 @@ use sistema\Biblioteca\Paginar;
 use sistema\Suporte\Email;
 use sistema\Modelo\PedidoModelo;
 use sistema\Biblioteca\Asaas;
+use sistema\Modelo\LandingPageModelo;
 use sistema\Modelo\PacoteModelo;
 use sistema\Nucleo\Conexao;
+use sistema\Suporte\XDebug;
 
 class SiteControlador extends Controlador
 {
@@ -27,8 +29,28 @@ class SiteControlador extends Controlador
      */
     public function landing(): void
     {
+        $landingModelo = new LandingPageModelo();
+        $landing = $landingModelo->buscaPorId(1);
+
+        if (!$landing) {
+            $landing = (object) [
+                'texto_topo' => 'CONCURSO OFICIAL',
+                'titulo_principal' => 'Vote Pela Sua Miss',
+                'subtitulo' => 'A beleza, a elegância e a simpatia estão em jogo.',
+                'texto_botao' => 'VER CANDIDATAS',
+                'url_botao' => 'votar',
+                'imagem_fundo' => null,
+                'status' => 1
+            ];
+        }
+
+        $urlImagemFundo = $landing->imagem_fundo
+            ? Helpers::url('uploads/imagens/thumbs/' . $landing->imagem_fundo)
+            : null;
+
         echo $this->template->renderizar('landing.html', [
-            // Se precisar passar alguma variavel global, passe aqui
+            'landing' => $landing,
+            'urlImagemFundo' => $urlImagemFundo
         ]);
     }
 

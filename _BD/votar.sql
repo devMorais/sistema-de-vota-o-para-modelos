@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.2
+-- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3306
--- Tempo de geração: 21/12/2025 às 21:00
--- Versão do servidor: 11.8.3-MariaDB-log
--- Versão do PHP: 7.2.34
+-- Host: localhost
+-- Tempo de geração: 21/12/2025 às 23:52
+-- Versão do servidor: 9.5.0
+-- Versão do PHP: 8.4.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Banco de dados: `u846585591_votar`
+-- Banco de dados: `votar`
 --
 
 -- --------------------------------------------------------
@@ -28,14 +28,14 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `categorias` (
-  `id` int(11) NOT NULL,
-  `usuario_id` int(11) NOT NULL,
+  `id` int NOT NULL,
+  `usuario_id` int NOT NULL,
   `slug` varchar(255) DEFAULT NULL,
   `titulo` varchar(255) NOT NULL,
-  `texto` text DEFAULT NULL,
-  `status` int(11) NOT NULL DEFAULT 0,
-  `visitas` int(11) NOT NULL DEFAULT 0,
-  `cadastrado_em` datetime NOT NULL DEFAULT current_timestamp(),
+  `texto` text,
+  `status` int NOT NULL DEFAULT '0',
+  `visitas` int NOT NULL DEFAULT '0',
+  `cadastrado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `atualizado_em` datetime DEFAULT NULL,
   `ultima_visita_em` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -51,16 +51,41 @@ INSERT INTO `categorias` (`id`, `usuario_id`, `slug`, `titulo`, `texto`, `status
 -- --------------------------------------------------------
 
 --
+-- Estrutura para tabela `landing_page`
+--
+
+CREATE TABLE `landing_page` (
+  `id` int NOT NULL,
+  `texto_topo` varchar(255) DEFAULT NULL,
+  `titulo_principal` varchar(255) DEFAULT NULL,
+  `subtitulo` text,
+  `texto_botao` varchar(100) DEFAULT NULL,
+  `url_botao` varchar(255) DEFAULT NULL,
+  `imagem_fundo` varchar(255) DEFAULT NULL,
+  `status` int DEFAULT '1',
+  `atualizado_em` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Despejando dados para a tabela `landing_page`
+--
+
+INSERT INTO `landing_page` (`id`, `texto_topo`, `titulo_principal`, `subtitulo`, `texto_botao`, `url_botao`, `imagem_fundo`, `status`, `atualizado_em`) VALUES
+(1, 'CONCURSO OFICIAL 2026', 'Vote Pela Sua Miss', 'A beleza, a elegância e a simpatia estão em jogo. Sua voz ajudará a coroar a nova estrela. Participe desta escolha histórica.', 'Ver canditadas', 'votar', 'landing-bg-6948881c7e4f5.webp', 1, '2025-12-21 20:51:58');
+
+-- --------------------------------------------------------
+
+--
 -- Estrutura para tabela `pacotes_votos`
 --
 
 CREATE TABLE `pacotes_votos` (
-  `id` int(11) NOT NULL,
+  `id` int NOT NULL,
   `titulo` varchar(100) NOT NULL,
-  `quantidade` int(11) NOT NULL,
+  `quantidade` int NOT NULL,
   `valor` decimal(10,2) NOT NULL,
   `taxa` decimal(10,2) NOT NULL,
-  `status` int(11) NOT NULL DEFAULT 1
+  `status` int NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -77,22 +102,22 @@ INSERT INTO `pacotes_votos` (`id`, `titulo`, `quantidade`, `valor`, `taxa`, `sta
 --
 
 CREATE TABLE `pedidos` (
-  `id` int(11) NOT NULL,
-  `post_id` int(11) NOT NULL,
-  `pacote_id` int(11) DEFAULT NULL,
-  `total_votos` int(11) NOT NULL,
-  `valor_subtotal` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `valor_taxa` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `id` int NOT NULL,
+  `post_id` int NOT NULL,
+  `pacote_id` int DEFAULT NULL,
+  `total_votos` int NOT NULL,
+  `valor_subtotal` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `valor_taxa` decimal(10,2) NOT NULL DEFAULT '0.00',
   `valor_total` decimal(10,2) NOT NULL,
   `cliente_nome` varchar(255) NOT NULL,
   `cliente_cpf` varchar(20) NOT NULL,
   `cliente_email` varchar(255) DEFAULT NULL,
   `cliente_telefone` varchar(20) DEFAULT NULL,
   `asaas_id` varchar(100) DEFAULT NULL,
-  `pix_qrcode` text DEFAULT NULL,
-  `pix_img` text DEFAULT NULL,
+  `pix_qrcode` text,
+  `pix_img` text,
   `status` varchar(20) DEFAULT 'AGUARDANDO',
-  `cadastrado_em` datetime NOT NULL DEFAULT current_timestamp(),
+  `cadastrado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `pago_em` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -112,18 +137,18 @@ INSERT INTO `pedidos` (`id`, `post_id`, `pacote_id`, `total_votos`, `valor_subto
 --
 
 CREATE TABLE `posts` (
-  `id` int(11) NOT NULL,
-  `usuario_id` int(11) DEFAULT NULL,
-  `categoria_id` int(11) NOT NULL,
+  `id` int NOT NULL,
+  `usuario_id` int DEFAULT NULL,
+  `categoria_id` int NOT NULL,
   `capa` varchar(255) DEFAULT NULL,
   `slug` varchar(255) DEFAULT NULL,
   `titulo` varchar(255) NOT NULL,
-  `texto` longtext DEFAULT NULL,
-  `status` int(11) NOT NULL DEFAULT 0,
-  `visitas` int(11) NOT NULL DEFAULT 0,
-  `votos` int(11) NOT NULL DEFAULT 0,
-  `receita` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `cadastrado_em` datetime NOT NULL DEFAULT current_timestamp(),
+  `texto` longtext,
+  `status` int NOT NULL DEFAULT '0',
+  `visitas` int NOT NULL DEFAULT '0',
+  `votos` int NOT NULL DEFAULT '0',
+  `receita` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `cadastrado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `atualizado_em` datetime DEFAULT NULL,
   `ultima_visita_em` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -143,14 +168,14 @@ INSERT INTO `posts` (`id`, `usuario_id`, `categoria_id`, `capa`, `slug`, `titulo
 --
 
 CREATE TABLE `usuarios` (
-  `id` int(11) NOT NULL,
-  `level` int(11) NOT NULL DEFAULT 1,
+  `id` int NOT NULL,
+  `level` int NOT NULL DEFAULT '1',
   `nome` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `senha` varchar(255) NOT NULL,
-  `status` int(11) NOT NULL DEFAULT 0,
+  `status` int NOT NULL DEFAULT '0',
   `ultimo_login` datetime DEFAULT NULL,
-  `cadastrado_em` datetime NOT NULL DEFAULT current_timestamp(),
+  `cadastrado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `atualizado_em` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -159,7 +184,7 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `level`, `nome`, `email`, `senha`, `status`, `ultimo_login`, `cadastrado_em`, `atualizado_em`) VALUES
-(1, 3, 'Administrador', 'missecominasgerais@gmail.com', '$2y$10$ngdGZJBu5faoMzxfdvTzG.ppuDZ0DeE1MXye8FX2bHywpBbNFQT4q', 1, '2025-12-15 23:17:02', '2025-11-23 02:28:38', '2025-11-26 19:57:27');
+(1, 3, 'Administrador', 'missecominasgerais@gmail.com', '$2y$10$ngdGZJBu5faoMzxfdvTzG.ppuDZ0DeE1MXye8FX2bHywpBbNFQT4q', 1, '2025-12-21 19:04:28', '2025-11-23 02:28:38', '2025-11-26 19:57:27');
 
 --
 -- Índices para tabelas despejadas
@@ -172,6 +197,12 @@ ALTER TABLE `categorias`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `slug` (`slug`),
   ADD KEY `idx_slug` (`slug`) USING BTREE;
+
+--
+-- Índices de tabela `landing_page`
+--
+ALTER TABLE `landing_page`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Índices de tabela `pacotes_votos`
@@ -214,31 +245,37 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de tabela `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de tabela `landing_page`
+--
+ALTER TABLE `landing_page`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `pacotes_votos`
 --
 ALTER TABLE `pacotes_votos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de tabela `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Restrições para tabelas despejadas

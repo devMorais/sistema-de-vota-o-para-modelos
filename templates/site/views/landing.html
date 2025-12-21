@@ -6,7 +6,6 @@
 {% block conteudo %}
 
 <style>
-    /* Reset básico para garantir tela cheia sem barras de rolagem indesejadas */
     body,
     html {
         margin: 0;
@@ -14,25 +13,21 @@
         overflow-x: hidden;
     }
 
-    /* CSS da Landing Page */
+
     .hero-section {
         position: relative;
         height: 100vh;
-        /* Ocupa 100% da altura da tela */
         min-height: 600px;
-        /* Imagem de fundo: Troque esta URL pela imagem que você gerou se preferir */
-        background-image: url('https://images.unsplash.com/photo-1764447642669-20a5728a269f?q=80&w=724&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-        /* background-size: cover; */
-        background-position: center top;
-        background-attachment: fixed;
-        /* Efeito parallax */
+        background-image: url('{{urlImagemFundo}}');
+        background-size: cover;
+        background-position: center 30%;
+        background-repeat: no-repeat;
         display: flex;
         align-items: center;
         justify-content: center;
         color: #fff;
     }
 
-    /* Camada escura por cima da foto para o texto aparecer bem */
     .hero-overlay {
         position: absolute;
         top: 0;
@@ -54,12 +49,10 @@
 
     .hero-subtitle {
         font-family: 'Montserrat', sans-serif;
-        /* Fonte moderna para o subtítulo */
         text-transform: uppercase;
         letter-spacing: 6px;
         font-size: 1.1rem;
         color: #eebb4d;
-        /* Dourado */
         margin-bottom: 15px;
         font-weight: 600;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
@@ -67,7 +60,6 @@
 
     .hero-title {
         font-family: 'Playfair Display', serif;
-        /* Fonte clássica e elegante */
         font-size: 5rem;
         font-weight: 700;
         line-height: 1.1;
@@ -89,7 +81,6 @@
         text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.8);
     }
 
-    /* Botão Dourado Premium */
     .btn-gold {
         position: relative;
         background: linear-gradient(90deg, #d4af37, #f6d365, #d4af37);
@@ -110,13 +101,11 @@
 
     .btn-gold:hover {
         background-position: right center;
-        /* Animação do gradiente */
         transform: translateY(-5px) scale(1.02);
         box-shadow: 0 10px 30px rgba(212, 175, 55, 0.8);
         color: #000;
     }
 
-    /* Animação de entrada */
     @keyframes fadeInUp {
         from {
             opacity: 0;
@@ -129,7 +118,6 @@
         }
     }
 
-    /* Responsividade */
     @media (max-width: 768px) {
         .hero-title {
             font-size: 3rem;
@@ -158,24 +146,21 @@
     href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap"
     rel="stylesheet">
 
-
-
 <div class="hero-section">
     <div class="hero-overlay"></div>
-
     <div class="hero-content">
-        <div class="hero-subtitle">Concurso Oficial</div>
+        {% if landing.texto_topo %}
+        <div class="hero-subtitle">{{ landing.texto_topo }}</div>
+        {% endif %}
 
-        <h1 class="hero-title">Vote Pela Sua Miss</h1>
+        <h1 class="hero-title">{{ landing.titulo_principal }}</h1>
 
-        <p class="hero-text">
-            A beleza, a elegância e a simpatia estão em jogo.
-            Sua voz ajudará a coroar a nova estrela.
-            Participe desta escolha histórica.
-        </p>
+        {% if landing.subtitulo %}
+        <p class="hero-text">{{ landing.subtitulo }}</p>
+        {% endif %}
 
-        <a href="{{ url('votar') }}" class="btn-gold">
-            Ver Candidatas <i class="fa-solid fa-crown ms-2"></i>
+        <a href="{{ url(landing.url_botao) }}" class="btn-gold">
+            {{ landing.texto_botao }} <i class="fa-solid fa-crown ms-2"></i>
         </a>
     </div>
 </div>

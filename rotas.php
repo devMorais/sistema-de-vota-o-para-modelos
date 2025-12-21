@@ -7,20 +7,9 @@ try {
     //namespace dos controladores
     SimpleRouter::setDefaultNamespace('sistema\Controlador');
 
-    // =========================================================================
-    // ROTAS DO SITE (ALTERADO PARA LANDING PAGE)
-    // =========================================================================
-
-    // 1. A Raiz do site agora abre a Landing Page (Capa)
     SimpleRouter::get(URL_SITE, 'SiteControlador@landing');
-
-    // 2. A rota "index.php" também leva para a capa (por segurança)
     SimpleRouter::get(URL_SITE . 'index.php', 'SiteControlador@landing');
-
-    // 3. NOVA ROTA: Tela de Votação (Lista de Candidatas)
     SimpleRouter::get(URL_SITE . 'votar', 'SiteControlador@index');
-
-    // 4. Paginação da lista de votação
     SimpleRouter::get(URL_SITE . 'votar/page/{pagina}', 'SiteControlador@index');
 
     // Demais rotas do site
@@ -70,6 +59,9 @@ try {
         //DASHBOARD
         SimpleRouter::get(URL_ADMIN . 'dashboard', 'AdminDashboard@dashboard');
         SimpleRouter::get(URL_ADMIN . 'sair', 'AdminDashboard@sair');
+
+        //ADMIN LANDINGPAGE
+        SimpleRouter::match(['get', 'post'], URL_ADMIN . 'landing/editar', 'AdminLanding@editar');
 
         //ADMIN USUARIOS
         SimpleRouter::get(URL_ADMIN . 'usuarios/listar', 'AdminUsuarios@listar');
