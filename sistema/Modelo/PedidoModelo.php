@@ -10,7 +10,6 @@ use sistema\Nucleo\Modelo;
  */
 class PedidoModelo extends Modelo
 {
-
     public function __construct()
     {
         // Nome da tabela de pedidos
@@ -18,8 +17,22 @@ class PedidoModelo extends Modelo
     }
 
     /**
+     * Calcula o faturamento bruto e taxas de uma candidata específica
+     * Utiliza a arquitetura do Modelo base para manter a segurança
+     * * @param int $postId
+     * @return object|null
+     */
+    public function financeiroPorPost(int $postId): ?object
+    {
+        $colunas = "SUM(valor_total) as bruto, SUM(valor_taxa) as taxas, SUM(valor_subtotal) as lucro";
+        $termos = "post_id = :id AND status = 'PAGO'";
+        $parametros = "id={$postId}";
+
+        return $this->busca($termos, $parametros, $colunas)->resultado();
+    }
+
+    /**
      * Busca o Post (Candidata) relacionado a este pedido
-     * @return PostModelo|null
      */
     public function post(): ?PostModelo
     {
@@ -31,7 +44,6 @@ class PedidoModelo extends Modelo
 
     /**
      * Busca o Pacote original relacionado (se houver)
-     * @return PacoteModelo|null
      */
     public function pacote(): ?PacoteModelo
     {

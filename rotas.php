@@ -63,6 +63,9 @@ try {
         //ADMIN LANDINGPAGE
         SimpleRouter::match(['get', 'post'], URL_ADMIN . 'landing/editar', 'AdminLanding@editar');
 
+        // ADMIN CONFIGURAÇÕES
+        SimpleRouter::match(['get', 'post'], URL_ADMIN . 'configuracoes/editar', 'AdminConfiguracoes@editar');
+
         //ADMIN USUARIOS
         SimpleRouter::get(URL_ADMIN . 'usuarios/listar', 'AdminUsuarios@listar');
         SimpleRouter::match(['get', 'post'], URL_ADMIN . 'usuarios/cadastrar', 'AdminUsuarios@cadastrar');

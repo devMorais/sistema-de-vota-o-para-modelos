@@ -51,7 +51,7 @@
                         <select class="form-select" name="categoria_id" id="categoria_id">
                             {% for categoria in categorias %}
                             <option value="{{categoria.id}}" {% if post.categoria_id==categoria.id %}selected{%endif%}>
-                                {{categoria.titulo}}</option>
+                                {{ categoria.titulo|striptags }}</option>
                             {%endfor%}
                         </select>
                     </div>

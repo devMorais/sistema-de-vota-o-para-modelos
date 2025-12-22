@@ -10,6 +10,7 @@ use sistema\Biblioteca\Paginar;
 use sistema\Suporte\Email;
 use sistema\Modelo\PedidoModelo;
 use sistema\Biblioteca\Asaas;
+use sistema\Modelo\ConfiguracaoModelo;
 use sistema\Modelo\LandingPageModelo;
 use sistema\Modelo\PacoteModelo;
 use sistema\Nucleo\Conexao;
@@ -57,15 +58,43 @@ class SiteControlador extends Controlador
     /**
      * Home Page
      */
+    // public function index(?int $pagina = null): void
+    // {
+    //     $pagina = $pagina ?? 1;
+
+    //     $postModelo = new PostModelo();
+    //     $total = $postModelo->busca("status = :s", "s=1")->total();
+    //     $paginar = new Paginar(Helpers::url('page'), $pagina, 24, 3, $total);
+    //     $postsParaCards = $postModelo->busca("status = 1")
+    //         ->ordem('titulo ASC')
+    //         ->limite($paginar->limite())
+    //         ->offset($paginar->offset())
+    //         ->resultado(true);
+
+    //     echo $this->template->renderizar('index.html', [
+    //         'posts' => $postsParaCards,
+    //         'paginacao' => $paginar->renderizar(),
+    //         'paginacaoInfo' => $paginar->info(),
+    //         'categorias' => $this->categorias(),
+    //     ]);
+    // }
+
     public function index(?int $pagina = null): void
     {
-        $pagina = $pagina ?? 1;
+        $config = (new ConfiguracaoModelo())->buscaPorId(1);
 
+        $limite = $config->posts_por_pagina ?? 24;
+        $ordem = $config->ordenacao_posts ?? 'titulo ASC';
+
+        $pagina = $pagina ?? 1;
         $postModelo = new PostModelo();
+
         $total = $postModelo->busca("status = :s", "s=1")->total();
-        $paginar = new Paginar(Helpers::url('page'), $pagina, 24, 3, $total);
+
+        $paginar = new Paginar(Helpers::url('page'), $pagina, $limite, 3, $total);
+
         $postsParaCards = $postModelo->busca("status = 1")
-            ->ordem('titulo ASC')
+            ->ordem($ordem)
             ->limite($paginar->limite())
             ->offset($paginar->offset())
             ->resultado(true);
@@ -75,6 +104,7 @@ class SiteControlador extends Controlador
             'paginacao' => $paginar->renderizar(),
             'paginacaoInfo' => $paginar->info(),
             'categorias' => $this->categorias(),
+            'config' => $config
         ]);
     }
 
@@ -195,6 +225,7 @@ class SiteControlador extends Controlador
      */
     public function checkout(): void
     {
+        $config = (new ConfiguracaoModelo())->buscaPorId(1);
         $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
         if (!isset($dados['pacotes']) || !isset($dados['post_id'])) {
             Helpers::redirecionar();
@@ -270,7 +301,8 @@ class SiteControlador extends Controlador
             'subtotalFloat' => $subtotal,
             'taxaFloat'     => $taxaUnicaAplicada,
             'totalFloat'    => $totalGeral,
-            'pacoteId'      => $pacoteIdParaSalvar
+            'pacoteId'      => $pacoteIdParaSalvar,
+            'config'        => $config
         ]);
     }
 

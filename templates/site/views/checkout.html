@@ -9,17 +9,18 @@
     <div class="mt-4">
         {{ flash() }}
     </div>
-    <div class="checkout-header">
-        <button class="btn-whatsapp">
-            Peça Ajuda pelo WhatsApp - CLIQUE AQUI
-        </button>
+    <div class="checkout-header text-center">
+        <a href="https://wa.me/{{ config.whatsapp }}?text=Olá! Estou no checkout do concurso {{ post.titulo|striptags }} e gostaria de tirar uma dúvida."
+            target="_blank" class="btn-whatsapp" style="text-decoration: none; display: inline-block;">
+            <i class="fa-brands fa-whatsapp me-2"></i> Peça Ajuda pelo WhatsApp - CLIQUE AQUI
+        </a>
     </div>
     <div class="row g-5">
         <div class="col-lg-7">
 
             <h2 class="section-title">1. Suas Informações</h2>
 
-            <form action="{{ url('pagamento/processar') }}" method="POST">
+            <form action="{{ url('pagamento/processar') }}" method="POST" id="form-checkout">
 
                 <input type="hidden" name="post_id" value="{{ post.id }}">
                 <input type="hidden" name="post_titulo" value="{{ post.titulo }}">
@@ -32,7 +33,7 @@
                 <input type="hidden" name="pacote_id" value="{{ pacoteId }}">
 
                 <div class="mb-3">
-                    <label class="form-label">*Nome</label>
+                    <label class="form-label">*Nome Completo</label>
                     <input type="text" name="nome" value="{{ form.nome }}" class="form-control form-control-dark"
                         placeholder="Seu nome completo" required>
                 </div>
@@ -43,13 +44,20 @@
                         placeholder="000.000.000-00" required maxlength="14">
                 </div>
 
-                <button type="submit" class="btn btn-votar">
+                <h2 class="section-title mt-5">2. Pagamento</h2>
+                <div class="alert alert-dark border-secondary p-3 mb-4 text-center">
+                    <i class="fa-brands fa-pix me-2 text-info"></i>
+                    Na próxima página, você poderá escanear o <strong>QR Code</strong> ou utilizar o <strong>Copia e
+                        Cola</strong>.
+                </div>
+
+                <button type="submit" class="btn btn-votar w-100 py-3">
                     <i class="fa-brands fa-pix me-2"></i> Gerar PIX e Finalizar
                 </button>
             </form>
 
-            <div class="step-disabled">
-                2. Pagamento
+            <div class="step-disabled mt-4">
+                3. Finalização
             </div>
 
         </div>
@@ -59,7 +67,7 @@
             </div>
             <div class="summary-box">
                 <div class="summary-content">
-                    <h4 class="summary-title">{{ post.titulo }}</h4>
+                    <h4 class="summary-title">{{ post.titulo|striptags }}</h4>
                     <hr style="border-color: #333;">
                     <div class="summary-row mt-3">
                         <div>
@@ -89,19 +97,17 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // --- Timer Original ---
         var timer = localStorage.getItem('checkout_timer') ? parseInt(localStorage.getItem('checkout_timer')) : 600;
         var display = document.querySelector('#countdown');
 
         var interval = setInterval(function () {
             var minutes = parseInt(timer / 60, 10);
             var seconds = parseInt(timer % 60, 10);
-
             minutes = minutes < 10 ? "0" + minutes : minutes;
             seconds = seconds < 10 ? "0" + seconds : seconds;
 
-            if (display) {
-                display.textContent = minutes + ":" + seconds;
-            }
+            if (display) display.textContent = minutes + ":" + seconds;
 
             localStorage.setItem('checkout_timer', timer);
 

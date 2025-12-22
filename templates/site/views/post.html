@@ -9,10 +9,10 @@
     <div class="card mb-5 bg-dark text-white border-0 rounded-0 overflow-hidden shadow-none">
         <div class="row g-0 align-items-center">
             <div class="col-md-6">
-                <a href="{{ url('uploads/imagens/thumbs/'~post.capa) }}" data-fancybox data-caption="{{ post.titulo }}"
+                <a href="{{ url('uploads/imagens/thumbs/'~post.capa) }}" data-fancybox data-caption="{{ post.titulo|striptags }}"
                     class="d-block w-100 h-100 cursor-pointer position-relative group">
                     <img src="{{ url('uploads/imagens/thumbs/'~post.capa) }}" class="img-fluid w-100 h-100 slide img"
-                        style="object-fit: cover; min-height: 400px;" alt="{{ post.titulo }}">
+                        style="object-fit: cover; min-height: 400px;" alt="{{ post.titulo|striptags }}">
                     <div
                         class="position-absolute top-50 start-50 translate-middle text-white opacity-0 hover-opacity-100 transition-opacity pe-none">
                         <i class="fa-solid fa-magnifying-glass-plus fa-2x drop-shadow"></i>
@@ -21,7 +21,7 @@
             </div>
             <div class="col-md-6">
                 <div class="card-body p-5 text-center">
-                    <h1 class="display-5 fw-normal mb-3">{{ post.titulo }}</h1>
+                    <h1 class="display-5 fw-normal mb-3">{{ post.titulo|striptags }}</h1>
                     <p class="lead">
                         {{ post.texto|raw }}
                     </p>

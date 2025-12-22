@@ -58,7 +58,7 @@
                     {% for categoria in categorias %}
                     <tr>
                         <th>{{categoria.id}}</th>
-                        <td class="fw-bold">{{categoria.titulo}}</td>
+                        <td class="fw-bold">{{ categoria.titulo|striptags }}</td>
                         <td class="text-center">
                             {{formatarNumero(categoria.totalPosts(categoria.id))}}
                         </td>

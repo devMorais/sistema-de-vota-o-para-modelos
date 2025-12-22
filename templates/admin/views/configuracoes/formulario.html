@@ -1,0 +1,76 @@
+{% extends "dashboard.html" %}
+
+{% block conteudo %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{{url('admin/dashboard')}}">
+                Home
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            Configurações do Sistema
+        </li>
+    </ol>
+</nav>
+
+{{flash()}}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-0">
+        <h5 class="mb-0">Ajustes Globais</h5>
+    </div>
+    <div class="card-body">
+        <form action="{{url('admin/configuracoes/editar')}}" method="post">
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="whatsapp" class="form-label">WhatsApp de Suporte (apenas números)</label>
+                    <input type="text" name="whatsapp" id="whatsapp" class="form-control"
+                        placeholder="Ex: 5561999999999" value="{{config.whatsapp}}">
+                    <small class="text-muted">Informe o código do país + DDD + Número.</small>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="posts_por_pagina" class="form-label">Candidatas por Página</label>
+                    <input type="number" name="posts_por_pagina" id="posts_por_pagina" class="form-control"
+                        value="{{config.posts_por_pagina|default(24)}}" min="1">
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label for="ordenacao_posts" class="form-label">Ordenação Padrão das Candidatas (Home)</label>
+                <select class="form-select" name="ordenacao_posts" id="ordenacao_posts">
+                    <option value="titulo ASC" {% if config.ordenacao_posts == 'titulo ASC' %}selected{% endif %}>
+                        Nome: A - Z
+                    </option>
+                    <option value="titulo DESC" {% if config.ordenacao_posts == 'titulo DESC' %}selected{% endif %}>
+                        Nome: Z - A
+                    </option>
+                    <option value="votos DESC" {% if config.ordenacao_posts == 'votos DESC' %}selected{% endif %}>
+                        Mais Votadas Primeiro
+                    </option>
+                    <option value="id DESC" {% if config.ordenacao_posts == 'id DESC' %}selected{% endif %}>
+                        Mais Recentes (Novas Candidatas)
+                    </option>
+                    <option value="id ASC" {% if config.ordenacao_posts == 'id ASC' %}selected{% endif %}>
+                        Mais Antigas
+                    </option>
+                </select>
+                <small class="text-muted">Define como a lista será organizada automaticamente para o visitante.</small>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="d-flex justify-content-between align-items-center">
+                <p class="text-muted small mb-0">
+                    <i class="fa-solid fa-clock"></i>
+                    Última atualização: {{config.atualizado_em|date('d/m/Y H:i')}}
+                </p>
+                <input type="submit" class="btn btn-primary px-4" value="Salvar Configurações">
+            </div>
+
+        </form>
+    </div>
+</div>
+{% endblock %}
