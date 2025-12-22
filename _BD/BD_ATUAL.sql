@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Tempo de geração: 21/12/2025 às 23:52
+-- Tempo de geração: 22/12/2025 às 03:41
 -- Versão do servidor: 9.5.0
 -- Versão do PHP: 8.4.14
 
@@ -45,8 +45,28 @@ CREATE TABLE `categorias` (
 --
 
 INSERT INTO `categorias` (`id`, `usuario_id`, `slug`, `titulo`, `texto`, `status`, `visitas`, `cadastrado_em`, `atualizado_em`, `ultima_visita_em`) VALUES
-(1, 1, 'missecominasgerais', '<p><span style=\"font-family:Comic Sans MS,cursive\">Missecominasgerais</span></p>', '<p>Este é realizado em minas gerais.</p>', 1, 40, '2025-11-26 22:58:27', '2025-12-15 23:45:25', '2025-12-15 23:54:20'),
-(3, 1, 'miss-teen-minas-gerais', '<p>MISS TEEN MINAS GERAIS</p>', '<p>Miss Teen Minas Gerais é muito mais do que um concurso de beleza. É um projeto voltado para adolescentes que desejam usar sua voz, sua imagem e sua representatividade para causar impacto real na sociedade.</p><p>O concurso busca uma candidata consciente do seu papel social, com voz ativa, empatia e compromisso com causas que transformam vidas. Aqui, a faixa e a coroa vão além da estética: tornam-se ferramentas de visibilidade, amplificação e responsabilidade social.</p><p>A Miss Teen Minas Gerais é incentivada a desenvolver, apoiar e dar continuidade a projetos sociais, utilizando sua posição para inspirar outras jovens, levantar debates importantes e promover ações que façam a diferença em sua comunidade e em todo o estado.</p>', 1, 6, '2025-12-16 02:32:50', '2025-12-15 23:53:53', '2025-12-15 23:54:18');
+(1, 1, 'miss-universo-minas-gerais-2026', '<p>Miss Universo Minas Gerais 2026</p>', '<p>O maior concurso de beleza do estado, reunindo representantes de todas as regiões em busca da coroa soberana.</p>', 1, 1, '2025-12-21 22:54:07', NULL, '2025-12-21 22:54:12');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `configuracoes`
+--
+
+CREATE TABLE `configuracoes` (
+  `id` int NOT NULL,
+  `whatsapp` varchar(20) DEFAULT NULL,
+  `posts_por_pagina` int DEFAULT '24',
+  `ordenacao_posts` varchar(50) DEFAULT 'titulo ASC',
+  `atualizado_em` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Despejando dados para a tabela `configuracoes`
+--
+
+INSERT INTO `configuracoes` (`id`, `whatsapp`, `posts_por_pagina`, `ordenacao_posts`, `atualizado_em`) VALUES
+(1, '61983411859', 24, 'titulo ASC', '2025-12-22 00:11:46');
 
 -- --------------------------------------------------------
 
@@ -71,7 +91,7 @@ CREATE TABLE `landing_page` (
 --
 
 INSERT INTO `landing_page` (`id`, `texto_topo`, `titulo_principal`, `subtitulo`, `texto_botao`, `url_botao`, `imagem_fundo`, `status`, `atualizado_em`) VALUES
-(1, 'CONCURSO OFICIAL 2026', 'Vote Pela Sua Miss', 'A beleza, a elegância e a simpatia estão em jogo. Sua voz ajudará a coroar a nova estrela. Participe desta escolha histórica.', 'Ver canditadas', 'votar', 'landing-bg-6948881c7e4f5.webp', 1, '2025-12-21 20:51:58');
+(1, 'GRANDE FINAL EM BREVE', 'Vote Pela Sua Miss', 'Junte-se a nós nesta jornada de elegância e propósito. Seu voto é decisivo para escolher a representante oficial de Minas Gerais', 'CONHECER CANDIDATAS', 'votar', 'landing-bg-6948a3bdc49bf.webp', 1, '2025-12-21 22:52:54');
 
 -- --------------------------------------------------------
 
@@ -93,7 +113,7 @@ CREATE TABLE `pacotes_votos` (
 --
 
 INSERT INTO `pacotes_votos` (`id`, `titulo`, `quantidade`, `valor`, `taxa`, `status`) VALUES
-(1, '5 Votos', 5, 2.00, 3.50, 1);
+(1, 'Pacote (10 Votos)', 10, 20.00, 3.50, 1);
 
 -- --------------------------------------------------------
 
@@ -126,9 +146,8 @@ CREATE TABLE `pedidos` (
 --
 
 INSERT INTO `pedidos` (`id`, `post_id`, `pacote_id`, `total_votos`, `valor_subtotal`, `valor_taxa`, `valor_total`, `cliente_nome`, `cliente_cpf`, `cliente_email`, `cliente_telefone`, `asaas_id`, `pix_qrcode`, `pix_img`, `status`, `cadastrado_em`, `pago_em`) VALUES
-(1, 1, 1, 5, 2.00, 3.50, 5.50, 'Teste Agora Morais', '04273991063', 'teste@gmail.com', '61983411859', 'pay_ksqlzwe6a7yy17p4', '00020101021226820014br.gov.bcb.pix2560pix-h.asaas.com/qr/cobv/21ce5ef6-4e3a-4c96-97c6-a30207d894bb5204000053039865802BR592355225041 FERNANDO AGUIA6010Planaltina61087375420362070503***6304A2A5', 'iVBORw0KGgoAAAANSUhEUgAAAcIAAAHCAQAAAABUY/ToAAADEElEQVR4Xu2TQW7kQAwDffP/f7TP8s1rFqW2s8DCQS7RANTM2BLFYg7d2c4f1p/tX+W7FfKtQr5VyLcK+VYh3+rXyGOj9qvRb9uPXbuDN1qt9uUMOZlsozWSrmGXAkbIMzLkbHKpjVtwRCdWVjlDjif1Ob/i25ek598IOZ48JfVKmKtG2UN+BnlaXawJ/DLzYC5nyNFkOcW+fFZmyP98BpCrtFpnXZcCYgl3hRxLcr6PUy6/J2WB+h/cQSFHk7g0y+KOwtexvQ85nwS+VY5fj0KdbBo15GRSqPHuWlsszLWuGxNyPokLHa9/naVtQcoKOZksD42KwTiJ0JQjmEKOJUHLesle8hVW/pKth5xMHjp9JagVr+mwj8H9coacTeKvU18Tyk157i7kbBKTBK+9tObZLkn2hRxMarakpXRBFQPPq7NtCTmWdOsEOCyVoTxiSIDHFHI06T1PvstiQrzzEEJOJlkKs2qLg6SwtOosAkLOJS9RjvawZnaing+P0ZBjSe8KMYRfmbwbLE/I4aTsrECVU7cAcl2HdSNCjibtA6FnpWH5Hd4KY8ix5Kl7IFqk4crod12I/gtCQ44lrfIFVZAnNj5664WFHE1KgNY5n4Q8jt9aXYKVFHI02advt6OK1u2oT/VnyNEkpiZ2jTR8n6BQyyEnk1JsrYgy8zpVFdNqyOFkgf3is+lO1K/ugC5GpYUcS0qwhwvhW1FWrUp0NGLI4aQxICYYHzpfrWUgEFfIsWRz9mnBnp8bmSTvMvO3Qs4lVTYWY8wW5SlB5bU3IeeSbJfdK80lP+fahpxNnroKOmr17eXoK8prSLSQk0kzXsmoTpgEfDxWjPqQY8kF1l0Q1kUKUGlEhpxMdsmEcR2+XBw9TcXaHHIsedxnXFvjOn0/yuL/c8Mh55LqfPICOurOoO1UW0JOJi9HH3mZquTpK1GKvCE/hmRpgK99lBO9DfkJJAtZ/YCFIZO+lJCTSUuHsQqiO9VKcZqz8IecS+oGyFyijE4R3pFOwh1yNPmjCvlWId8q5FuFfKuQb/Vh5F/niIikicIiMwAAAABJRU5ErkJggg==', 'PAGO', '2025-11-26 23:10:04', '2025-11-26 23:10:39'),
-(2, 1, 1, 10, 4.00, 3.50, 7.50, 'Teste2 teste', '86418300068', 'teste2@gmail.com', '61983411859', 'pay_yvh2j4l8zj33jqgs', '00020101021226820014br.gov.bcb.pix2560pix-h.asaas.com/qr/cobv/396cf974-0f53-4081-b134-f9805d704de85204000053039865802BR592355225041 FERNANDO AGUIA6010Planaltina61087375420362070503***630463BC', 'iVBORw0KGgoAAAANSUhEUgAAAcIAAAHCAQAAAABUY/ToAAADGElEQVR4Xu2TQZLbMBADddP/f5Rn6eYYDZD2blWi1F4yrsJYljgYNHQgdTx+WL+O78q/Vsm7KnlXJe+q5F2VvKv/Rl4HdUrQ+rxYPptTwqmnH2/OknNJM9INsSDCmGavqf0lB5NLZXXIjmCaKXnvfMnxpH6P3csqeS01LPlJ5EPSGglzpZW95GeQD6un5huxH9HEy1lyNBkn7N9/O7PkH34DyF2XRe81/+Rt4VUlx5KXzwGYLXvX9aHDqbesoJLDSRpHKOQ94i02ESVnk5EWpC2POSh4aA5EydnkEqOuNFywjJ0eQ8m5JIg0c/aaQnJGINSSg8kFcZESt6zXDkymwZJzScPae83kdYyx+CPnDSUHk+skxLlIfOR5nReUnE4uSphxrS9/2qH0IHcJJceSl+eXtxm3E4zvXkM0dSXHknCoB0ZBWoDB8zDDa0pOJuU4OARg9MLIMK8w4yu85FgSAx6vsXwlCPI8+SUnk2JlXVAITkd6d6zkLzmWVC+HN/5cB8CfMXZiFYoJtORYUkt1PGSI3wrW6HlLydnks/dubzKnAHIfh30iSo4mM8y+Y/CWv7XYotCWnEuiaO8zyc2SnjkQyyO05FySkaUn8XbDrybxy1NyMhlUWw3iPZdLoBZfD4qQkoNJ6O30EK8DfSj0y7rkdFI+VNgMlfYFzIhpyblkvBGVIj7MzlgRJYeTa7fxYONn2v91PHiUnE3abfUhJ7Ctqyfcl19Rciwpmbtna6jHdutrlyERJQeTD/RFayW3jLj3aMXSlxxMSpQcFrd7BiQTvqJLDiY91KWMhMgtnYlVFusVJceS9tup9fKy9YniMKy50JKDSXlskCX/RODjtmO0LjmWDCirDdr1FClAUYksOZlcdeGzU96VdnEm+PtWcjS593h/x6LpEKG2I3DJuaRWutuqC58zY3UCa/wlB5NPR86BJ0ZNq33F8Sz5IaTWOFG57KOc6GnJDyC99dtvFkbnwxFRSk4mLekZ96tRRjoOwYorOZc8qKfu3ZZRNi5arUiwu+Ro8kdV8q5K3lXJuyp5VyXv6sPI3xRkGCMGADCZAAAAAElFTkSuQmCC', 'PAGO', '2025-11-26 23:14:13', '2025-11-26 23:18:39'),
-(3, 1, 1, 20, 8.00, 3.50, 11.50, 'Fernando', '86961906028', NULL, NULL, 'pay_ag1ijk12cxsy9f1z', '00020101021226820014br.gov.bcb.pix2560pix-h.asaas.com/qr/cobv/b6f7d416-36ee-44cc-92c5-27aecfcd94a65204000053039865802BR592355225041 FERNANDO AGUIA6010Planaltina61087375420362070503***630428A4', 'iVBORw0KGgoAAAANSUhEUgAAAcIAAAHCAQAAAABUY/ToAAADB0lEQVR4Xu2TQY7dMAxDs8v9b9RjZfcbPkpOpkCRwWxGAaj+2BbFxy7s2T4/rD/bv8p3K+RThXyqkE8V8qlCPtWvkcdG7RKO/djPRYf6NnpvN2fIuWQzJXo/170w8ujLGXI2WSqmhm2uzdqdDzmebM/aAfvo6JDvIT+qPgpzVatxyHeQIK02Y79kFr8RO0OOJst5PP9bmSH/828AeZUmknXXfJW3hKtCjiXl33zLeG63rr/z1q6nEnI0qamGwrF6prvvAM0Q0EKOJjHsIphz6CBQ8NtUaMixpFqrkljrtNia1kkVcizpy5XqW7a3uhbqIdBoDzmY3ORgisHu+pgJMeVpyMGkhOI8vCe1XxGVBhpyLIlmpTN80qhSZL7akNNJJGdoTpT2piqyTiHnkyLMKYIYAqA/IJLwhJxNwulHgrPcongzgx5yMonTmzms+HRW55lwckKOJj0qSR22O0EQUR0fci5p1kNDrchXvdb6L0SEnEtqTDVDQAvul0ZgyMGkp9qvaSvsDZYc8g2khjSCtVjxAcN6ESFHk9jPrtz1KOre8dvUCm3IuaTuvv+gJTO2yFPwaqU9IeeS0AxE7DrvTVuxvT9VyMkkPgif1yNQAvN6BMykhJxL0l8e8+CinVivo9JDTiaL5XMIw9P1FawR05BjyWqEcfWiCYJZGR0RcjrZt78mwnTQxtfPgy3kbFKwmoOncA5ReBbsJuSpdM1DjiUtW/KOvSS7FcorcETIySQEv+121KPwImcjhkNOJ21aP9sZ9juQpBkvJuRcsgqPQrwSBdYqhwJDDibLKZm2vK2Yd5IEXCEHk/Jo1XB9uyPwVWTF6BxyLLlA2Q8WhVCkAJVGZMjJZJe0Qxe9Lv9SdHA+XMjB5LrjdqiBOOpllEVNJYQcTHK50nTVeA0DlNUJjg45nDwdBnTT7l3yOKs1XCFfQYpiaICffZQTPQ35FrK3ZmE2ZXAuJeRk0pITOojTp5UV2nEh55IbJTOiM+pHq5OTcIccTf6oQj5VyKcK+VQhnyrkU72M/Av4q2jEmXlIRgAAAABJRU5ErkJggg==', 'PAGO', '2025-12-02 00:14:22', '2025-12-02 00:15:32');
+(1, 1, 1, 10, 20.00, 3.50, 23.50, 'Fernando teste', '03595350111', NULL, NULL, 'pay_0w2ri5oufxfam39f', '00020101021226820014br.gov.bcb.pix2560pix-h.asaas.com/qr/cobv/0fed7e68-e85f-4994-8454-593ec43ce4d75204000053039865802BR592355225041 FERNANDO AGUIA6010Planaltina61087375420362070503***63046FF9', 'iVBORw0KGgoAAAANSUhEUgAAAcIAAAHCAQAAAABUY/ToAAADDElEQVR4Xu2VS47cQAxDvfP9b5Rjeec0H6Vqd4CggtlEDVB2u/Th4yxKQY77h/Hr+LPzrxFyFyF3EXIXIXcRchf/jbwO4ryvk+LU6Uxf+j6WMuRk0sJTk8VIRI0ds2UZcjhZXal9026YZorfkw85ntSJpLQGO8U65BeR1n6kj/LtGXI6eXe3FwACvdp8qEsZcjRZymv/LM+Qf3kGkCt05/R11/zKbzXeEXIseXkPrDr4/5WMO3dDPZtgFHIyiXTdNAoyWyxbGqUNOZhk6FHhAniNghfdxiEnk+hJnQkpFSyM/pkvacixpAk0Bvr2VXWjFqFNQ84lya2QB8Cj9sx/AAuqkGNJqRXNceMWvVNZlBtoyLEkWZ3IZXJZ98jrT4ScT16Wo7Wweoty3VnIySRhQrgc8MBLcqQo2j/kYNJDy61aHRnZ7GNTQo4mqzCh2icd8xoZxyfkZLLFasmlJFI1wZ7YXo2Qw0mxflFC2Ek8tb7qSBZyNKlxXf0af9TCMFXLaMi5pK/Za1BE8T4bxDHkeFKARxgcdkCumQ+P/YScTaqrwy7Nl4mVjw5lyLEkt8vd16Q0brEmNmyN0JBjSXK9Gp6d24KvlGwHv8cmhJxJ0hBnuZJjXT/cY1FIQk4mkdPW1F9p3aTDU7mQkGNJidRqBaUNP0GhyEIOJw2ug7eY5dEWIaeTlIglV30seqWYcIScTboGkIPg7unErJbkvRwhB5MswUmz5FKvhudW2CLkYPIqqFMfEqI+ZNO7YKOQk0n1qzZjjPpmH9gDOdQs5HSSCge0fEXXseqahpxMMnn1fcekdHT1ZcUymKQXcjIJciFU7t9pC3R8lo3ykGPJAg1f4IIJXICqg2XIyWQHrCZC2wkfJ/ibCzmYfNyx7l1wEXaBsqJdQk4muVwuH2nr7FlSO5CjDzmYfCn6yktUIc1VK1EdaUN+DcnQAK91hB09DfkFJKf0y8Cq257k1Qk5mXRLjxhU8F26ai/0IeeSB/Hag1LLg7I6ZDhYHXI0+aMIuYuQuwi5i5C7CLmLLyN/A4dB2FR1oNZdAAAAAElFTkSuQmCC', 'PAGO', '2025-12-21 23:18:48', '2025-12-21 23:22:32'),
+(2, 1, 1, 80, 160.00, 3.50, 163.50, 'Fernando', '86961906028', NULL, NULL, 'pay_uds0ce2y7p9dnmm5', '00020101021226820014br.gov.bcb.pix2560pix-h.asaas.com/qr/cobv/033f0798-bb14-492e-8c3c-4a8778cc65cc5204000053039865802BR592355225041 FERNANDO AGUIA6010Planaltina61087375420362070503***63040776', 'iVBORw0KGgoAAAANSUhEUgAAAcIAAAHCAQAAAABUY/ToAAADEUlEQVR4Xu2TS47kMAxDs8v9bzTH8q6m+Cg56QYaGfRmVABVTqwPH2th53j9Mv4c3zv/GiGfIuRThHyKkE8R8in+G7kO4lR6votzKVV+ani+s9puypBzyZuQgJZBYczuliFnk90l00G7QeEpfnc+5Hhy+QOuGvy4UsYhP4hU1howR5WSh/wM8uWuf5tAr4a7dm59yLlkKTf78297hvzhN4C8hY+ajaf8duOKkGNJztenrKG/5K6XHq1uyyjkZBJxEa10exusMsUi5HSyqJ6xAIyCF93KkJPJQjykMtQsTNlZH3I4eQjVKgfDu7Fd6YYcTNacc1YwKrAdyx4LqpCDSRgUmnDi2HUK3o42CjmWrCayug1gVXaOsP4g5GASRHUplm7G6fetd92LkKNJpNJc0B33xNa6Ca5CjiVV+3OWXv3FHAyerR1tFHIsqXBTssLb44THHhyfkJNJ6479RvKVUGUrGiFHk6Tsy2cNUTZd620v1CHHkrQb4QJUXR3q3ZMk5GRSmZ92ULMOXXuDviAh55Nrn75yB3JV3kSWRcjRJCinXAi9Onf0alwdypBzya+MqrPuxeGLUReiJKAhx5Lqbvwt4qw58vJgWkiVIeeSCqkK4nMWgSXfs123nzohx5JQEoqQQqNKpcWQX5uHnExKRbcSCPrfwP0PISeTru0gIahMYLZHW4ScTlp9lgAjb+VAiknNQk4mxSH1FVC/+JpB2FaLCDmWbIUw6ZZsbhs+5SpDWYWcSzKBZgQrK/RuULott5CTyW7UsBHNt5tvAjOjIceSrvWW7qB4AZdfWVtlMORkEiXjy0ishEAytKVXyNGkNABa/Zy2QFeWZaM85FiyQAGSMlTuw2dYUzdCziY7JJJCL/Hq2McJ/uZCDiavM0ZIbcIuUFa0S8jJJIdbSFkAtwcpDspDjieX5DplXKjLxGOpb7YhP4M8fBmwkIeWdYQdPQ35AaQ12lrSLTzJqxNyMumWlIcQqeBpiLdbeaEPOZeU/K1ofecsLJXhYHXI0eSvIuRThHyKkE8R8ilCPsWHkX8B1OVoxID9QrMAAAAASUVORK5CYII=', 'AGUARDANDO', '2025-12-22 00:32:16', NULL);
 
 -- --------------------------------------------------------
 
@@ -158,8 +177,7 @@ CREATE TABLE `posts` (
 --
 
 INSERT INTO `posts` (`id`, `usuario_id`, `categoria_id`, `capa`, `slug`, `titulo`, `texto`, `status`, `visitas`, `votos`, `receita`, `cadastrado_em`, `atualizado_em`, `ultima_visita_em`) VALUES
-(1, 1, 1, 'miss-gabriela-6927866ca06a4.webp', 'adriana', 'Adriana', '<p>Gabriela</p>', 1, 23, 40, 30.00, '2025-11-26 22:59:56', '2025-12-01 23:40:52', '2025-12-03 04:23:43'),
-(2, 1, 1, 'miss-daniela-69278cf611b91.webp', 'daniela', 'Daniela', '<p><span style=\"font-family:Courier New,Courier,monospace\">Miss è naturall de brasilia contando a hisotoria dela</span></p>', 1, 18, 0, 0.00, '2025-11-26 23:27:50', '2025-12-01 23:40:21', '2025-12-04 16:38:18');
+(1, 1, 1, 'beatriz-alvarenga-6948a61280d2d.webp', 'beatriz-alvarenga', '<p>Beatriz Alvarenga</p>', '<p>Beatriz tem 19 anos, é estudante de Arquitetura e apaixonada por projetos sociais voltados para a educação infantil.</p>', 1, 9, 10, 23.50, '2025-12-21 22:59:46', NULL, '2025-12-22 00:39:49');
 
 -- --------------------------------------------------------
 
@@ -197,6 +215,12 @@ ALTER TABLE `categorias`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `slug` (`slug`),
   ADD KEY `idx_slug` (`slug`) USING BTREE;
+
+--
+-- Índices de tabela `configuracoes`
+--
+ALTER TABLE `configuracoes`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Índices de tabela `landing_page`
@@ -245,7 +269,13 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de tabela `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de tabela `configuracoes`
+--
+ALTER TABLE `configuracoes`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `landing_page`
@@ -263,13 +293,13 @@ ALTER TABLE `pacotes_votos`
 -- AUTO_INCREMENT de tabela `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de tabela `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `usuarios`
