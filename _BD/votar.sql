@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Tempo de geração: 22/12/2025 às 03:41
+-- Tempo de geração: 23/12/2025 às 21:32
 -- Versão do servidor: 9.5.0
 -- Versão do PHP: 8.4.14
 
@@ -96,6 +96,31 @@ INSERT INTO `landing_page` (`id`, `texto_topo`, `titulo_principal`, `subtitulo`,
 -- --------------------------------------------------------
 
 --
+-- Estrutura para tabela `logs_pagamento`
+--
+
+CREATE TABLE `logs_pagamento` (
+  `id` int NOT NULL,
+  `pedido_id` int DEFAULT NULL COMMENT 'ID do pedido relacionado',
+  `tipo_pagamento` enum('PIX','CARTAO','BOLETO') NOT NULL COMMENT 'Tipo de pagamento',
+  `etapa` varchar(50) NOT NULL COMMENT 'Etapa do processo',
+  `status` enum('SUCESSO','ERRO','AVISO') NOT NULL COMMENT 'Status da operação',
+  `mensagem` text COMMENT 'Mensagem principal do log',
+  `codigo_erro` varchar(50) DEFAULT NULL COMMENT 'Código do erro retornado pelo Asaas',
+  `request_data` json DEFAULT NULL COMMENT 'Dados enviados para o Asaas',
+  `response_data` json DEFAULT NULL COMMENT 'Resposta completa do Asaas',
+  `asaas_id` varchar(100) DEFAULT NULL COMMENT 'ID da transação no Asaas',
+  `endpoint` varchar(255) DEFAULT NULL COMMENT 'URL do endpoint chamado',
+  `http_code` int DEFAULT NULL COMMENT 'Código HTTP da resposta',
+  `tempo_resposta` int DEFAULT NULL COMMENT 'Tempo de resposta em ms',
+  `ip_usuario` varchar(45) DEFAULT NULL COMMENT 'IP do usuário',
+  `user_agent` varchar(255) DEFAULT NULL COMMENT 'User Agent do navegador',
+  `cadastrado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Logs de todas as operações de pagamento';
+
+-- --------------------------------------------------------
+
+--
 -- Estrutura para tabela `pacotes_votos`
 --
 
@@ -147,7 +172,16 @@ CREATE TABLE `pedidos` (
 
 INSERT INTO `pedidos` (`id`, `post_id`, `pacote_id`, `total_votos`, `valor_subtotal`, `valor_taxa`, `valor_total`, `cliente_nome`, `cliente_cpf`, `cliente_email`, `cliente_telefone`, `asaas_id`, `pix_qrcode`, `pix_img`, `status`, `cadastrado_em`, `pago_em`) VALUES
 (1, 1, 1, 10, 20.00, 3.50, 23.50, 'Fernando teste', '03595350111', NULL, NULL, 'pay_0w2ri5oufxfam39f', '00020101021226820014br.gov.bcb.pix2560pix-h.asaas.com/qr/cobv/0fed7e68-e85f-4994-8454-593ec43ce4d75204000053039865802BR592355225041 FERNANDO AGUIA6010Planaltina61087375420362070503***63046FF9', 'iVBORw0KGgoAAAANSUhEUgAAAcIAAAHCAQAAAABUY/ToAAADDElEQVR4Xu2VS47cQAxDvfP9b5Rjeec0H6Vqd4CggtlEDVB2u/Th4yxKQY77h/Hr+LPzrxFyFyF3EXIXIXcRchf/jbwO4ryvk+LU6Uxf+j6WMuRk0sJTk8VIRI0ds2UZcjhZXal9026YZorfkw85ntSJpLQGO8U65BeR1n6kj/LtGXI6eXe3FwACvdp8qEsZcjRZymv/LM+Qf3kGkCt05/R11/zKbzXeEXIseXkPrDr4/5WMO3dDPZtgFHIyiXTdNAoyWyxbGqUNOZhk6FHhAniNghfdxiEnk+hJnQkpFSyM/pkvacixpAk0Bvr2VXWjFqFNQ84lya2QB8Cj9sx/AAuqkGNJqRXNceMWvVNZlBtoyLEkWZ3IZXJZ98jrT4ScT16Wo7Wweoty3VnIySRhQrgc8MBLcqQo2j/kYNJDy61aHRnZ7GNTQo4mqzCh2icd8xoZxyfkZLLFasmlJFI1wZ7YXo2Qw0mxflFC2Ek8tb7qSBZyNKlxXf0af9TCMFXLaMi5pK/Za1BE8T4bxDHkeFKARxgcdkCumQ+P/YScTaqrwy7Nl4mVjw5lyLEkt8vd16Q0brEmNmyN0JBjSXK9Gp6d24KvlGwHv8cmhJxJ0hBnuZJjXT/cY1FIQk4mkdPW1F9p3aTDU7mQkGNJidRqBaUNP0GhyEIOJw2ug7eY5dEWIaeTlIglV30seqWYcIScTboGkIPg7unErJbkvRwhB5MswUmz5FKvhudW2CLkYPIqqFMfEqI+ZNO7YKOQk0n1qzZjjPpmH9gDOdQs5HSSCge0fEXXseqahpxMMnn1fcekdHT1ZcUymKQXcjIJciFU7t9pC3R8lo3ykGPJAg1f4IIJXICqg2XIyWQHrCZC2wkfJ/ibCzmYfNyx7l1wEXaBsqJdQk4muVwuH2nr7FlSO5CjDzmYfCn6yktUIc1VK1EdaUN+DcnQAK91hB09DfkFJKf0y8Cq257k1Qk5mXRLjxhU8F26ai/0IeeSB/Hag1LLg7I6ZDhYHXI0+aMIuYuQuwi5i5C7CLmLLyN/A4dB2FR1oNZdAAAAAElFTkSuQmCC', 'PAGO', '2025-12-21 23:18:48', '2025-12-21 23:22:32'),
-(2, 1, 1, 80, 160.00, 3.50, 163.50, 'Fernando', '86961906028', NULL, NULL, 'pay_uds0ce2y7p9dnmm5', '00020101021226820014br.gov.bcb.pix2560pix-h.asaas.com/qr/cobv/033f0798-bb14-492e-8c3c-4a8778cc65cc5204000053039865802BR592355225041 FERNANDO AGUIA6010Planaltina61087375420362070503***63040776', 'iVBORw0KGgoAAAANSUhEUgAAAcIAAAHCAQAAAABUY/ToAAADEUlEQVR4Xu2TS47kMAxDs8v9bzTH8q6m+Cg56QYaGfRmVABVTqwPH2th53j9Mv4c3zv/GiGfIuRThHyKkE8R8in+G7kO4lR6votzKVV+ani+s9puypBzyZuQgJZBYczuliFnk90l00G7QeEpfnc+5Hhy+QOuGvy4UsYhP4hU1howR5WSh/wM8uWuf5tAr4a7dm59yLlkKTf78297hvzhN4C8hY+ajaf8duOKkGNJztenrKG/5K6XHq1uyyjkZBJxEa10exusMsUi5HSyqJ6xAIyCF93KkJPJQjykMtQsTNlZH3I4eQjVKgfDu7Fd6YYcTNacc1YwKrAdyx4LqpCDSRgUmnDi2HUK3o42CjmWrCayug1gVXaOsP4g5GASRHUplm7G6fetd92LkKNJpNJc0B33xNa6Ca5CjiVV+3OWXv3FHAyerR1tFHIsqXBTssLb44THHhyfkJNJ6479RvKVUGUrGiFHk6Tsy2cNUTZd620v1CHHkrQb4QJUXR3q3ZMk5GRSmZ92ULMOXXuDviAh55Nrn75yB3JV3kSWRcjRJCinXAi9Onf0alwdypBzya+MqrPuxeGLUReiJKAhx5Lqbvwt4qw58vJgWkiVIeeSCqkK4nMWgSXfs123nzohx5JQEoqQQqNKpcWQX5uHnExKRbcSCPrfwP0PISeTru0gIahMYLZHW4ScTlp9lgAjb+VAiknNQk4mxSH1FVC/+JpB2FaLCDmWbIUw6ZZsbhs+5SpDWYWcSzKBZgQrK/RuULott5CTyW7UsBHNt5tvAjOjIceSrvWW7qB4AZdfWVtlMORkEiXjy0ishEAytKVXyNGkNABa/Zy2QFeWZaM85FiyQAGSMlTuw2dYUzdCziY7JJJCL/Hq2McJ/uZCDiavM0ZIbcIuUFa0S8jJJIdbSFkAtwcpDspDjieX5DplXKjLxGOpb7YhP4M8fBmwkIeWdYQdPQ35AaQ12lrSLTzJqxNyMumWlIcQqeBpiLdbeaEPOZeU/K1ofecsLJXhYHXI0eSvIuRThHyKkE8R8ilCPsWHkX8B1OVoxID9QrMAAAAASUVORK5CYII=', 'AGUARDANDO', '2025-12-22 00:32:16', NULL);
+(2, 1, 1, 80, 160.00, 3.50, 163.50, 'Fernando', '86961906028', NULL, NULL, 'pay_uds0ce2y7p9dnmm5', '00020101021226820014br.gov.bcb.pix2560pix-h.asaas.com/qr/cobv/033f0798-bb14-492e-8c3c-4a8778cc65cc5204000053039865802BR592355225041 FERNANDO AGUIA6010Planaltina61087375420362070503***63040776', 'iVBORw0KGgoAAAANSUhEUgAAAcIAAAHCAQAAAABUY/ToAAADEUlEQVR4Xu2TS47kMAxDs8v9bzTH8q6m+Cg56QYaGfRmVABVTqwPH2th53j9Mv4c3zv/GiGfIuRThHyKkE8R8in+G7kO4lR6votzKVV+ani+s9puypBzyZuQgJZBYczuliFnk90l00G7QeEpfnc+5Hhy+QOuGvy4UsYhP4hU1howR5WSh/wM8uWuf5tAr4a7dm59yLlkKTf78297hvzhN4C8hY+ajaf8duOKkGNJztenrKG/5K6XHq1uyyjkZBJxEa10exusMsUi5HSyqJ6xAIyCF93KkJPJQjykMtQsTNlZH3I4eQjVKgfDu7Fd6YYcTNacc1YwKrAdyx4LqpCDSRgUmnDi2HUK3o42CjmWrCayug1gVXaOsP4g5GASRHUplm7G6fetd92LkKNJpNJc0B33xNa6Ca5CjiVV+3OWXv3FHAyerR1tFHIsqXBTssLb44THHhyfkJNJ6479RvKVUGUrGiFHk6Tsy2cNUTZd620v1CHHkrQb4QJUXR3q3ZMk5GRSmZ92ULMOXXuDviAh55Nrn75yB3JV3kSWRcjRJCinXAi9Onf0alwdypBzya+MqrPuxeGLUReiJKAhx5Lqbvwt4qw58vJgWkiVIeeSCqkK4nMWgSXfs123nzohx5JQEoqQQqNKpcWQX5uHnExKRbcSCPrfwP0PISeTru0gIahMYLZHW4ScTlp9lgAjb+VAiknNQk4mxSH1FVC/+JpB2FaLCDmWbIUw6ZZsbhs+5SpDWYWcSzKBZgQrK/RuULott5CTyW7UsBHNt5tvAjOjIceSrvWW7qB4AZdfWVtlMORkEiXjy0ishEAytKVXyNGkNABa/Zy2QFeWZaM85FiyQAGSMlTuw2dYUzdCziY7JJJCL/Hq2McJ/uZCDiavM0ZIbcIuUFa0S8jJJIdbSFkAtwcpDspDjieX5DplXKjLxGOpb7YhP4M8fBmwkIeWdYQdPQ35AaQ12lrSLTzJqxNyMumWlIcQqeBpiLdbeaEPOZeU/K1ofecsLJXhYHXI0eSvIuRThHyKkE8R8ilCPsWHkX8B1OVoxID9QrMAAAAASUVORK5CYII=', 'AGUARDANDO', '2025-12-22 00:32:16', NULL),
+(3, 1, 1, 20, 40.00, 3.50, 43.50, 'João da Silva', '12345678900', 'teste@teste.com', '11999999999', NULL, NULL, NULL, 'ERRO', '2025-12-22 22:12:47', NULL),
+(4, 1, 1, 20, 40.00, 3.50, 43.50, 'Fernando Teste', '03955350111', 'fernando@teste.com', '61988888888', NULL, NULL, NULL, 'ERRO', '2025-12-23 16:17:34', NULL),
+(5, 1, 1, 30, 60.00, 3.50, 63.50, 'Fernando Teste', '03955350111', 'fernando@teste.com', '61988888888', NULL, NULL, NULL, 'ERRO', '2025-12-23 16:27:22', NULL),
+(6, 1, 1, 30, 60.00, 3.50, 63.50, 'Fernando Teste', '03955350111', 'fernando@teste.com', '61988888888', NULL, NULL, NULL, 'AGUARDANDO', '2025-12-23 16:34:33', NULL),
+(7, 1, 1, 50, 100.00, 3.50, 103.50, 'Fernando teste', '03955350111', 'fernando@teste.com', '61988888888', NULL, NULL, NULL, 'AGUARDANDO', '2025-12-23 16:37:02', NULL),
+(8, 1, 1, 50, 100.00, 3.50, 103.50, 'Fernando Teste', '03595350111', 'fernando@teste.com', '61988888888', NULL, NULL, NULL, 'AGUARDANDO', '2025-12-23 16:39:55', NULL),
+(9, 1, 1, 80, 160.00, 3.50, 163.50, 'Fernando Teste', '03595350111', 'fernando@teste.com', '61988888888', 'pay_j7e0ldoretc8b32b', NULL, NULL, 'PAGO', '2025-12-23 16:54:45', '2025-12-23 16:54:48'),
+(10, 1, 1, 180, 360.00, 3.50, 363.50, 'Fernando Teste', '03595350111', 'fernando@teste.com', '61988888888', NULL, NULL, NULL, 'AGUARDANDO', '2025-12-23 17:16:29', NULL),
+(11, 1, 1, 90, 180.00, 3.50, 183.50, 'Fernando Teste', '03595350111', 'fernando@teste.com', '61988888888', 'pay_cbehpb4ge8u6j5xv', NULL, NULL, 'PAGO', '2025-12-23 17:18:26', '2025-12-23 17:18:29');
 
 -- --------------------------------------------------------
 
@@ -177,7 +211,7 @@ CREATE TABLE `posts` (
 --
 
 INSERT INTO `posts` (`id`, `usuario_id`, `categoria_id`, `capa`, `slug`, `titulo`, `texto`, `status`, `visitas`, `votos`, `receita`, `cadastrado_em`, `atualizado_em`, `ultima_visita_em`) VALUES
-(1, 1, 1, 'beatriz-alvarenga-6948a61280d2d.webp', 'beatriz-alvarenga', '<p>Beatriz Alvarenga</p>', '<p>Beatriz tem 19 anos, é estudante de Arquitetura e apaixonada por projetos sociais voltados para a educação infantil.</p>', 1, 9, 10, 23.50, '2025-12-21 22:59:46', NULL, '2025-12-22 00:39:49');
+(1, 1, 1, 'beatriz-alvarenga-6948a61280d2d.webp', 'beatriz-alvarenga', '<p>Beatriz Alvarenga</p>', '<p>Beatriz tem 19 anos, é estudante de Arquitetura e apaixonada por projetos sociais voltados para a educação infantil.</p>', 1, 27, 180, 370.50, '2025-12-21 22:59:46', NULL, '2025-12-23 17:19:26');
 
 -- --------------------------------------------------------
 
@@ -202,7 +236,7 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `level`, `nome`, `email`, `senha`, `status`, `ultimo_login`, `cadastrado_em`, `atualizado_em`) VALUES
-(1, 3, 'Administrador', 'missecominasgerais@gmail.com', '$2y$10$ngdGZJBu5faoMzxfdvTzG.ppuDZ0DeE1MXye8FX2bHywpBbNFQT4q', 1, '2025-12-21 19:04:28', '2025-11-23 02:28:38', '2025-11-26 19:57:27');
+(1, 3, 'Administrador', 'missecominasgerais@gmail.com', '$2y$10$ngdGZJBu5faoMzxfdvTzG.ppuDZ0DeE1MXye8FX2bHywpBbNFQT4q', 1, '2025-12-23 17:03:33', '2025-11-23 02:28:38', '2025-11-26 19:57:27');
 
 --
 -- Índices para tabelas despejadas
@@ -227,6 +261,20 @@ ALTER TABLE `configuracoes`
 --
 ALTER TABLE `landing_page`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `logs_pagamento`
+--
+ALTER TABLE `logs_pagamento`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_pedido` (`pedido_id`),
+  ADD KEY `idx_tipo_status` (`tipo_pagamento`,`status`),
+  ADD KEY `idx_etapa` (`etapa`),
+  ADD KEY `idx_data` (`cadastrado_em`),
+  ADD KEY `idx_asaas` (`asaas_id`),
+  ADD KEY `idx_status` (`status`),
+  ADD KEY `idx_tipo_etapa` (`tipo_pagamento`,`etapa`),
+  ADD KEY `idx_erro` (`status`,`codigo_erro`);
 
 --
 -- Índices de tabela `pacotes_votos`
@@ -284,6 +332,12 @@ ALTER TABLE `landing_page`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT de tabela `logs_pagamento`
+--
+ALTER TABLE `logs_pagamento`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de tabela `pacotes_votos`
 --
 ALTER TABLE `pacotes_votos`
@@ -293,7 +347,7 @@ ALTER TABLE `pacotes_votos`
 -- AUTO_INCREMENT de tabela `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de tabela `posts`
@@ -310,6 +364,12 @@ ALTER TABLE `usuarios`
 --
 -- Restrições para tabelas despejadas
 --
+
+--
+-- Restrições para tabelas `logs_pagamento`
+--
+ALTER TABLE `logs_pagamento`
+  ADD CONSTRAINT `fk_logs_pedido` FOREIGN KEY (`pedido_id`) REFERENCES `pedidos` (`id`) ON DELETE SET NULL;
 
 --
 -- Restrições para tabelas `pedidos`

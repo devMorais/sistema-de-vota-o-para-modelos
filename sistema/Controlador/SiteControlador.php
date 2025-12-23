@@ -14,7 +14,6 @@ use sistema\Modelo\ConfiguracaoModelo;
 use sistema\Modelo\LandingPageModelo;
 use sistema\Modelo\PacoteModelo;
 use sistema\Nucleo\Conexao;
-use sistema\Suporte\XDebug;
 
 class SiteControlador extends Controlador
 {
@@ -24,10 +23,6 @@ class SiteControlador extends Controlador
         parent::__construct('templates/site/views');
     }
 
-
-    /**
-     * Landing Page (Capa do Site)
-     */
     public function landing(): void
     {
         $landingModelo = new LandingPageModelo();
@@ -54,30 +49,6 @@ class SiteControlador extends Controlador
             'urlImagemFundo' => $urlImagemFundo
         ]);
     }
-
-    /**
-     * Home Page
-     */
-    // public function index(?int $pagina = null): void
-    // {
-    //     $pagina = $pagina ?? 1;
-
-    //     $postModelo = new PostModelo();
-    //     $total = $postModelo->busca("status = :s", "s=1")->total();
-    //     $paginar = new Paginar(Helpers::url('page'), $pagina, 24, 3, $total);
-    //     $postsParaCards = $postModelo->busca("status = 1")
-    //         ->ordem('titulo ASC')
-    //         ->limite($paginar->limite())
-    //         ->offset($paginar->offset())
-    //         ->resultado(true);
-
-    //     echo $this->template->renderizar('index.html', [
-    //         'posts' => $postsParaCards,
-    //         'paginacao' => $paginar->renderizar(),
-    //         'paginacaoInfo' => $paginar->info(),
-    //         'categorias' => $this->categorias(),
-    //     ]);
-    // }
 
     public function index(?int $pagina = null): void
     {
@@ -108,9 +79,6 @@ class SiteControlador extends Controlador
         ]);
     }
 
-    /**
-     * Busca posts 
-     */
     public function buscar(): void
     {
         $busca = filter_input(INPUT_POST, 'busca', FILTER_DEFAULT);
@@ -143,9 +111,6 @@ class SiteControlador extends Controlador
         }
     }
 
-    /**
-     * Busca post por ID
-     */
     public function post(string $categoria, string $slug): void
     {
         $post = (new PostModelo())->buscaPorSlug($slug);
@@ -165,17 +130,11 @@ class SiteControlador extends Controlador
         ]);
     }
 
-    /**
-     * Categorias
-     */
     public function categorias(): ?array
     {
         return (new CategoriaModelo())->busca("status = 1")->resultado(true);
     }
 
-    /**
-     * Lista posts por categoria
-     */
     public function categoria(string $slug, ?int $pagina = null): void
     {
         $categoria = (new CategoriaModelo())->buscaPorSlug($slug);
@@ -198,9 +157,6 @@ class SiteControlador extends Controlador
         ]);
     }
 
-    /**
-     * Sobre
-     */
     public function sobre(): void
     {
         echo $this->template->renderizar('sobre.html', [
@@ -209,9 +165,6 @@ class SiteControlador extends Controlador
         ]);
     }
 
-    /**
-     * ERRO 404
-     */
     public function erro404(): void
     {
         echo $this->template->renderizar('404.html', [
@@ -220,9 +173,6 @@ class SiteControlador extends Controlador
         ]);
     }
 
-    /**
-     * Processa o pré-checkout e exibe a tela de pagamento
-     */
     public function checkout(): void
     {
         $config = (new ConfiguracaoModelo())->buscaPorId(1);
@@ -306,17 +256,12 @@ class SiteControlador extends Controlador
         ]);
     }
 
-    /**
-     * Processa o pagamento e gera o PIX
-     */
     public function pagamentoProcessar(): void
     {
         $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
 
         if (!$this->validarDadosPagamento($dados)) {
-
             $post = (new PostModelo())->buscaPorId($dados['post_id']);
-
             if (!$post) {
                 Helpers::redirecionar();
                 return;
@@ -335,28 +280,20 @@ class SiteControlador extends Controlador
                 'totalGeral'    => number_format((float)$dados['valor_total'], 2, ',', '.'),
                 'form'          => $dados
             ]);
-
             return;
         }
 
         $pedido = new PedidoModelo();
-
         $pedido->post_id = $dados['post_id'];
         $pedido->pacote_id = !empty($dados['pacote_id']) ? $dados['pacote_id'] : null;
-
         $pedido->valor_subtotal = $dados['valor_subtotal'];
-        $pedido->valor_taxa     = $dados['valor_taxa'];
-        $pedido->valor_total    = $dados['valor_total'];
-
+        $pedido->valor_taxa = $dados['valor_taxa'];
+        $pedido->valor_total = $dados['valor_total'];
         $pedido->total_votos = $dados['total_votos'];
-
         $pedido->cliente_nome = $dados['nome'];
         $pedido->cliente_cpf = preg_replace('/[^0-9]/', '', $dados['cpf']);
-        // $pedido->cliente_email = $dados['email'];
-        $pedido->cliente_email = null;
-        // $pedido->cliente_telefone = preg_replace('/[^0-9]/', '', $dados['telefone']);
-        $pedido->cliente_telefone = null;
-        // $pedido->status = 'AGUARDANDO';
+        $pedido->cliente_email = $dados['email'] ?? null;
+        $pedido->cliente_telefone = isset($dados['telefone']) ? preg_replace('/[^0-9]/', '', $dados['telefone']) : null;
 
         if (!$pedido->salvar()) {
             $this->mensagem->erro('Erro ao salvar pedido no banco. Tente novamente.')->flash();
@@ -364,50 +301,69 @@ class SiteControlador extends Controlador
             return;
         }
 
-        $asaas = new Asaas();
+        $asaas = new Asaas($pedido->id);
 
-        $resultado = $asaas->gerarPixVenda(
-            [
-                'nome' => $pedido->cliente_nome,
-                'cpf' => $pedido->cliente_cpf,
-                'email' => $pedido->cliente_email,
-                'telefone' => $pedido->cliente_telefone
-            ],
-            (float) $pedido->valor_total,
-            "Votos para " . $dados['post_titulo'],
-            $pedido->id
-        );
+        $formaPagamento = $dados['forma_pagamento'] ?? 'PIX';
 
-        if ($resultado['erro']) {
-            $pedido->status = 'ERRO';
-            $pedido->salvar();
-
-            $this->mensagem->erro('Erro no Asaas: ' . $resultado['mensagem'])->flash();
-            $post = (new PostModelo())->buscaPorId($dados['post_id']);
-            if ($post) {
-                Helpers::redirecionar('post/' . $post->categoria()->slug . '/' . $post->slug);
+        try {
+            if ($formaPagamento === 'CREDIT_CARD') {
+                $resultado = $this->processarPagamentoCartao($asaas, $pedido, $dados);
             } else {
-                Helpers::redirecionar();
+                $resultado = $this->processarPagamentoPix($asaas, $pedido, $dados);
             }
 
-            return;
+            if ($resultado['erro']) {
+                $pedido->status = 'ERRO';
+                $pedido->salvar();
+
+                $this->mensagem->erro('Erro: ' . $resultado['mensagem'])->flash();
+                $post = (new PostModelo())->buscaPorId($dados['post_id']);
+                if ($post) {
+                    Helpers::redirecionar('post/' . $post->categoria()->slug . '/' . $post->slug);
+                } else {
+                    Helpers::redirecionar();
+                }
+                return;
+            }
+
+            $pedido->asaas_id = $resultado['id_transacao'];
+
+            if ($formaPagamento === 'PIX') {
+                $pedido->pix_qrcode = $resultado['payload'];
+                $pedido->pix_img = $resultado['encodedImage'];
+            }
+
+            if (isset($resultado['status'])) {
+                if ($resultado['status'] === 'CONFIRMED' || $resultado['status'] === 'RECEIVED') {
+                    $pedido->status = 'PAGO';
+                    $pedido->pago_em = date('Y-m-d H:i:s');
+
+                    $post = new PostModelo();
+                    $post->id = $pedido->post_id;
+                    $post->adicionarVotos($pedido->total_votos);
+                    $post->adicionarReceita((float)$pedido->valor_total);
+                } else {
+                    $pedido->status = 'AGUARDANDO';
+                }
+            }
+
+            $pedido->salvar();
+
+            Helpers::redirecionar('pagamento/' . $pedido->id);
+        } catch (\Exception $e) {
+            error_log('Erro no pagamento: ' . $e->getMessage());
+
+            $pedido->status = 'ERRO';
+            $pedido->salvar();
+            $this->mensagem->erro('Erro ao processar pagamento. Tente novamente.')->flash();
+            Helpers::redirecionar();
         }
-
-        $pedido->asaas_id = $resultado['id_transacao'];
-        $pedido->pix_qrcode = $resultado['payload'];
-        $pedido->pix_img = $resultado['encodedImage'];
-        $pedido->salvar();
-
-        // Redireciona para a página de visualização (Evita problema do F5)
-        Helpers::redirecionar('pagamento/' . $pedido->id);
     }
 
-    /**
-     * Exibe a tela de pagamento de um pedido existente (GET)
-     */
     public function pagamento(int $idPedido): void
     {
         $pedido = (new PedidoModelo())->buscaPorId($idPedido);
+        $config = (new ConfiguracaoModelo())->buscaPorId(1);
 
         if (!$pedido) {
             $this->mensagem->alerta('Pedido não encontrado.')->flash();
@@ -415,17 +371,34 @@ class SiteControlador extends Controlador
             return;
         }
 
-        if (empty($pedido->pix_qrcode)) {
-            $this->mensagem->erro('Este pedido não possui dados de pagamento válidos.')->flash();
-            Helpers::redirecionar();
+        $whatsapp = preg_replace('/[^0-9]/', '', $config->whatsapp ?? '');
+
+        if ($pedido->status === 'ERRO') {
+            echo $this->template->renderizar('pagamento.html', [
+                'titulo' => 'Erro no Pagamento',
+                'pedido' => $pedido,
+                'whatsapp' => $whatsapp
+            ]);
+            return;
+        }
+
+        if (!empty($pedido->pix_qrcode)) {
+            echo $this->template->renderizar('pagamento.html', [
+                'titulo' => 'Pagamento PIX',
+                'pedido' => $pedido,
+                'copiaCola' => $pedido->pix_qrcode,
+                'imagemQrcode' => $pedido->pix_img,
+                'tipoPagamento' => 'PIX',
+                'whatsapp' => $whatsapp
+            ]);
             return;
         }
 
         echo $this->template->renderizar('pagamento.html', [
-            'titulo'       => 'Pagamento PIX',
-            'pedido'       => $pedido,
-            'copiaCola'    => $pedido->pix_qrcode,
-            'imagemQrcode' => $pedido->pix_img
+            'titulo' => 'Processando Pagamento',
+            'pedido' => $pedido,
+            'tipoPagamento' => 'CARTAO',
+            'whatsapp' => $whatsapp
         ]);
     }
 
@@ -448,7 +421,7 @@ class SiteControlador extends Controlador
             Helpers::json('pago', 'Pagamento já confirmado');
         }
 
-        $asaas = new Asaas();
+        $asaas = new Asaas($pedido->id);
         $cobranca = $asaas->consultarCobranca($pedido->asaas_id);
 
         if (isset($cobranca->status) && ($cobranca->status == 'RECEIVED' || $cobranca->status == 'CONFIRMED')) {
@@ -480,6 +453,34 @@ class SiteControlador extends Controlador
             }
         } else {
             Helpers::json('aguardando', 'Aguardando...');
+        }
+    }
+
+    public function pagamentoErro(): void
+    {
+        $pedidoId = filter_input(INPUT_POST, 'pedido_id', FILTER_VALIDATE_INT);
+
+        if (!$pedidoId) {
+            Helpers::json('erro', 'ID inválido');
+            return;
+        }
+
+        $pdo = Conexao::getInstancia();
+        $stmt = $pdo->prepare("
+                SELECT mensagem 
+                FROM logs_pagamento 
+                WHERE pedido_id = :pedido_id 
+                AND status = 'ERRO' 
+                ORDER BY cadastrado_em DESC 
+                LIMIT 1");
+
+        $stmt->execute([':pedido_id' => $pedidoId]);
+        $log = $stmt->fetch(\PDO::FETCH_OBJ);
+
+        if ($log && $log->mensagem) {
+            echo json_encode(['mensagem' => $log->mensagem]);
+        } else {
+            echo json_encode(['mensagem' => 'Não foi possível processar seu pagamento. Tente novamente.']);
         }
     }
 
@@ -572,11 +573,6 @@ class SiteControlador extends Controlador
         ]);
     }
 
-    /**
-     * Valida os dados submetidos no formulário de pagamento
-     * @param array|null $dados
-     * @return bool
-     */
     private function validarDadosPagamento(?array $dados): bool
     {
         if (!$dados || !isset($dados['post_id']) || !isset($dados['cpf'])) {
@@ -595,11 +591,87 @@ class SiteControlador extends Controlador
             return false;
         }
 
+        $formaPagamento = $dados['forma_pagamento'] ?? 'PIX';
+        if ($formaPagamento === 'CREDIT_CARD') {
+            if (empty($dados['email']) || !Helpers::validarEmail($dados['email'])) {
+                $this->mensagem->erro('E-mail válido é obrigatório para pagamento com cartão.')->flash();
+                return false;
+            }
+
+            if (empty($dados['telefone'])) {
+                $this->mensagem->erro('Telefone é obrigatório para pagamento com cartão.')->flash();
+                return false;
+            }
+
+            $telefoneLimpo = preg_replace('/[^0-9]/', '', $dados['telefone']);
+            if (strlen($telefoneLimpo) < 10) {
+                $this->mensagem->erro('Telefone inválido.')->flash();
+                return false;
+            }
+
+            if (empty($dados['cep'])) {
+                $this->mensagem->erro('CEP é obrigatório para pagamento com cartão.')->flash();
+                return false;
+            }
+
+            $cepLimpo = preg_replace('/[^0-9]/', '', $dados['cep']);
+            if (strlen($cepLimpo) !== 8) {
+                $this->mensagem->erro('CEP inválido. Deve conter 8 dígitos.')->flash();
+                return false;
+            }
+        }
+
         if (!isset($dados['valor_total']) || (float)$dados['valor_total'] <= 0 || (int)$dados['total_votos'] <= 0) {
             $this->mensagem->erro('Erro nos valores do pedido. Tente novamente.')->flash();
             return false;
         }
 
         return true;
+    }
+
+    private function processarPagamentoPix(Asaas $asaas, PedidoModelo $pedido, array $dados): array
+    {
+        return $asaas->gerarPixVenda(
+            [
+                'nome' => $pedido->cliente_nome,
+                'cpf' => $pedido->cliente_cpf,
+                'email' => $pedido->cliente_email,
+                'telefone' => $pedido->cliente_telefone
+            ],
+            (float) $pedido->valor_total,
+            "Votos para " . $dados['post_titulo'],
+            $pedido->id
+        );
+    }
+
+    private function processarPagamentoCartao(Asaas $asaas, PedidoModelo $pedido, array $dados): array
+    {
+        if (
+            empty($dados['cartao_nome']) || empty($dados['cartao_numero']) ||
+            empty($dados['cartao_mes']) || empty($dados['cartao_ano']) ||
+            empty($dados['cartao_cvv'])
+        ) {
+            return ['erro' => true, 'mensagem' => 'Dados do cartão incompletos.'];
+        }
+
+        return $asaas->gerarCobrancaCartao(
+            [
+                'nome' => $pedido->cliente_nome,
+                'cpf' => $pedido->cliente_cpf,
+                'email' => $pedido->cliente_email,
+                'telefone' => $pedido->cliente_telefone,
+                'cep' => $dados['cep'] ?? '01310100'
+            ],
+            [
+                'nome' => $dados['cartao_nome'],
+                'numero' => $dados['cartao_numero'],
+                'mes' => $dados['cartao_mes'],
+                'ano' => $dados['cartao_ano'],
+                'cvv' => $dados['cartao_cvv']
+            ],
+            (float) $pedido->valor_total,
+            "Votos para " . $dados['post_titulo'],
+            (string) $pedido->id
+        );
     }
 }

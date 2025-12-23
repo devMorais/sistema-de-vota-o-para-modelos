@@ -7,7 +7,6 @@ use sistema\Nucleo\Modelo;
 
 /**
  * Classe PostModelo
- *
  * @author Fernando Aguiar
  */
 class PostModelo extends Modelo
