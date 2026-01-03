@@ -1,0 +1,385 @@
+{% extends 'base.html' %}
+
+{% block topo %}{% endblock %}
+{% block rodape %}{% endblock %}
+
+{% block conteudo %}
+<div class="payment-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-4">
+
+                {% if pedido.status == 'ERRO' %}
+                {# ==================== TELA DE ERRO ==================== #}
+                <div class="text-center mb-4">
+                    <i class="fa-solid fa-circle-xmark text-danger fa-3x mb-2"></i>
+                    <h4 class="fw-light text-uppercase ls-2">Erro no Pagamento</h4>
+                </div>
+
+                <div class="card card-dark p-4">
+                    <div class="alert alert-danger mb-4">
+                        <i class="fa-solid fa-exclamation-triangle fa-2x mb-3 d-block"></i>
+                        <h5 class="fw-bold">Ops! Algo deu errado</h5>
+                        <p class="mb-0 small" id="mensagem-erro">Não foi possível processar seu pagamento.</p>
+                    </div>
+
+                    <div class="border-top pt-3 mb-4">
+                        <p class="text-secondary small mb-2"><strong>Detalhes do pedido:</strong></p>
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span class="text-muted">Pedido:</span>
+                            <strong>#{{ pedido.id }}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span class="text-muted">Valor:</span>
+                            <strong>R$ {{ pedido.valor_total|number_format(2, ',', '.') }}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between small">
+                            <span class="text-muted">Candidata:</span>
+                            <strong>{{ pedido.post().titulo|striptags }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <a href="https://wa.me/{{ whatsapp }}?text=Olá!%20Tive%20um%20problema%20com%20o%20pagamento%20do%20pedido%20%23{{ pedido.id }}"
+                            target="_blank" class="btn btn-success btn-lg">
+                            <i class="fa-brands fa-whatsapp me-2"></i>
+                            Falar com Suporte
+                        </a>
+
+                        <a href="{{ url('post/' ~ pedido.post().categoria().slug ~ '/' ~ pedido.post().slug) }}"
+                            class="btn btn-outline-light btn-lg">
+                            <i class="fa-solid fa-rotate-right me-2"></i>
+                            Tentar Novamente
+                        </a>
+
+                        <a href="{{ url() }}" class="btn btn-outline-secondary">
+                            <i class="fa-solid fa-home me-2"></i>
+                            Voltar ao Início
+                        </a>
+                    </div>
+                </div>
+
+                {% elseif tipoPagamento == 'PIX' %}
+                {# ==================== PAGAMENTO PIX ==================== #}
+                <div class="text-center mb-4">
+                    <i class="fa-brands fa-pix text-success fa-3x mb-2"></i>
+                    <h4 class="fw-light text-uppercase ls-2">Pagamento PIX</h4>
+                </div>
+
+                <div class="card card-dark p-4 text-center">
+                    <div class="mb-4">
+                        <p class="text-secondary small text-uppercase mb-1">Total a pagar</p>
+                        <h1 class="fw-bold text-white">R$ {{ pedido.valor_total|number_format(2, ',', '.') }}</h1>
+                    </div>
+
+                    <div class="mb-4 d-flex justify-content-center">
+                        <div class="bg-white p-2 rounded-1">
+                            <img src="data:image/png;base64,{{ imagemQrcode }}" class="img-fluid"
+                                style="max-width: 200px;">
+                        </div>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control form-control-dark" value="{{ copiaCola }}"
+                            id="pixCopiaCola" readonly>
+                        <button class="btn btn-light fw-bold" type="button" onclick="copiarPix()">
+                            COPIAR
+                        </button>
+                    </div>
+
+                    <div class="mt-4">
+                        <div class="spinner-border spinner-border-sm text-success mb-2" role="status"></div>
+                        <p class="text-secondary small mb-0">Aguardando confirmação automática...</p>
+                    </div>
+                </div>
+
+                {% else %}
+                {# ==================== PAGAMENTO CARTÃO ==================== #}
+                <div class="text-center mb-4">
+                    <i class="fa-solid fa-credit-card text-warning fa-3x mb-2"></i>
+                    <h4 class="fw-light text-uppercase ls-2">Pagamento Cartão</h4>
+                </div>
+
+                <div class="card card-dark p-4 text-center">
+                    <div class="mb-4">
+                        <p class="text-secondary small text-uppercase mb-1">Total pago</p>
+                        <h1 class="fw-bold text-white">R$ {{ pedido.valor_total|number_format(2, ',', '.') }}</h1>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="spinner-border text-warning mb-3" role="status" style="width: 3rem; height: 3rem;">
+                            <span class="visually-hidden">Processando...</span>
+                        </div>
+                        <p class="text-secondary small mb-0">Processando pagamento...</p>
+                        <p class="text-muted small mt-2">Status: <strong id="status-pedido">{{ pedido.status }}</strong>
+                        </p>
+                    </div>
+
+                    <div class="alert alert-info small text-start">
+                        <i class="fa-solid fa-info-circle me-2"></i>
+                        O pagamento com cartão pode levar até 2 minutos para ser confirmado.
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="text-center mt-4">
+                    <a href="{{ url() }}" class="text-secondary text-decoration-none small">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Voltar ao Início
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function copiarPix() {
+        var input = document.getElementById('pixCopiaCola');
+        input.select();
+        input.setSelectionRange(0, 99999);
+        document.execCommand('copy');
+
+        var btn = event.target;
+        var textoOriginal = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check me-1"></i> COPIADO';
+        btn.classList.add('btn-success');
+        btn.classList.remove('btn-light');
+
+        setTimeout(function () {
+            btn.innerHTML = textoOriginal;
+            btn.classList.remove('btn-success');
+            btn.classList.add('btn-light');
+        }, 2000);
+    }
+
+    var pedidoId = "{{ pedido.id }}";
+    var urlVerificacao = "{{ url('pedido/verificar') }}";  // ← MUDOU AQUI
+    var urlRedirecionamento = "{{ url() }}";
+    var tipoPagamento = "{{ tipoPagamento }}";
+    var candidataNome = "{{ pedido.post().titulo|striptags }}";
+    var whatsappNumero = "{{ whatsapp }}";
+
+    {% if pedido.status == 'ERRO' %}
+    carregarMensagemErro();
+    {% endif %}
+
+    function carregarMensagemErro() {
+        $.ajax({
+            url: "{{ url('pedido/erro') }}",  // ← MUDOU AQUI (se você tiver essa rota)
+            type: 'POST',
+            data: { pedido_id: pedidoId },
+            dataType: 'json',
+            success: function (response) {
+                if (response.mensagem) {
+                    document.getElementById('mensagem-erro').textContent = response.mensagem;
+                }
+            }
+        });
+    }
+
+    function mostrarTelaConfirmacao() {
+        document.body.innerHTML = `
+            <div class="min-vh-100 d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8 col-lg-6">
+                            
+                            <div class="card shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
+                                
+                                <div class="text-center py-5" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                                    <div class="mb-3">
+                                        <i class="fa-solid fa-circle-check text-white" style="font-size: 80px;"></i>
+                                    </div>
+                                    <h2 class="text-white fw-bold mb-0">Pagamento Confirmado!</h2>
+                                    <p class="text-white-50 mb-0 mt-2">Seus votos foram computados</p>
+                                </div>
+
+                                <div class="card-body p-4 p-md-5">
+                                    
+                                    <div class="mb-4">
+                                        <h5 class="fw-bold mb-3 text-center">📊 Detalhes da Votação</h5>
+                                        
+                                        <div class="bg-light rounded p-4 mb-3">
+                                            <div class="row g-3">
+                                                <div class="col-12 mb-3">
+                                                    <div class="text-center pb-3 border-bottom">
+                                                        <div class="text-muted small mb-1">Candidata</div>
+                                                        <div class="fs-5 fw-bold text-primary">${candidataNome}</div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-6">
+                                                    <div class="text-center">
+                                                        <div class="text-muted small mb-1">Total de Votos</div>
+                                                        <div class="fs-2 fw-bold text-primary">{{ pedido.total_votos }}</div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-6">
+                                                    <div class="text-center">
+                                                        <div class="text-muted small mb-1">Valor Pago</div>
+                                                        <div class="fs-2 fw-bold text-success">R$ {{ pedido.valor_total|number_format(2, ',', '.') }}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="border rounded p-3 bg-light">
+                                            <div class="row g-2 small">
+                                                <div class="col-12">
+                                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                                        <span class="text-muted"><i class="fa-solid fa-user me-2"></i>Nome:</span>
+                                                        <strong>{{ pedido.cliente_nome }}</strong>
+                                                    </div>
+                                                </div>
+                                                {% if pedido.cliente_email %}
+                                                <div class="col-12">
+                                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                                        <span class="text-muted"><i class="fa-solid fa-envelope me-2"></i>E-mail:</span>
+                                                        <strong>{{ pedido.cliente_email }}</strong>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                <div class="col-12">
+                                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                                        <span class="text-muted"><i class="fa-solid fa-id-card me-2"></i>CPF:</span>
+                                                        <strong>***{{ pedido.cliente_cpf[-3:] }}</strong>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                                        <span class="text-muted"><i class="fa-solid fa-hashtag me-2"></i>Pedido:</span>
+                                                        <strong>#{{ pedido.id }}</strong>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                                        <span class="text-muted"><i class="fa-solid fa-calendar me-2"></i>Data:</span>
+                                                        <strong>${new Date().toLocaleString('pt-BR')}</strong>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                                        <span class="text-muted"><i class="fa-solid fa-credit-card me-2"></i>Método:</span>
+                                                        <strong>${tipoPagamento === 'PIX' ? 'PIX' : 'Cartão de Crédito'}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="alert alert-success border-0 mb-4" style="background: #d4edda;">
+                                        <div class="d-flex align-items-start">
+                                            <i class="fa-solid fa-heart text-danger fs-3 me-3 mt-1"></i>
+                                            <div>
+                                                <strong class="d-block mb-1">Obrigado pelo seu apoio!</strong>
+                                                <p class="mb-0 small">Seus votos foram computados com sucesso e já estão ajudando a candidata na competição.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-grid gap-2">
+                                        <button onclick="window.print()" class="btn btn-outline-primary btn-lg">
+                                            <i class="fa-solid fa-print me-2"></i>
+                                            Imprimir Comprovante
+                                        </button>
+                                        
+                                        <button onclick="compartilhar()" class="btn btn-outline-success btn-lg">
+                                            <i class="fa-solid fa-share-nodes me-2"></i>
+                                            Compartilhar
+                                        </button>
+                                        
+                                        <a href="${urlRedirecionamento}" class="btn btn-primary btn-lg">
+                                            <i class="fa-solid fa-home me-2"></i>
+                                            Voltar ao Início
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-3">
+                                <small class="text-white-50">
+                                    <i class="fa-solid fa-lock me-1"></i>
+                                    Pagamento processado com segurança
+                                </small>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <style>
+            @media print {
+                body * {
+                    visibility: hidden;
+                }
+                .card, .card * {
+                    visibility: visible;
+                }
+                .card {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    box-shadow: none !important;
+                }
+                button, .btn, a {
+                    display: none !important;
+                }
+                .alert {
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
+                }
+            }
+            </style>
+        `;
+    }
+
+    function compartilhar() {
+        const texto = 'Acabei de votar em ' + candidataNome + '! 🗳️✨ Vote você também!';
+        const url = urlRedirecionamento;
+
+        if (navigator.share) {
+            navigator.share({
+                title: 'Votação Confirmada',
+                text: texto,
+                url: url
+            }).catch(err => console.log('Erro ao compartilhar:', err));
+        } else {
+            navigator.clipboard.writeText(url).then(() => {
+                alert('✅ Link copiado! Cole nas redes sociais para compartilhar.');
+            }).catch(() => {
+                alert('Link: ' + url);
+            });
+        }
+    }
+
+    {% if pedido.status != 'ERRO' %}
+    var intervalo = setInterval(function () {
+        $.ajax({
+            url: urlVerificacao,
+            type: 'POST',
+            data: { id: pedidoId },
+            dataType: 'json',
+            success: function (response) {
+                if (response.pago || response.status === 'pago') {
+                    clearInterval(intervalo);
+                    mostrarTelaConfirmacao();
+                } else if (response.aguardando) {
+                    var statusEl = document.getElementById('status-pedido');
+                    if (statusEl) {
+                        statusEl.textContent = 'Aguardando...';
+                    }
+                }
+            },
+            error: function () {
+                console.log('Erro na verificação');
+            }
+        });
+    }, 3000);
+    {% endif %}
+</script>
+
+{% endblock %}

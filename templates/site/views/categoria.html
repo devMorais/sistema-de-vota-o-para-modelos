@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block topo %}
+{% include 'topo.html' %}
+{% endblock %}
+
+{% block conteudo %}
+
+<div class="py-4 pb-5">
+    <div class="container">
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <nav aria-label="breadcrumb" class="mb-2">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url() }}" class="text-secondary text-decoration-none small">
+                                <i class="fa-solid fa-house me-1"></i>Início
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active text-secondary small" aria-current="page">Categoria</li>
+                    </ol>
+                </nav>
+
+                <div class="border-bottom border-secondary pb-3">
+                    <span class="text-secondary text-uppercase fw-semibold"
+                        style="font-size: 0.75rem; letter-spacing: 1px;">
+                        Visualizando Categoria
+                    </span>
+                    <h2 class="text-white display-6 fw-bold mt-1 mb-0">
+                        {{ categoriaAtual.titulo|raw }}
+                    </h2>
+                    <p class="lead">{{ categoriaAtual.texto|raw }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-9 col-md-12 mb-4">
+
+                {% if posts %}
+                <div class="row row-cols-2 row-cols-md-2 row-cols-lg-3 g-3 g-md-4">
+                    {% for post in posts %}
+                    <div class="col">
+                        <div class="candidate-card shadow-sm h-100">
+
+                            <a href="{{ url('uploads/imagens/thumbs/'~post.capa) }}" data-fancybox="gallery"
+                                data-caption="{{ post.titulo }}" class="d-block img-container position-relative">
+
+                                <span class="badge text-bg-secondary position-absolute top-0 start-0 m-3 z-1 shadow-sm">
+                                    {{ post.categoria().titulo|raw }}
+                                </span>
+
+                                {% if post.capa %}
+                                <img src="{{ url('uploads/imagens/thumbs/'~post.capa) }}" alt="{{ post.titulo }}">
+                                {% else %}
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop"
+                                    alt="Imagem padrão">
+                                {% endif %}
+
+                                <div class="zoom-icon">
+                                    <i class="fa-solid fa-magnifying-glass-plus fa-xs"></i>
+                                </div>
+                            </a>
+
+                            <div class="card-info d-flex flex-column h-100">
+                                <h5 class="candidate-name mb-3">{{ resumirTexto(post.titulo, 25) }}</h5>
+
+                                <div class="mt-auto w-100">
+                                    <a href="{{url('post/'~post.categoria.slug~'/'~post.slug)}}" class="btn-vote w-100">
+                                        Votar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-5">
+                    {{paginacao|raw}}
+                    <div class="text-center mt-2">
+                        <small class="text-white">{{paginacaoInfo}}</small>
+                    </div>
+                </div>
+
+                {% else %}
+                <div class="alert alert-dark text-center border-secondary py-5 mt-3" role="alert">
+                    <i class="fa-solid fa-folder-open fa-3x mb-3 text-secondary opacity-50"></i>
+                    <h4 class="text-white h5">Ops!</h4>
+                    <p class="text-secondary mb-3">Não encontramos participantes nesta categoria no momento.</p>
+                    <a href="{{ url() }}" class="btn btn-outline-light btn-sm">
+                        <i class="fa-solid fa-arrow-left me-2"></i>Voltar para o Início
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-lg-3 col-md-12">
+                {% include 'sidebar.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

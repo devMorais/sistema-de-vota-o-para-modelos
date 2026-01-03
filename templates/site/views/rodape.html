@@ -1,0 +1,68 @@
+<footer class="footer-dark">
+    <div class="container-fluid d-flex flex-wrap justify-content-between py-4 px-4">
+        <p class="col-md-4 mb-0 small">&copy; 2022-{{ "now"|date("Y") }} {{constant('SITE_NOME')}}</p>
+
+        <ul class="nav col-md-4 justify-content-end">
+            <li class="nav-item">
+                <a href="{{ url() }}" class="nav-link px-2 small" tooltip="tooltip" title="Página Inicial">Home</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" data-bs-toggle="modal" data-bs-target="#contatoModal" class="nav-link px-2 small"
+                    tooltip="tooltip" title="Fale Conosco">Fale Conosco</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<div class="text-center py-2" style="background: #000;">
+    <small class="tempoCarregamento text-secondary" style="font-size: 0.7rem;">Executado em
+        <b>{{tempoCarregamento()}}</b> segundos</small>
+</div>
+<div class="modal fade" id="contatoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-content-dark">
+            <div class="modal-header modal-header-dark">
+                <h1 class="modal-title fs-5 fw-light">Fale Conosco</h1>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                {{flash()}}
+                <form class="formularioAjax" method="post" action="{{url('contato')}}" enctype="multipart/form-data">
+                    <div class="form-floating mb-3">
+                        <input type="text" name="nome" id="nome" class="form-control form-control-dark"
+                            placeholder="Nome">
+                        <label for="nome">Nome</label>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" name="email" id="email" class="form-control form-control-dark"
+                            placeholder="E-mail">
+                        <label for="email">E-mail</label>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" name="assunto" id="assunto" class="form-control form-control-dark"
+                            placeholder="Assunto">
+                        <label for="assunto">Assunto</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <textarea name="mensagem" id="mensagem" class="form-control form-control-dark"
+                            placeholder="Mensagem" style="height: 120px"></textarea>
+                        <label for="mensagem">Mensagem</label>
+                    </div>
+                    <div class="input-group mb-4">
+                        <label class="input-group-text input-group-text-dark" for="anexos"><i
+                                class="fa-solid fa-paperclip me-2"></i> Anexos</label>
+                        <input type="file" name="anexos[]" multiple id="anexos" accept=""
+                            class="form-control form-control-dark">
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-send">
+                            Enviar Mensagem <i class="fa-regular fa-paper-plane ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
