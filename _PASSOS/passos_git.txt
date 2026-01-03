@@ -1,0 +1,25 @@
+1. No seu Computador (Cmder local)
+Você terminou de programar uma funcionalidade e quer enviar para o site.
+
+Adicionar as mudanças: git add .
+
+Carimbar a versão (Commit): git commit -m "Descricao do que foi feito"
+
+Enviar para o GitHub: git push origin main
+
+2. Aceder ao Servidor (SSH Manual)
+Agora você precisa sair do seu computador e entrar na Hostinger.
+
+Ligar ao servidor: ssh -p 65002 u846585591@147.93.39.159
+
+Navegar até a pasta do projeto: cd domains/devmorais.com.br/public_html/hom-votar
+
+3. Sincronizar o Servidor (Na Hostinger)
+Agora que você está dentro da pasta correta no servidor, você vai "puxar" o código que enviou para o GitHub no Passo 1.
+
+Baixar as novidades: git pull origin main
+
+Por que esta ordem?
+PC -> GitHub (push): O GitHub funciona como o seu "servidor central" de código e backup.
+
+GitHub -> Hostinger (pull): O servidor da Hostinger comporta-se como um "cliente" que descarrega a versão mais recente que está no GitHub.
