@@ -48,8 +48,7 @@ class PagamentoInfinitepayControlador extends Controlador
             }
 
             // Gera link de pagamento com URL de retorno personalizada
-            $redirectUrl = (Helpers::localhost() ? 'https://votar.test' : 'https://votepelasuamiss.devmorais.com.br') . '/pedido/pagamento/' . $pedido->id;
-
+            $redirectUrl = Helpers::url('pedido/pagamento/' . $pedido->id);
             $resultado = $infinitePay->gerarLinkPagamento(
                 $itens,
                 'pedido-' . $pedido->id,
