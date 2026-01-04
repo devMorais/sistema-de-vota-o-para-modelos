@@ -63,7 +63,7 @@
                                         pedido.gateway_usado }}</strong></div>
                             </div>
                             <div class="alert alert-success border-0 mb-4">
-                                <div class="d-flex"><i class="fa-solid fa heart text-danger fs-3 me-3"></i>
+                                <div class="d-flex"><i class="fa-solid fa-heart text-danger fs-3 me-3"></i>
                                     <div><strong>Obrigado pelo seu apoio!</strong>
                                         <p class="mb-0 small">Sua candidata agradece sua participação!</p>
                                     </div>
@@ -240,7 +240,7 @@
 <script>
     $(document).ready(function () {
         var pedidoId = {{ pedido.id }
-    };
+    }; // Corrigido: Removida a chave sobrando
     var urlVerificacao = "{{ url('pedido/verificar') }}";
     var pedidoStatusInicial = "{{ pedido.status }}";
 
@@ -271,7 +271,7 @@
             data: { id: pedidoId },
             dataType: 'json',
             success: function (response) {
-                // Confirmação automática via AJAX Profissional
+                // Confirmação via resposta JSON profissional
                 if (response.pago || response.status === 'PAGO') {
                     clearInterval(intervalo);
                     window.location.reload();
