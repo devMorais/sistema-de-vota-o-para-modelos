@@ -103,6 +103,7 @@ class PedidoControlador extends Controlador
      */
     public function pagamento(int $idPedido): void
     {
+        // Busca o pedido atualizado diretamente do banco
         $pedido = (new PedidoModelo())->buscaPorId($idPedido);
 
         if (!$pedido) {
@@ -113,7 +114,14 @@ class PedidoControlador extends Controlador
 
         $whatsapp = preg_replace('/[^0-9]/', '', $this->config->whatsapp ?? '');
 
-        // Erro no pagamento
+        // 1. SE JÁ ESTIVER PAGO: Mostra a tela de sucesso imediatamente
+        if ($pedido->status === 'PAGO') {
+            $controlador = new PagamentoInfinitepayControlador();
+            $controlador->renderizarSucesso($pedido, $whatsapp);
+            return;
+        }
+
+        // 2. SE HOUVER ERRO: Mostra a tela de erro
         if ($pedido->status === 'ERRO') {
             echo $this->template->renderizar('pagamento.html', [
                 'titulo' => 'Erro no Pagamento',
@@ -123,21 +131,25 @@ class PedidoControlador extends Controlador
             return;
         }
 
-        // Delega renderização para controlador do gateway
+        // 3. SE AINDA NÃO PAGOU E É INFINITEPAY: Redireciona para o checkout externo
         if ($pedido->gateway_usado === 'INFINITEPAY') {
             $controlador = new PagamentoInfinitepayControlador();
-            $controlador->redirecionarPagamento($pedido);
-            return;
+
+            // Se o usuário está vindo do checkout, a URL pode conter dados de transação
+            // Vamos apenas garantir que ele só vá para a InfinitePay se realmente não estiver pago
+            if (!empty($pedido->infinitepay_link)) {
+                $controlador->redirecionarPagamento($pedido);
+                return;
+            }
         }
 
-        // Asaas - PIX
+        // Restante da lógica (Asaas)...
         if (!empty($pedido->pix_qrcode)) {
             $controlador = new PagamentoAsaasControlador();
             $controlador->renderizarPagamentoPix($pedido, $whatsapp);
             return;
         }
 
-        // Asaas - Cartão
         $controlador = new PagamentoAsaasControlador();
         $controlador->renderizarPagamentoCartao($pedido, $whatsapp);
     }

@@ -254,13 +254,19 @@ class PagamentoInfinitepayControlador extends Controlador
      */
     public function renderizarSucesso(PedidoModelo $pedido, string $whatsapp): void
     {
+        // BUSCA ATUALIZADA: Garante que se o Webhook já processou, o PHP saiba disso agora.
+        $pedidoAtualizado = (new PedidoModelo())->buscaPorId($pedido->id);
+
+        // Se por algum motivo a busca falhar, usamos o objeto original como fallback
+        $pedidoFinal = $pedidoAtualizado ?: $pedido;
+
         echo $this->template->renderizar('pagamento.html', [
-            'titulo' => 'Processando Pagamento',
-            'pedido' => $pedido,
-            'tipoPagamento' => 'INFINITEPAY',
+            'titulo' => $pedidoFinal->status == 'PAGO' ? 'Pagamento Confirmado' : 'Processando Pagamento',
+            'pedido' => $pedidoFinal,
+            'tipoPagamento' => $pedidoFinal->metodo_pagamento ?: 'INFINITEPAY',
             'whatsapp' => $whatsapp,
             'gateway' => 'INFINITEPAY',
-            'mensagem' => 'Aguardando confirmação do pagamento...'
+            'mensagem' => $pedidoFinal->status == 'PAGO' ? 'Pagamento Confirmado!' : 'Aguardando confirmação do pagamento...'
         ]);
     }
 }
