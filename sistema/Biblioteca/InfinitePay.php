@@ -4,6 +4,7 @@ namespace sistema\Biblioteca;
 
 use sistema\Nucleo\Helpers;
 use sistema\Modelo\LogPagamentoInfinitepayModelo;
+use sistema\Suporte\XDebug;
 
 class InfinitePay
 {
@@ -76,6 +77,8 @@ class InfinitePay
         if ($urlRedirect) {
             $payload['redirect_url'] = $urlRedirect;
         }
+
+        XDebug::xd("Payload enviado para InfinitePay", $payload);
 
         // Dados do cliente (opcional)
         if ($dadosCliente) {
