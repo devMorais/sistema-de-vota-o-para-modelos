@@ -241,7 +241,8 @@
             data: { id: pedidoId },
             dataType: 'json',
             success: function (response) {
-                if (response.pago || response.status === 'pago' || response === 'pago') {
+                if (response.pago || response.status === 'PAGO') {
+                    clearInterval(intervalo);
                     window.location.reload();
                 } else {
                     btn.prop('disabled', false).html('<i class="fa-solid fa-rotate me-2"></i>Já paguei - Verificar Status');

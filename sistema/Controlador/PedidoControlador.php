@@ -187,7 +187,7 @@ class PedidoControlador extends Controlador
     }
 
     /**
-     * Verifica status do pagamento
+     * AJAX: Verifica status do pagamento em tempo real para automação
      */
     public function verificar(): void
     {
@@ -205,14 +205,25 @@ class PedidoControlador extends Controlador
             return;
         }
 
-        // Delega verificação para controlador do gateway
-        if ($pedido->gateway_usado === 'INFINITEPAY') {
-            $controlador = new PagamentoInfinitepayControlador();
-        } else {
-            $controlador = new PagamentoAsaasControlador();
+        // 1. Se já está PAGO no banco, avisa o JS imediatamente
+        if ($pedido->status === 'PAGO') {
+            echo json_encode(['pago' => true, 'status' => 'PAGO']);
+            return;
         }
 
-        $controlador->verificar($pedido);
+        // 2. Se for InfinitePay, consulta a API em tempo real para acelerar a confirmação
+        if ($pedido->gateway_usado === 'INFINITEPAY') {
+            $controladorIP = new PagamentoInfinitepayControlador();
+            $statusReal = $controladorIP->consultarStatusAPI($pedido);
+
+            if ($statusReal === 'PAGO') {
+                echo json_encode(['pago' => true, 'status' => 'PAGO']);
+                return;
+            }
+        }
+
+        // 3. Caso contrário, continua AGUARDANDO
+        echo json_encode(['aguardando' => true, 'status' => 'AGUARDANDO']);
     }
 
     /**
