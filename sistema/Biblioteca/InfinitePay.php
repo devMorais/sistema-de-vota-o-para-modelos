@@ -48,7 +48,7 @@ class InfinitePay
                 'criar_link',
                 'ERRO',
                 'Lista de itens vazia',
-                null,
+                ['itens' => $itens],
                 null,
                 'invalid_items'
             );
@@ -119,10 +119,10 @@ class InfinitePay
             'criar_link',
             'SUCESSO',
             'Link de pagamento gerado com sucesso',
-            null,
+            $payload,
             $resposta,
             null,
-            null, // InfinitePay não retorna slug separado
+            null,
             $resposta->url,
             null,
             $orderNsu,
@@ -132,8 +132,8 @@ class InfinitePay
 
         return [
             'erro' => false,
-            'link' => $resposta->url, // ← MUDOU AQUI
-            'slug' => null, // InfinitePay não retorna slug separado
+            'link' => $resposta->url,
+            'slug' => null,
             'order_nsu' => $orderNsu
         ];
     }
@@ -194,7 +194,7 @@ class InfinitePay
             'verificar_pagamento',
             'SUCESSO',
             'Status verificado com sucesso',
-            null,
+            $payload,
             $resposta,
             null,
             $slug,
