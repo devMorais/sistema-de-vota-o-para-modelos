@@ -254,10 +254,8 @@ class PagamentoInfinitepayControlador extends Controlador
      */
     public function renderizarSucesso(PedidoModelo $pedido, string $whatsapp): void
     {
-        // BUSCA ATUALIZADA: Garante que se o Webhook já processou, o PHP saiba disso agora.
         $pedidoAtualizado = (new PedidoModelo())->buscaPorId($pedido->id);
 
-        // Se por algum motivo a busca falhar, usamos o objeto original como fallback
         $pedidoFinal = $pedidoAtualizado ?: $pedido;
 
         echo $this->template->renderizar('pagamento.html', [
@@ -268,5 +266,27 @@ class PagamentoInfinitepayControlador extends Controlador
             'gateway' => 'INFINITEPAY',
             'mensagem' => $pedidoFinal->status == 'PAGO' ? 'Pagamento Confirmado!' : 'Aguardando confirmação do pagamento...'
         ]);
+    }
+
+    /**
+     * Consulta o status diretamente na API para evitar loops de redirecionamento
+     * @param PedidoModelo $pedido
+     * @return string
+     */
+    public function consultarStatusAPI(PedidoModelo $pedido): string
+    {
+        $infinitePay = new InfinitePay($pedido->id);
+
+        // Pergunta para a API da InfinitePay usando o NSU gravado
+        $resultado = $infinitePay->verificarPagamento($pedido->infinitepay_order_nsu);
+
+        // Se a API retornar que está pago (paid = true)
+        if (!($resultado['erro'] ?? true) && ($resultado['paid'] ?? false)) {
+            // Se estiver pago, aproveitamos para atualizar o banco de dados agora mesmo
+            $this->confirmarPagamento($pedido, $resultado);
+            return 'PAGO';
+        }
+
+        return 'AGUARDANDO';
     }
 }
