@@ -102,11 +102,22 @@ class PedidoControlador extends Controlador
     }
 
     /**
-     * Exibe página de pagamento
+     * Exibe página de pagamento com log de depuração físico e suporte a múltiplos gateways
      */
     public function pagamento(int $idPedido): void
     {
-        // Busca o pedido atualizado diretamente do banco
+        // --- INÍCIO DO LOG DE DEBUG FÍSICO ---
+        // Caminho: raiz do seu projeto (ex: /public_html/hom-votar/debug_infinitepay.txt)
+        $arquivoLog = dirname(__DIR__, 2) . '/debug_infinitepay.txt';
+        $timestamp = date('Y-m-d H:i:s');
+        $uri = $_SERVER['REQUEST_URI'] ?? 'N/A';
+        $params = $_SERVER['QUERY_STRING'] ?? 'Nenhum';
+
+        $logEntrada = "[$timestamp] ACESSO: Pedido #$idPedido | URI: $uri | GET: $params\n";
+        file_put_contents($arquivoLog, $logEntrada, FILE_APPEND);
+        // --- FIM DO LOG DE DEBUG ---
+
+        // Busca o pedido atualizado diretamente do banco [cite: 11]
         $pedido = (new PedidoModelo())->buscaPorId($idPedido);
 
         if (!$pedido) {
@@ -117,14 +128,14 @@ class PedidoControlador extends Controlador
 
         $whatsapp = preg_replace('/[^0-9]/', '', $this->config->whatsapp ?? '');
 
-        // 1. SE JÁ ESTIVER PAGO NO BANCO: Mostra a tela de sucesso imediatamente
+        // 1. SE JÁ ESTIVER PAGO NO BANCO: Mostra sucesso imediatamente 
         if ($pedido->status === 'PAGO') {
             $controlador = new PagamentoInfinitepayControlador();
             $controlador->renderizarSucesso($pedido, $whatsapp);
             return;
         }
 
-        // 2. SE HOUVER ERRO: Mostra a tela de erro
+        // 2. SE HOUVER ERRO NO PEDIDO: Mostra a tela de erro 
         if ($pedido->status === 'ERRO') {
             echo $this->template->renderizar('pagamento.html', [
                 'titulo' => 'Erro no Pagamento',
@@ -134,33 +145,36 @@ class PedidoControlador extends Controlador
             return;
         }
 
-        // 3. SE É INFINITEPAY E AINDA NÃO ESTÁ PAGO NO BANCO:
-        // Vamos checar na API antes de redirecionar de volta para o link de cobrança
+        // 3. LÓGICA ESPECÍFICA: INFINITEPAY
         if ($pedido->gateway_usado === 'INFINITEPAY') {
             $controlador = new PagamentoInfinitepayControlador();
 
-            // Nova lógica: consulta a API da InfinitePay em tempo real
+            // Consulta API em tempo real para quebrar o loop de redirecionamento
             $statusReal = $controlador->consultarStatusAPI($pedido);
+
+            // Log do resultado da API
+            file_put_contents($arquivoLog, "[$timestamp] API InfinitePay retornou: $statusReal\n", FILE_APPEND);
 
             if ($statusReal === 'PAGO') {
                 $controlador->renderizarSucesso($pedido, $whatsapp);
                 return;
             }
 
-            // Se realmente ainda não pagou na API, redireciona para o checkout externo
+            // Redireciona para o checkout externo se ainda não pagou
             if (!empty($pedido->infinitepay_link)) {
                 $controlador->redirecionarPagamento($pedido);
                 return;
             }
         }
 
-        // Restante da lógica (Asaas)...
+        // 4. LÓGICA ESPECÍFICA: ASAAS (PIX) 
         if (!empty($pedido->pix_qrcode)) {
             $controlador = new PagamentoAsaasControlador();
             $controlador->renderizarPagamentoPix($pedido, $whatsapp);
             return;
         }
 
+        // 5. LÓGICA ESPECÍFICA: ASAAS (CARTÃO) 
         $controlador = new PagamentoAsaasControlador();
         $controlador->renderizarPagamentoCartao($pedido, $whatsapp);
     }
