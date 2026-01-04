@@ -63,7 +63,7 @@
                                         pedido.gateway_usado }}</strong></div>
                             </div>
                             <div class="alert alert-success border-0 mb-4">
-                                <div class="d-flex"><i class="fa-solid fa-heart text-danger fs-3 me-3"></i>
+                                <div class="d-flex"><i class="fa-solid fa heart text-danger fs-3 me-3"></i>
                                     <div><strong>Obrigado pelo seu apoio!</strong>
                                         <p class="mb-0 small">Sua candidata agradece sua participação!</p>
                                     </div>
@@ -190,7 +190,6 @@
                         Se você já concluiu o pagamento, aguarde nesta tela. A confirmação é automática.
                     </div>
 
-                    <!-- BOTÃO VERIFICAR MANUAL (InfinitePay) -->
                     {% if pedido.gateway_usado == 'INFINITEPAY' %}
                     <div class="d-grid">
                         <button onclick="verificarManualmente()" class="btn btn-outline-light" id="btn-verificar">
@@ -211,107 +210,6 @@
         </div>
     </div>
 </div>
-
-<script>
-    var pedidoId = {{ pedido.id }};
-    var urlVerificacao = "{{ url('pedido/verificar') }}";
-    var pedidoStatusInicial = "{{ pedido.status }}";
-
-    function copiarPix() {
-        var input = document.getElementById('pixCopiaCola');
-        input.select();
-        input.setSelectionRange(0, 99999);
-        document.execCommand('copy');
-        var btn = event.target;
-        btn.innerHTML = '<i class="fa-solid fa-check me-1"></i> COPIADO';
-        btn.classList.replace('btn-light', 'btn-success');
-        setTimeout(() => {
-            btn.innerHTML = 'COPIAR';
-            btn.classList.replace('btn-success', 'btn-light');
-        }, 2000);
-    }
-
-    function verificarManualmente() {
-        var btn = $('#btn-verificar');
-        btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Verificando...');
-
-        $.ajax({
-            url: urlVerificacao,
-            type: 'POST',
-            data: { id: pedidoId },
-            dataType: 'json',
-            success: function (response) {
-                if (response.pago || response.status === 'PAGO') {
-                    clearInterval(intervalo);
-                    window.location.reload();
-                } else {
-                    btn.prop('disabled', false).html('<i class="fa-solid fa-rotate me-2"></i>Já paguei - Verificar Status');
-                    $('#status-pedido').html('<span class="text-warning">Ainda não confirmado</span>');
-                }
-            },
-            error: function () {
-                btn.prop('disabled', false).html('<i class="fa-solid fa-rotate me-2"></i>Já paguei - Verificar Status');
-            }
-        });
-    }
-
-    $(document).ready(function () {
-        // ✅ SE JÁ ESTÁ PAGO, NÃO FAZ POLLING
-        if (pedidoStatusInicial === 'PAGO') {
-            return; // Para aqui
-        }
-
-        // ✅ SE FOR ERRO, CARREGA MENSAGEM E PARA
-        if (pedidoStatusInicial === 'ERRO') {
-            $.ajax({
-                url: "{{ url('pedido/erro') }}",
-                type: 'POST',
-                data: { pedido_id: pedidoId },
-                dataType: 'json',
-                success: function (response) {
-                    if (response.mensagem) $('#mensagem-erro').text(response.mensagem);
-                }
-            });
-            return; // Para aqui
-        }
-
-        // ✅ POLLING COM TIMEOUT (60 tentativas = 3 minutos)
-        var tentativas = 0;
-        var maxTentativas = 60;
-
-        var intervalo = setInterval(function () {
-            tentativas++;
-
-            // ✅ Para após 3 minutos
-            if (tentativas >= maxTentativas) {
-                clearInterval(intervalo);
-                $('#status-pedido').html('<span class="text-warning">Tempo esgotado. <a href="#" onclick="location.reload()" class="text-white">Atualizar</a></span>');
-                return;
-            }
-
-            $.ajax({
-                url: urlVerificacao,
-                type: 'POST',
-                data: { id: pedidoId },
-                dataType: 'json',
-                success: function (response) {
-                    if (response.pago || response.status === 'pago' || response === 'pago') {
-                        clearInterval(intervalo); // ✅ PARA o loop
-                        window.location.reload(); // Recarrega para mostrar tela de sucesso
-                    } else if (response.aguardando) {
-                        $('#status-pedido').text('Aguardando...');
-                    }
-                },
-                error: function () {
-                    // ✅ Para após 3 erros consecutivos
-                    if (tentativas >= 3) {
-                        clearInterval(intervalo);
-                    }
-                }
-            });
-        }, 3000);
-    });
-</script>
 
 <style>
     .card-dark {
@@ -336,4 +234,76 @@
         letter-spacing: 2px;
     }
 </style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        var pedidoId = {{ pedido.id }
+    };
+    var urlVerificacao = "{{ url('pedido/verificar') }}";
+    var pedidoStatusInicial = "{{ pedido.status }}";
+
+    // ✅ SE JÁ ESTÁ PAGO, NÃO FAZ POLLING
+    if (pedidoStatusInicial === 'PAGO') return;
+
+    // ✅ SE FOR ERRO, BUSCA MENSAGEM
+    if (pedidoStatusInicial === 'ERRO') {
+        $.post("{{ url('pedido/erro') }}", { pedido_id: pedidoId }, function (res) {
+            if (res.mensagem) $('#mensagem-erro').text(res.mensagem);
+        }, 'json');
+        return;
+    }
+
+    // ✅ POLLING COM TIMEOUT (3 minutos)
+    var tentativas = 0;
+    var intervalo = setInterval(function () {
+        tentativas++;
+        if (tentativas >= 60) {
+            clearInterval(intervalo);
+            $('#status-pedido').html('<span class="text-warning">Tempo esgotado. <a href="#" onclick="location.reload()" class="text-white">Atualizar</a></span>');
+            return;
+        }
+
+        $.ajax({
+            url: urlVerificacao,
+            type: 'POST',
+            data: { id: pedidoId },
+            dataType: 'json',
+            success: function (response) {
+                // Confirmação automática via AJAX Profissional
+                if (response.pago || response.status === 'PAGO') {
+                    clearInterval(intervalo);
+                    window.location.reload();
+                } else {
+                    $('#status-pedido').text('Aguardando confirmação...');
+                }
+            }
+        });
+    }, 3000);
+    });
+
+    function verificarManualmente() {
+        var btn = $('#btn-verificar');
+        btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Verificando...');
+
+        $.post("{{ url('pedido/verificar') }}", { id: {{ pedido.id }} }, function (response) {
+            if (response.pago || response.status === 'PAGO') {
+                window.location.reload();
+            } else {
+                btn.prop('disabled', false).html('<i class="fa-solid fa-rotate me-2"></i>Já paguei - Verificar Status');
+                $('#status-pedido').html('<span class="text-warning">Ainda não confirmado</span>');
+            }
+        }, 'json').fail(function () {
+            btn.prop('disabled', false).html('<i class="fa-solid fa-rotate me-2"></i>Já paguei - Verificar Status');
+        });
+    }
+
+    function copiarPix() {
+        var input = document.getElementById('pixCopiaCola');
+        input.select();
+        document.execCommand('copy');
+        alert("Código PIX copiado!");
+    }
+</script>
 {% endblock %}
