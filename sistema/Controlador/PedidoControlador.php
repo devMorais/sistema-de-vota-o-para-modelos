@@ -27,7 +27,6 @@ class PedidoControlador extends Controlador
     {
         $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
 
-        // Valida dados
         if (!$this->validarDados($dados)) {
             $post = (new PostModelo())->buscaPorId($dados['post_id'] ?? 0);
             if (!$post) {
@@ -35,7 +34,10 @@ class PedidoControlador extends Controlador
                 return;
             }
 
-            echo $this->template->renderizar('checkout.html', [
+            $gateway = $this->config->gateway_pagamento ?? 'ASAAS';
+            $template = ($gateway === 'INFINITEPAY') ? 'checkout/checkout-infinitepay.html' : 'checkout/checkout-asaas.html';
+
+            echo $this->template->renderizar($template, [
                 'titulo'        => 'Checkout - ' . $post->titulo,
                 'post'          => $post,
                 'totalVotos'    => $dados['total_votos'] ?? 0,

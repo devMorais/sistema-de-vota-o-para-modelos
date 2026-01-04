@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block topo %}{% endblock %}
+{% block rodape %}{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url('templates/site/assets/css/checkout.css') }}">
+{% endblock %}
+
+{% block conteudo %}
+
+<div class="container mb-5">
+    <div class="mt-4">
+        {{ flash() }}
+    </div>
+    <div class="checkout-header text-center mb-4">
+        <a href="https://wa.me/{{ config.whatsapp }}?text=Olá! Estou no checkout do concurso {{ post.titulo|striptags }} e gostaria de tirar uma dúvida."
+            target="_blank" class="btn-whatsapp" style="text-decoration: none; display: inline-block;">
+            <i class="fa-brands fa-whatsapp me-2"></i> Peça Ajuda pelo WhatsApp - CLIQUE AQUI
+        </a>
+    </div>
+
+    <div class="row g-5">
+        <div class="col-lg-7">
+            <form action="{{ url('pedido/processar') }}" method="POST" id="form-checkout">
+
+                <input type="hidden" name="post_id" value="{{ post.id }}">
+                <input type="hidden" name="post_titulo" value="{{ post.titulo }}">
+                <input type="hidden" name="valor_total" value="{{ totalFloat }}">
+                <input type="hidden" name="valor_subtotal" value="{{ subtotalFloat }}">
+                <input type="hidden" name="valor_taxa" value="{{ taxaFloat }}">
+                <input type="hidden" name="total_votos" value="{{ totalVotos }}">
+                <input type="hidden" name="pacote_id" value="{{ pacoteId }}">
+
+                <!-- AVISO INFINITEPAY -->
+                <div class="alert alert-info mb-4">
+                    <i class="fa-solid fa-info-circle me-2"></i>
+                    <strong>Pagamento via InfinitePay</strong><br>
+                    <small>Você será redirecionado para finalizar o pagamento de forma segura com PIX ou Cartão.</small>
+                </div>
+
+                <!-- DADOS PESSOAIS -->
+                <div class="checkout-step mb-5">
+                    <h2 class="section-title">
+                        <span class="step-number">1</span> Seus Dados
+                    </h2>
+
+                    <div class="mb-3">
+                        <label class="form-label">Nome Completo *</label>
+                        <input type="text" name="nome" value="{{ form.nome }}" class="form-control form-control-dark"
+                            placeholder="Seu nome completo" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">CPF *</label>
+                        <input type="text" name="cpf" id="cpf" value="{{ form.cpf }}"
+                            class="form-control form-control-dark" placeholder="000.000.000-00" required maxlength="14">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">E-mail *</label>
+                        <input type="email" name="email" id="email_infinitepay" value="{{ form.email }}"
+                            class="form-control form-control-dark" placeholder="seu@email.com" required>
+                        <small class="text-white opacity-50">
+                            <i class="fa-solid fa-circle-info me-1"></i>
+                            Será preenchido automaticamente no checkout
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Telefone/Celular *</label>
+                        <input type="text" name="telefone" id="telefone_infinitepay" value="{{ form.telefone }}"
+                            class="form-control form-control-dark" placeholder="(00) 00000-0000" maxlength="15"
+                            required>
+                        <small class="text-white opacity-50">
+                            <i class="fa-solid fa-circle-info me-1"></i>
+                            Você receberá um código de verificação via SMS/WhatsApp
+                        </small>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-votar w-100 py-3 fs-5 fw-bold" id="btn-finalizar">
+                    <i class="fa-solid fa-arrow-right me-2"></i>
+                    <span>Continuar para Pagamento</span>
+                </button>
+
+            </form>
+        </div>
+
+        <!-- RESUMO LATERAL -->
+        {% include 'checkout/checkout-resumo.html' %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+<script src="{{ url('templates/site/assets/js/checkout-infinitepay.js') }}"></script>
+{% endblock %}

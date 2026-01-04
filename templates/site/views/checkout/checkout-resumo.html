@@ -1,0 +1,42 @@
+<div class="col-lg-5">
+    <div class="sticky-top" style="top: 20px;">
+        <div class="timer-box mb-3">
+            <i class="fa-solid fa-clock me-2"></i>
+            Tempo restante: <strong><span id="countdown">10:00</span></strong>
+        </div>
+
+        <div class="summary-box">
+            <div class="summary-content">
+                <h4 class="summary-title mb-3">{{ post.titulo|striptags }}</h4>
+
+                <div class="summary-item p-3 rounded mb-3" style="background: #1a1a1a;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="fs-5 fw-bold text-white">{{ totalVotos }} VOTOS</div>
+                            <small class="text-white">Pacote de Votos</small>
+                        </div>
+                        <div class="fs-5 fw-bold text-warning">R$ {{ subtotal }}</div>
+                    </div>
+                </div>
+
+                <hr style="border-color: #333; margin: 1.5rem 0;">
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>R$ {{ subtotal }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Taxa Bancária</span>
+                    <span>R$ {{ totalTaxas }}</span>
+                </div>
+
+                <hr style="border-color: #444; margin: 1.5rem 0;">
+
+                <div class="summary-row total fs-4">
+                    <span>Total a Pagar</span>
+                    <span>R$ {{ totalGeral }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -201,7 +201,6 @@ class SiteControlador extends Controlador
         $taxaUnicaAplicada = 0;
         $totalVotos = 0;
         $itensCarrinho = false;
-
         $pacoteIdParaSalvar = null;
         $tiposDiferentesSelecionados = 0;
 
@@ -211,7 +210,6 @@ class SiteControlador extends Controlador
             if ($quantidade > 0 && isset($tabelaPrecos[$tipo])) {
                 $precoUnitario = $tabelaPrecos[$tipo]['valor'];
                 $taxaUnitaria  = $tabelaPrecos[$tipo]['taxa'];
-
                 $pacoteIdParaSalvar = $tabelaPrecos[$tipo]['id'];
                 $tiposDiferentesSelecionados++;
 
@@ -237,7 +235,10 @@ class SiteControlador extends Controlador
 
         $totalGeral = $subtotal + $taxaUnicaAplicada;
 
-        echo $this->template->renderizar('checkout.html', [
+        $gateway = $this->config->gateway_pagamento ?? 'ASAAS';
+        $template = ($gateway === 'INFINITEPAY') ? 'checkout/checkout-infinitepay.html' : 'checkout/checkout-asaas.html';
+
+        echo $this->template->renderizar($template, [
             'titulo'        => 'Checkout - ' . $post->titulo,
             'post'          => $post,
             'totalVotos'    => $totalVotos,
@@ -248,6 +249,7 @@ class SiteControlador extends Controlador
             'taxaFloat'     => $taxaUnicaAplicada,
             'totalFloat'    => $totalGeral,
             'pacoteId'      => $pacoteIdParaSalvar,
+            'form'          => [],
             'config'        => $this->config
         ]);
     }
@@ -298,4 +300,3 @@ class SiteControlador extends Controlador
         ]);
     }
 }
- 

@@ -3,6 +3,10 @@
 {% block topo %}{% endblock %}
 {% block rodape %}{% endblock %}
 
+{% block styles %}
+<link rel="stylesheet" href="{{ url('templates/site/assets/css/checkout.css') }}">
+{% endblock %}
+
 {% block conteudo %}
 
 <div class="container mb-5">
@@ -17,7 +21,7 @@
     </div>
 
     <div class="row g-5">
-        <div class="col-lg-7">          
+        <div class="col-lg-7">
 
             <form action="{{ url('pedido/processar') }}" method="POST" id="form-checkout">
 
@@ -275,7 +279,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <div class="fs-5 fw-bold text-white">{{ totalVotos }} VOTOS</div>
-                                    <small class="text-muted">Pacote de Votos</small>
+                                    <small class="text-white">Pacote de Votos</small>
                                 </div>
                                 <div class="fs-5 fw-bold text-warning">R$ {{ subtotal }}</div>
                             </div>
@@ -305,209 +309,9 @@
     </div>
 </div>
 
-<style>
-    /* Estilos do Checkout Profissional */
-    .checkout-step {
-        animation: fadeIn 0.3s ease-in;
-    }
+{% endblock %}
 
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .section-title {
-        color: #fff;
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .step-number {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 36px;
-        height: 36px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 50%;
-        font-size: 1rem;
-        font-weight: bold;
-    }
-
-    .payment-methods {
-        display: grid;
-        gap: 1rem;
-    }
-
-    .payment-method-card {
-        background: #1a1a1a;
-        border: 2px solid #333;
-        border-radius: 12px;
-        padding: 1.25rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        position: relative;
-    }
-
-    .payment-method-card:hover {
-        border-color: #667eea;
-        background: #222;
-        transform: translateY(-2px);
-    }
-
-    .payment-method-card input[type="radio"] {
-        position: absolute;
-        opacity: 0;
-    }
-
-    .payment-method-card input[type="radio"]:checked~.payment-method-content {
-        opacity: 1;
-    }
-
-    .payment-method-card input[type="radio"]:checked+.payment-method-content+.payment-method-check {
-        opacity: 1;
-        color: #667eea;
-    }
-
-    .payment-method-card input[type="radio"]:checked {
-        &~* {
-            border-color: #667eea;
-        }
-    }
-
-    .payment-method-card:has(input:checked) {
-        border-color: #667eea;
-        background: #222;
-    }
-
-    .payment-method-content {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        flex: 1;
-    }
-
-    .payment-method-icon {
-        font-size: 2rem;
-    }
-
-    .payment-method-info strong {
-        display: block;
-        color: #fff;
-        font-size: 1.1rem;
-        margin-bottom: 4px;
-    }
-
-    .payment-method-info small {
-        color: #999;
-        font-size: 0.875rem;
-    }
-
-    .payment-method-check {
-        opacity: 0;
-        transition: opacity 0.3s;
-        font-size: 1.5rem;
-    }
-
-    .card-brands img {
-        width: 32px;
-        height: auto;
-        opacity: 0.6;
-        margin-right: 8px;
-        transition: opacity 0.3s;
-    }
-
-    .card-brands img:hover {
-        opacity: 1;
-    }
-
-    .summary-item {
-        border: 1px solid #333;
-    }
-</style>
-
+{% block scripts %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-
-<script>
-    // Função para alternar método de pagamento
-    function toggleMetodoPagamento() {
-        var cartaoSelecionado = document.getElementById('metodo_cartao').checked;
-
-        var camposCartao = document.getElementById('campos-cartao');
-        var camposExtras = document.getElementById('campos-extras-cartao');
-        var btnTexto = document.getElementById('texto-btn');
-        var btnIcon = document.getElementById('icon-btn');
-
-        if (cartaoSelecionado) {
-            camposCartao.style.display = 'block';
-            camposExtras.style.display = 'block';
-            btnTexto.textContent = 'Finalizar Pagamento';
-            btnIcon.className = 'fa-solid fa-lock me-2';
-
-            document.getElementById('email').required = true;
-            document.getElementById('telefone').required = true;
-            document.getElementById('cartao_nome').required = true;
-            document.getElementById('cartao_numero').required = true;
-            document.getElementById('cartao_mes').required = true;
-            document.getElementById('cartao_ano').required = true;
-            document.getElementById('cartao_cvv').required = true;
-        } else {
-            camposCartao.style.display = 'none';
-            camposExtras.style.display = 'none';
-            btnTexto.textContent = 'Gerar PIX e Finalizar';
-            btnIcon.className = 'fa-brands fa-pix me-2';
-
-            document.getElementById('email').required = false;
-            document.getElementById('telefone').required = false;
-            document.getElementById('cartao_nome').required = false;
-            document.getElementById('cartao_numero').required = false;
-            document.getElementById('cartao_mes').required = false;
-            document.getElementById('cartao_ano').required = false;
-            document.getElementById('cartao_cvv').required = false;
-        }
-    }
-
-    // Timer
-    var timer = localStorage.getItem('checkout_timer') ? parseInt(localStorage.getItem('checkout_timer')) : 600;
-    var display = document.querySelector('#countdown');
-
-    var interval = setInterval(function () {
-        var minutes = parseInt(timer / 60, 10);
-        var seconds = parseInt(timer % 60, 10);
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-        if (display) display.textContent = minutes + ":" + seconds;
-        localStorage.setItem('checkout_timer', timer);
-        if (--timer < 0) {
-            localStorage.removeItem('checkout_timer');
-            clearInterval(interval);
-            window.location.reload();
-        }
-    }, 1000);
-
-    // Máscaras
-    $(document).ready(function () {
-        $('#cpf').mask('000.000.000-00');
-        $('#telefone').mask('(00) 00000-0000');
-        $('#telefone_infinitepay').mask('(00) 00000-0000');
-        $('#cartao_numero').mask('0000 0000 0000 0000');
-        $('#cartao_cvv').mask('0000');
-        $('#cep').mask('00000-000');
-    });
-</script>
-
+<script src="{{ url('templates/site/assets/js/checkout.js') }}"></script>
 {% endblock %}
