@@ -78,8 +78,6 @@ class InfinitePay
             $payload['redirect_url'] = $urlRedirect;
         }
 
-        XDebug::xd("Payload enviado para InfinitePay", $payload);
-
         // Dados do cliente (opcional)
         if ($dadosCliente) {
             $payload['customer'] = $this->formatarDadosCliente($dadosCliente);
@@ -92,6 +90,8 @@ class InfinitePay
 
         // Faz requisição
         $resposta = $this->post('/invoices/public/checkout/links', $payload);
+
+        XDebug::xd("Resposta da API InfinitePay", $resposta);
 
         // Verifica erro
         if (!isset($resposta->url)) {
