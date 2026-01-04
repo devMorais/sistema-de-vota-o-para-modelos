@@ -4,7 +4,6 @@ namespace sistema\Biblioteca;
 
 use sistema\Nucleo\Helpers;
 use sistema\Modelo\LogPagamentoInfinitepayModelo;
-use sistema\Suporte\XDebug;
 
 class InfinitePay
 {
@@ -90,8 +89,6 @@ class InfinitePay
 
         // Faz requisição
         $resposta = $this->post('/invoices/public/checkout/links', $payload);
-
-        XDebug::xd("Resposta da API InfinitePay", $resposta);
 
         // Verifica erro
         if (!isset($resposta->url)) {

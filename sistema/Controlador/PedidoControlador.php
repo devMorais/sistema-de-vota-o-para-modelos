@@ -9,6 +9,7 @@ use sistema\Modelo\PostModelo;
 use sistema\Modelo\ConfiguracaoModelo;
 use sistema\Controlador\Pagamento\PagamentoAsaasControlador;
 use sistema\Controlador\Pagamento\PagamentoInfinitepayControlador;
+use sistema\Suporte\XDebug;
 
 class PedidoControlador extends Controlador
 {
@@ -107,6 +108,8 @@ class PedidoControlador extends Controlador
     {
         // Busca o pedido atualizado diretamente do banco
         $pedido = (new PedidoModelo())->buscaPorId($idPedido);
+
+        XDebug::xd($pedido);
 
         if (!$pedido) {
             $this->mensagem->alerta('Pedido não encontrado.')->flash();
