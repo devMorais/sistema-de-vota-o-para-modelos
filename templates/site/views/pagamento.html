@@ -239,64 +239,43 @@
 {% block scripts %}
 <script>
     $(document).ready(function () {
-        var pedidoId = {{ pedido.id }
-    }; // Corrigido: Removida a chave sobrando
-    var urlVerificacao = "{{ url('pedido/verificar') }}";
-    var pedidoStatusInicial = "{{ pedido.status }}";
+        // CORREÇÃO AQUI: Linha limpa e com aspas para evitar erro de template
+        var pedidoId = "{{ pedido.id }}";
+        var urlVerificacao = "{{ url('pedido/verificar') }}";
+        var statusInicial = "{{ pedido.status }}";
 
-    // ✅ SE JÁ ESTÁ PAGO, NÃO FAZ POLLING
-    if (pedidoStatusInicial === 'PAGO') return;
-
-    // ✅ SE FOR ERRO, BUSCA MENSAGEM
-    if (pedidoStatusInicial === 'ERRO') {
-        $.post("{{ url('pedido/erro') }}", { pedido_id: pedidoId }, function (res) {
-            if (res.mensagem) $('#mensagem-erro').text(res.mensagem);
-        }, 'json');
-        return;
-    }
-
-    // ✅ POLLING COM TIMEOUT (3 minutos)
-    var tentativas = 0;
-    var intervalo = setInterval(function () {
-        tentativas++;
-        if (tentativas >= 60) {
-            clearInterval(intervalo);
-            $('#status-pedido').html('<span class="text-warning">Tempo esgotado. <a href="#" onclick="location.reload()" class="text-white">Atualizar</a></span>');
-            return;
+        // ✅ AUTOMAÇÃO: Só inicia se não estiver PAGO
+        if (statusInicial !== 'PAGO' && statusInicial !== 'ERRO') {
+            var autoIntervalo = setInterval(function () {
+                $.ajax({
+                    url: urlVerificacao,
+                    type: 'POST',
+                    data: { id: pedidoId },
+                    dataType: 'json',
+                    success: function (res) {
+                        // Verifica se o status mudou para PAGO no banco
+                        if (res.pago || res.status === 'PAGO') {
+                            clearInterval(autoIntervalo);
+                            window.location.reload();
+                        }
+                    }
+                });
+            }, 3000); // Tenta a cada 3 segundos
         }
-
-        $.ajax({
-            url: urlVerificacao,
-            type: 'POST',
-            data: { id: pedidoId },
-            dataType: 'json',
-            success: function (response) {
-                // Confirmação via resposta JSON profissional
-                if (response.pago || response.status === 'PAGO') {
-                    clearInterval(intervalo);
-                    window.location.reload();
-                } else {
-                    $('#status-pedido').text('Aguardando confirmação...');
-                }
-            }
-        });
-    }, 3000);
     });
 
+    // Função de verificação manual (Caso o usuário queira clicar)
     function verificarManualmente() {
         var btn = $('#btn-verificar');
-        btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Verificando...');
-
-        $.post("{{ url('pedido/verificar') }}", { id: {{ pedido.id }} }, function (response) {
-            if (response.pago || response.status === 'PAGO') {
+        btn.prop('disabled', true).html('Verificando...');
+        $.post("{{ url('pedido/verificar') }}", { id: "{{ pedido.id }}" }, function (res) {
+            if (res.pago || res.status === 'PAGO') {
                 window.location.reload();
             } else {
-                btn.prop('disabled', false).html('<i class="fa-solid fa-rotate me-2"></i>Já paguei - Verificar Status');
-                $('#status-pedido').html('<span class="text-warning">Ainda não confirmado</span>');
+                btn.prop('disabled', false).html('<i class="fa-solid fa-rotate me-2"></i> Já paguei - Verificar Status');
+                $('#status-pedido').text('Ainda não confirmado');
             }
-        }, 'json').fail(function () {
-            btn.prop('disabled', false).html('<i class="fa-solid fa-rotate me-2"></i>Já paguei - Verificar Status');
-        });
+        }, 'json');
     }
 
     function copiarPix() {
