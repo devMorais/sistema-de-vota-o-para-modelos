@@ -102,12 +102,11 @@ class PedidoControlador extends Controlador
     }
 
     /**
-     * Exibe página de pagamento com log de depuração físico e suporte a múltiplos gateways
+     * Exibe página de pagamento com ajuste para evitar loop na InfinitePay
      */
     public function pagamento(int $idPedido): void
     {
         // --- INÍCIO DO LOG DE DEBUG FÍSICO ---
-        // Caminho: raiz do seu projeto (ex: /public_html/hom-votar/debug_infinitepay.txt)
         $arquivoLog = dirname(__DIR__, 2) . '/debug_infinitepay.txt';
         $timestamp = date('Y-m-d H:i:s');
         $uri = $_SERVER['REQUEST_URI'] ?? 'N/A';
@@ -117,7 +116,7 @@ class PedidoControlador extends Controlador
         file_put_contents($arquivoLog, $logEntrada, FILE_APPEND);
         // --- FIM DO LOG DE DEBUG ---
 
-        // Busca o pedido atualizado diretamente do banco [cite: 11]
+        // Busca o pedido atualizado diretamente do banco
         $pedido = (new PedidoModelo())->buscaPorId($idPedido);
 
         if (!$pedido) {
@@ -149,10 +148,10 @@ class PedidoControlador extends Controlador
         if ($pedido->gateway_usado === 'INFINITEPAY') {
             $controlador = new PagamentoInfinitepayControlador();
 
-            // Consulta API em tempo real para quebrar o loop de redirecionamento
+            // Consulta API em tempo real
             $statusReal = $controlador->consultarStatusAPI($pedido);
 
-            // Log do resultado da API
+            // Log do resultado da API para conferência no terminal
             file_put_contents($arquivoLog, "[$timestamp] API InfinitePay retornou: $statusReal\n", FILE_APPEND);
 
             if ($statusReal === 'PAGO') {
@@ -160,7 +159,15 @@ class PedidoControlador extends Controlador
                 return;
             }
 
-            // Redireciona para o checkout externo se ainda não pagou
+            // --- AJUSTE PARA MATAR O LOOP ---
+            // Se existirem parâmetros na URL (GET), significa que o usuário ACABOU de voltar do checkout.
+            // Não redirecionamos ele de volta para a InfinitePay; mostramos a página de processamento.
+            if (!empty($_GET['transaction_nsu']) || !empty($_GET['slug']) || !empty($_GET['transaction_id'])) {
+                $controlador->renderizarSucesso($pedido, $whatsapp);
+                return;
+            }
+
+            // Se for um acesso "limpo" (sem volta de checkout) e não pagou, aí sim redireciona para a IP
             if (!empty($pedido->infinitepay_link)) {
                 $controlador->redirecionarPagamento($pedido);
                 return;
