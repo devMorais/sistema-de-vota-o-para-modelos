@@ -85,20 +85,29 @@ class PagamentoInfinitepayControlador extends Controlador
             return;
         }
 
+        // Tenta pegar o NSU e o SLUG da URL (retorno do checkout) ou do banco
+        $transactionNsu = $_GET['transaction_nsu'] ?? $pedido->infinitepay_transaction_nsu;
+        $slug = $_GET['slug'] ?? $pedido->infinitepay_slug;
+
         $infinitePay = new InfinitePay($pedido->id);
 
+        // Passa os dados capturados para a verificação
         $resultado = $infinitePay->verificarPagamento(
             $pedido->infinitepay_order_nsu,
-            $pedido->infinitepay_transaction_nsu,
-            $pedido->infinitepay_slug
+            $transactionNsu,
+            $slug
         );
 
         if ($resultado['erro'] || !$resultado['paid']) {
-            Helpers::json('aguardando', 'Aguardando pagamento...');
+            Helpers::json('aguardando', 'Aguardando confirmação do pagamento...');
             return;
         }
 
-        // Pagamento confirmado
+        // Pagamento confirmado - agora salva o NSU que veio da URL no banco
+        if (empty($pedido->infinitepay_transaction_nsu)) {
+            $pedido->infinitepay_transaction_nsu = $transactionNsu;
+        }
+
         $this->confirmarPagamento($pedido, $resultado);
     }
 
