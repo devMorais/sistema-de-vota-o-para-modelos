@@ -114,7 +114,7 @@ class PagamentoInfinitepayControlador extends Controlador
     /**
      * Confirma pagamento e atualiza banco
      */
-    private function confirmarPagamento(PedidoModelo $pedido, array $dadosPagamento = []): void
+    protected function confirmarPagamento(PedidoModelo $pedido, array $dadosPagamento = []): void
     {
         $pdo = Conexao::getInstancia();
         $pdo->beginTransaction();
@@ -288,5 +288,13 @@ class PagamentoInfinitepayControlador extends Controlador
         }
 
         return 'AGUARDANDO';
+    }
+
+    /**
+     * ✅ NOVO: Versão pública do confirmarPagamento (para usar no PedidoControlador)
+     */
+    public function confirmarPagamentoPublico(PedidoModelo $pedido, array $dadosPagamento = []): void
+    {
+        $this->confirmarPagamento($pedido, $dadosPagamento);
     }
 }

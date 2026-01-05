@@ -145,29 +145,41 @@ class PedidoControlador extends Controlador
         }
 
         // 3. LÓGICA ESPECÍFICA: INFINITEPAY
+        // 3. LÓGICA ESPECÍFICA: INFINITEPAY
         if ($pedido->gateway_usado === 'INFINITEPAY') {
             $controlador = new PagamentoInfinitepayControlador();
 
-            // Consulta API em tempo real
-            $statusReal = $controlador->consultarStatusAPI($pedido);
-
-            // Log do resultado da API para conferência no terminal
-            file_put_contents($arquivoLog, "[$timestamp] API InfinitePay retornou: $statusReal\n", FILE_APPEND);
-
-            if ($statusReal === 'PAGO') {
-                $controlador->renderizarSucesso($pedido, $whatsapp);
-                return;
-            }
-
-            // --- AJUSTE PARA MATAR O LOOP ---
-            // Se existirem parâmetros na URL (GET), significa que o usuário ACABOU de voltar do checkout.
-            // Não redirecionamos ele de volta para a InfinitePay; mostramos a página de processamento.
+            // ✅ SE VOLTOU DO CHECKOUT (tem parâmetros GET), verifica AGORA
             if (!empty($_GET['transaction_nsu']) || !empty($_GET['slug']) || !empty($_GET['transaction_id'])) {
+
+                // Atualiza transaction_nsu se veio na URL
+                if (!empty($_GET['transaction_nsu']) && empty($pedido->infinitepay_transaction_nsu)) {
+                    $pedido->infinitepay_transaction_nsu = $_GET['transaction_nsu'];
+                    $pedido->salvar();
+                }
+
+                // ✅ FORÇA verificação IMEDIATA
+                $infinitePay = new \sistema\Biblioteca\InfinitePay($pedido->id);
+                $resultado = $infinitePay->verificarPagamento($pedido->infinitepay_order_nsu);
+
+                // Se já pagou, confirma AGORA
+                if (!empty($resultado['paid']) && $resultado['paid'] === true) {
+                    $controlador->confirmarPagamentoPublico($pedido, $resultado);
+
+                    // Recarrega pedido atualizado
+                    $pedido = (new PedidoModelo())->buscaPorId($pedido->id);
+
+                    // Mostra tela de sucesso
+                    $controlador->renderizarSucesso($pedido, $whatsapp);
+                    return;
+                }
+
+                // Se não pagou ainda, mostra tela de processamento
                 $controlador->renderizarSucesso($pedido, $whatsapp);
                 return;
             }
 
-            // Se for um acesso "limpo" (sem volta de checkout) e não pagou, aí sim redireciona para a IP
+            // Se for acesso limpo (sem volta de checkout) e não pagou, redireciona
             if (!empty($pedido->infinitepay_link)) {
                 $controlador->redirecionarPagamento($pedido);
                 return;
