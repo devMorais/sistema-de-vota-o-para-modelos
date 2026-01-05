@@ -239,43 +239,78 @@
 {% block scripts %}
 <script>
     $(document).ready(function () {
-        // CORREÇÃO AQUI: Linha limpa e com aspas para evitar erro de template
         var pedidoId = "{{ pedido.id }}";
         var urlVerificacao = "{{ url('pedido/verificar') }}";
         var statusInicial = "{{ pedido.status }}";
+        var gateway = "{{ pedido.gateway_usado }}";
 
-        // ✅ AUTOMAÇÃO: Só inicia se não estiver PAGO
-        if (statusInicial !== 'PAGO' && statusInicial !== 'ERRO') {
+        // ✅ INFINITEPAY: Verifica IMEDIATAMENTE quando volta do checkout
+        if (gateway === 'INFINITEPAY' && statusInicial !== 'PAGO') {
+            // Se tem parâmetros GET (voltou do checkout), verifica AGORA
+            var urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('transaction_nsu') || urlParams.has('slug')) {
+                verificarPagamento();
+            }
+
+            // ✅ Polling mais rápido: 1 segundo (ao invés de 3)
+            var tentativas = 0;
+            var maxTentativas = 60; // 60 segundos no total
+
             var autoIntervalo = setInterval(function () {
-                $.ajax({
-                    url: urlVerificacao,
-                    type: 'POST',
-                    data: { id: pedidoId },
-                    dataType: 'json',
-                    success: function (res) {
-                        // Verifica se o status mudou para PAGO no banco
-                        if (res.pago || res.status === 'PAGO') {
-                            clearInterval(autoIntervalo);
-                            window.location.reload();
-                        }
+                tentativas++;
+
+                if (tentativas >= maxTentativas) {
+                    clearInterval(autoIntervalo);
+                    $('#status-pedido').html('Tempo esgotado. <button onclick="verificarManualmente()" class="btn btn-sm btn-light">Verificar</button>');
+                    return;
+                }
+
+                verificarPagamento();
+            }, 1000); // ✅ A cada 1 segundo (mais rápido)
+        }
+
+        // ✅ ASAAS: Polling normal (3 segundos)
+        if (gateway === 'ASAAS' && statusInicial !== 'PAGO' && statusInicial !== 'ERRO') {
+            var autoIntervalo = setInterval(function () {
+                verificarPagamento();
+            }, 3000);
+        }
+
+        function verificarPagamento() {
+            $.ajax({
+                url: urlVerificacao,
+                type: 'POST',
+                data: { id: pedidoId },
+                dataType: 'json',
+                success: function (res) {
+                    if (res.pago || res.status === 'PAGO') {
+                        clearInterval(autoIntervalo);
+                        window.location.reload();
                     }
-                });
-            }, 3000); // Tenta a cada 3 segundos
+                },
+                error: function () {
+                    // Ignora erros para não parar o polling
+                }
+            });
         }
     });
 
-    // Função de verificação manual (Caso o usuário queira clicar)
+    // Função de verificação manual
     function verificarManualmente() {
         var btn = $('#btn-verificar');
-        btn.prop('disabled', true).html('Verificando...');
+        btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Verificando...');
+
         $.post("{{ url('pedido/verificar') }}", { id: "{{ pedido.id }}" }, function (res) {
             if (res.pago || res.status === 'PAGO') {
                 window.location.reload();
             } else {
                 btn.prop('disabled', false).html('<i class="fa-solid fa-rotate me-2"></i> Já paguei - Verificar Status');
-                $('#status-pedido').text('Ainda não confirmado');
+                alert('Pagamento ainda não confirmado. Aguarde mais alguns segundos.');
             }
-        }, 'json');
+        }, 'json').fail(function () {
+            btn.prop('disabled', false).html('<i class="fa-solid fa-rotate me-2"></i> Já paguei - Verificar Status');
+            alert('Erro ao verificar. Tente novamente.');
+        });
     }
 
     function copiarPix() {
