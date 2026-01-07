@@ -32,7 +32,6 @@
                 <input type="hidden" name="total_votos" value="{{ totalVotos }}">
                 <input type="hidden" name="pacote_id" value="{{ pacoteId }}">
 
-                <!-- ETAPA 1: FORMA DE PAGAMENTO -->
                 <div class="checkout-step mb-5">
                     <h2 class="section-title">
                         <span class="step-number">1</span> Escolha a Forma de Pagamento
@@ -120,8 +119,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- ETAPA 3: DADOS DO CARTÃO (aparecem dinamicamente) -->
                 <div id="campos-cartao" style="display: none;" class="checkout-step mb-5">
                     <h2 class="section-title">
                         <span class="step-number">3</span> Dados do Cartão
@@ -221,8 +218,6 @@
 
             </form>
         </div>
-
-        <!-- RESUMO LATERAL -->
         {% include 'checkout/checkout-resumo.html' %}
     </div>
 </div>

@@ -13,7 +13,6 @@ config.php
 # COMPOSER
 # ========================================
 /vendor/
-composer.lock
 
 # ========================================
 # UPLOADS E CACHE
