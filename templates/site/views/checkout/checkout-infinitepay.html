@@ -32,14 +32,12 @@
                 <input type="hidden" name="total_votos" value="{{ totalVotos }}">
                 <input type="hidden" name="pacote_id" value="{{ pacoteId }}">
 
-                <!-- AVISO INFINITEPAY -->
                 <div class="alert alert-info mb-4">
                     <i class="fa-solid fa-info-circle me-2"></i>
                     <strong>Pagamento via InfinitePay</strong><br>
                     <small>Você será redirecionado para finalizar o pagamento de forma segura com PIX ou Cartão.</small>
                 </div>
 
-                <!-- DADOS PESSOAIS -->
                 <div class="checkout-step mb-5">
                     <h2 class="section-title">
                         <span class="step-number">1</span> Seus Dados
@@ -87,7 +85,6 @@
             </form>
         </div>
 
-        <!-- RESUMO LATERAL -->
         {% include 'checkout/checkout-resumo.html' %}
     </div>
 </div>

@@ -4,7 +4,7 @@
 <head>
     <title>
         {% if titulo %}
-        {{titulo}}
+        {{ titulo|striptags}}
         {% else %}
         {{constant('SITE_NOME')}}
         {% endif %}
