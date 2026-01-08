@@ -1,198 +1,83 @@
 {% extends "dashboard.html" %}
 
 {% block conteudo %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-            <a href="{{url('admin/dashboard')}}">
-                Home
-            </a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">
-            Configurações do Sistema
-        </li>
-    </ol>
-</nav>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">Configurações do Sistema</h4>
+    <small class="text-muted">Última atualização: {{config.atualizado_em|date('d/m/Y H:i')}}</small>
+</div>
 
 {{flash()}}
 
-<div class="card border-0 shadow-sm">
-    <div class="card-header bg-white border-0">
-        <h5 class="mb-0">Ajustes Globais</h5>
-    </div>
-    <div class="card-body">
-        <form action="{{url('admin/configuracoes/editar')}}" method="post">
+<form action="{{url('admin/configuracoes/editar')}}" method="post">
+    <div class="row g-4">
 
-            <!-- ===== SEÇÃO: GATEWAY DE PAGAMENTO ===== -->
-            <div class="alert alert-info">
-                <i class="fa-solid fa-credit-card me-2"></i>
-                <strong>Gateway de Pagamento</strong>
-            </div>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3"><i class="fa-solid fa-credit-card me-2"></i>Pagamento</h6>
 
-            <div class="mb-4">
-                <label for="gateway_pagamento" class="form-label">
-                    <i class="fa-solid fa-server me-1"></i>
-                    Gateway de Pagamento Ativo
-                </label>
-                <select class="form-select" name="gateway_pagamento" id="gateway_pagamento">
-                    <option value="ASAAS" {% if config.gateway_pagamento=='ASAAS' %}selected{% endif %}>
-                        Asaas (PIX + Cartão)
-                    </option>
-                    <option value="INFINITEPAY" {% if config.gateway_pagamento=='INFINITEPAY' %}selected{% endif %}>
-                        InfinitePay (Link de Pagamento)
-                    </option>
-                </select>
-                <small class="text-muted">
-                    <i class="fa-solid fa-info-circle me-1"></i>
-                    Define qual gateway será usado para processar os pagamentos.
-                </small>
-            </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Empresa de Pagamento Ativa</label>
+                        <select class="form-select" name="gateway_pagamento" id="gateway_pagamento">
+                            <option value="ASAAS" {% if config.gateway_pagamento=='ASAAS' %}selected{% endif %}>Asaas
+                                (Pix e Cartão)</option>
+                            <option value="INFINITEPAY" {% if config.gateway_pagamento=='INFINITEPAY' %}selected{% endif
+                                %}>InfinitePay (Link Externo)</option>
+                        </select>
+                    </div>
 
-            <!-- Informações dos Gateways -->
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <div class="card bg-light border-0 h-100">
-                        <div class="card-body">
-                            <h6 class="text-muted mb-2">
-                                <i class="fa-solid fa-circle-check text-success me-1"></i>
-                                Asaas
-                            </h6>
-                            <ul class="small mb-0 ps-3">
-                                <li>PIX com QR Code</li>
-                                <li>Cartão de Crédito</li>
-                                <li>Aprovação imediata</li>
-                                <li>Webhook automático</li>
-                            </ul>
-                            <div class="mt-2 small text-muted">
-                                <strong>Configurado em:</strong> configuracao.php
-                            </div>
-                        </div>
+                    <div id="aviso-asaas" class="alert alert-warning py-2 small" style="display: none;">
+                        <i class="fa-solid fa-triangle-exclamation me-1"></i>
+                        <strong>Aviso Asaas:</strong> Exige valor mínimo de R$ 5,00 por voto.
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="col-md-6">
-                    <div class="card bg-light border-0 h-100">
-                        <div class="card-body">
-                            <h6 class="text-muted mb-2">
-                                <i class="fa-solid fa-circle-check text-primary me-1"></i>
-                                InfinitePay
-                            </h6>
-                            <ul class="small mb-0 ps-3">
-                                <li>Link de pagamento</li>
-                                <li>PIX + Cartão integrado</li>
-                                <li>Checkout hospedado</li>
-                                <li>Webhook automático</li>
-                            </ul>
-                            <div class="mt-2 small text-muted">
-                                <strong>Configurado em:</strong> configuracao.php
-                            </div>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3"><i class="fa-brands fa-whatsapp me-2"></i>Atendimento</h6>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">WhatsApp de Suporte</label>
+                        <input type="text" name="whatsapp" class="form-control" placeholder="Ex: 5561999999999"
+                            value="{{config.whatsapp}}">
+                        <div class="form-text small">Apenas números (Código país + DDD + Número)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3"><i class="fa-solid fa-list me-2"></i>Visualização das Candidatas</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small fw-bold">Quantidade por Página</label>
+                            <input type="number" name="posts_por_pagina" class="form-control"
+                                value="{{config.posts_por_pagina|default(24)}}" min="1">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small fw-bold">Organizar por</label>
+                            <select class="form-select" name="ordenacao_posts">
+                                <option value="titulo ASC" {% if config.ordenacao_posts=='titulo ASC' %}selected{% endif
+                                    %}>Nome (A-Z)</option>
+                                <option value="votos DESC" {% if config.ordenacao_posts=='votos DESC' %}selected{% endif
+                                    %}>Mais Votadas</option>
+                                <option value="id DESC" {% if config.ordenacao_posts=='id DESC' %}selected{% endif %}>
+                                    Mais Recentes</option>
+                            </select>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <hr class="my-4">
-
-            <!-- ===== SEÇÃO: SUPORTE ===== -->
-            <div class="alert alert-warning">
-                <i class="fa-brands fa-whatsapp me-2"></i>
-                <strong>Atendimento ao Cliente</strong>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="whatsapp" class="form-label">WhatsApp de Suporte (apenas números)</label>
-                    <input type="text" name="whatsapp" id="whatsapp" class="form-control"
-                        placeholder="Ex: 5561999999999" value="{{config.whatsapp}}">
-                    <small class="text-muted">Informe o código do país + DDD + Número.</small>
-                </div>
-            </div>
-
-            <hr class="my-4">
-
-            <!-- ===== SEÇÃO: EXIBIÇÃO ===== -->
-            <div class="alert alert-secondary">
-                <i class="fa-solid fa-eye me-2"></i>
-                <strong>Exibição e Layout</strong>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="posts_por_pagina" class="form-label">Candidatas por Página</label>
-                    <input type="number" name="posts_por_pagina" id="posts_por_pagina" class="form-control"
-                        value="{{config.posts_por_pagina|default(24)}}" min="1">
-                </div>
-            </div>
-
-            <div class="mb-4">
-                <label for="ordenacao_posts" class="form-label">Ordenação Padrão das Candidatas (Home)</label>
-                <select class="form-select" name="ordenacao_posts" id="ordenacao_posts">
-                    <option value="titulo ASC" {% if config.ordenacao_posts=='titulo ASC' %}selected{% endif %}>
-                        Nome: A - Z
-                    </option>
-                    <option value="titulo DESC" {% if config.ordenacao_posts=='titulo DESC' %}selected{% endif %}>
-                        Nome: Z - A
-                    </option>
-                    <option value="votos DESC" {% if config.ordenacao_posts=='votos DESC' %}selected{% endif %}>
-                        Mais Votadas Primeiro
-                    </option>
-                    <option value="id DESC" {% if config.ordenacao_posts=='id DESC' %}selected{% endif %}>
-                        Mais Recentes (Novas Candidatas)
-                    </option>
-                    <option value="id ASC" {% if config.ordenacao_posts=='id ASC' %}selected{% endif %}>
-                        Mais Antigas
-                    </option>
-                </select>
-                <small class="text-muted">Define como a lista será organizada automaticamente para o visitante.</small>
-            </div>
-
-            <hr class="my-4">
-
-            <div class="d-flex justify-content-between align-items-center">
-                <p class="text-muted small mb-0">
-                    <i class="fa-solid fa-clock"></i>
-                    Última atualização: {{config.atualizado_em|date('d/m/Y H:i')}}
-                </p>
-                <input type="submit" class="btn btn-primary px-4" value="Salvar Configurações">
-            </div>
-
-        </form>
-    </div>
-</div>
-
-<!-- Card de Ajuda -->
-<div class="card border-0 shadow-sm mt-4">
-    <div class="card-header bg-primary text-white">
-        <i class="fa-solid fa-circle-info me-2"></i>
-        <strong>Configuração dos Gateways</strong>
-    </div>
-    <div class="card-body">
-        <h6 class="mb-3">Como configurar as credenciais:</h6>
-
-        <div class="mb-3">
-            <strong>1. Asaas:</strong>
-            <p class="mb-2 small">Edite o arquivo <code>configuracao.php</code>:</p>
-            <pre class="bg-light p-2 rounded small"><code>define('ASAAS_KEY', 'sua_chave_asaas');
-define('ASAAS_URL', 'https://api.asaas.com/v3'); // ou sandbox</code></pre>
-        </div>
-
-        <div class="mb-3">
-            <strong>2. InfinitePay:</strong>
-            <p class="mb-2 small">Edite o arquivo <code>configuracao.php</code>:</p>
-            <pre class="bg-light p-2 rounded small"><code>define('INFINITEPAY_HANDLE', 'sua_infinite_tag');
-define('INFINITEPAY_URL', 'https://api.infinitepay.io');</code></pre>
-        </div>
-
-        <div class="alert alert-warning small mb-0">
-            <i class="fa-solid fa-exclamation-triangle me-2"></i>
-            <strong>Importante:</strong> Não se esqueça de configurar as URLs dos webhooks nos painéis do Asaas e
-            InfinitePay!
-            <ul class="mb-0 mt-2">
-                <li><strong>Asaas:</strong> {{url('')}}webhook/asaas</li>
-                <li><strong>InfinitePay:</strong> {{url('')}}webhook/infinitepay</li>
-            </ul>
         </div>
     </div>
-</div>
 
+    <div class="mt-4 text-end">
+        <button type="submit" class="btn btn-primary px-5 shadow-sm">Salvar Alterações</button>
+    </div>
+</form>
 {% endblock %}

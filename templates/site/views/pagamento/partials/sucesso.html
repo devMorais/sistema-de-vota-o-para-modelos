@@ -1,0 +1,28 @@
+<div class="card bg-dark text-white border-success shadow-lg rounded-4 overflow-hidden">
+    <div class="card-header bg-success text-center py-4 border-0">
+        <i class="fa-solid fa-circle-check fs-1"></i>
+        <h3 class="fw-bold mt-2 mb-0">Voto Confirmado</h3>
+    </div>
+    <div class="card-body p-4">
+        <div class="list-group list-group-flush bg-transparent">
+            <div class="list-group-item bg-transparent text-white border-secondary d-flex justify-content-between px-0">
+                <span class="text-secondary">Candidata:</span>
+                <span class="fw-bold">{{ pedido.post().titulo|striptags }}</span>
+            </div>
+            <div class="list-group-item bg-transparent text-white border-secondary d-flex justify-content-between px-0">
+                <span class="text-secondary">Votos Adicionados:</span>
+                <span class="fw-bold text-info">{{ pedido.total_votos }}</span>
+            </div>
+            <div class="list-group-item bg-transparent text-white border-0 d-flex justify-content-between px-0">
+                <span class="text-secondary">Valor Pago:</span>
+                <span class="fw-bold text-success">R$ {{ pedido.valor_total|number_format(2, ',', '.') }}</span>
+            </div>
+        </div>
+
+        <div class="d-grid mt-4">
+            <a href="{{ url('votar') }}" class="btn btn-success btn-lg rounded-pill shadow-sm">
+                <i class="fa-solid fa-house me-2"></i>Voltar ao Início
+            </a>
+        </div>
+    </div>
+</div>

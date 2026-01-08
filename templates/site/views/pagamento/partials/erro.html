@@ -1,0 +1,13 @@
+<div class="card bg-dark text-white border-danger shadow-lg rounded-4 overflow-hidden text-center p-4">
+    <div class="py-3">
+        <i class="fa-solid fa-circle-xmark text-danger display-3"></i>
+    </div>
+    <h4 class="fw-bold">Falha no Pagamento</h4>
+    <p class="text-secondary small">Não foi possível processar a transação com o gateway.</p>
+
+    <div class="d-grid gap-2 mt-3">
+        <a href="{{ url('votar') }}" class="btn btn-outline-light rounded-pill">Tentar Outra Candidata</a>
+        <button onclick="window.location.reload()" class="btn btn-link text-secondary text-decoration-none small">Tentar
+            Novamente</button>
+    </div>
+</div>

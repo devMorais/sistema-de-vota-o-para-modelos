@@ -7,7 +7,6 @@ use sistema\Modelo\CategoriaModelo;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use sistema\Nucleo\Helpers;
-use sistema\Biblioteca\Upload;
 
 /**
  * Classe AdminPosts

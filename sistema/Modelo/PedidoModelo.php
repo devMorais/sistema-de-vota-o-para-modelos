@@ -3,48 +3,63 @@
 namespace sistema\Modelo;
 
 use sistema\Nucleo\Modelo;
+use sistema\Nucleo\Conexao;
 
-/**
- * Classe PedidoModelo
- * Responsável por registrar as vendas e transações do Asaas
- */
+
 class PedidoModelo extends Modelo
 {
     public function __construct()
     {
-        // Nome da tabela de pedidos
         parent::__construct('pedidos');
     }
 
-    /**
-     * Calcula o faturamento bruto e taxas de uma candidata específica
-     * Utiliza a arquitetura do Modelo base para manter a segurança
-     * * @param int $postId
-     * @return object|null
-     */
+    public function confirmarPagamento(): bool
+    {
+        $db = Conexao::getInstancia();
+        $db->beginTransaction();
+
+        try {
+            $this->status = 'PAGO';
+            $this->pago_em = date('Y-m-d H:i:s');
+
+            $this->metodo_pagamento = $this->metodo_pagamento ?? 'ASAAS';
+
+            if (!$this->salvar()) {
+                throw new \Exception("Falha ao salvar status do pedido.");
+            }
+
+            $post = $this->post();
+            if ($post) {
+                $post->adicionarVotos($this->total_votos);
+                $post->adicionarReceita((float)$this->valor_total);
+            }
+
+            $db->commit();
+            return true;
+        } catch (\Exception $e) {
+            $db->rollBack();
+            error_log("Erro Pedido #{$this->id}: " . $e->getMessage());
+            return false;
+        }
+    }
+
     public function financeiroPorPost(int $postId): ?object
     {
         $colunas = "SUM(valor_total) as bruto, SUM(valor_taxa) as taxas, SUM(valor_subtotal) as lucro";
         $termos = "post_id = :id AND status = 'PAGO'";
         $parametros = "id={$postId}";
 
-        return $this->busca($termos, $parametros, $colunas)->resultado();
+        return $this->busca($termos, $parametros, $colunas)->resultado(); //
     }
 
-    /**
-     * Busca o Post (Candidata) relacionado a este pedido
-     */
     public function post(): ?PostModelo
     {
         if ($this->post_id) {
-            return (new PostModelo())->buscaPorId($this->post_id);
+            return (new PostModelo())->buscaPorId($this->post_id); //
         }
         return null;
     }
 
-    /**
-     * Busca o Pacote original relacionado (se houver)
-     */
     public function pacote(): ?PacoteModelo
     {
         if ($this->pacote_id) {
