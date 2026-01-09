@@ -5,6 +5,14 @@ namespace sistema\Biblioteca;
 use sistema\Nucleo\Helpers;
 use sistema\Modelo\LogPagamentoInfinitepayModelo;
 
+/**
+ * Classe de integração com a API InfinitePay
+ * 
+ * Responsável por gerenciar pagamentos, gerar links de checkout
+ * e verificar status de transações através da API InfinitePay
+ * 
+ * @author Fernando Aguiar
+ */
 class InfinitePay
 {
     private string $handle;
@@ -14,6 +22,11 @@ class InfinitePay
     private ?string $webhookUrl;
     private ?string $redirectUrl;
 
+    /**
+     * Construtor da classe
+     * 
+     * @param int|null $pedidoId ID do pedido para vincular aos logs
+     */
     public function __construct(?int $pedidoId = null)
     {
         $this->handle      = INFINITEPAY_HANDLE;
@@ -24,12 +37,21 @@ class InfinitePay
         $this->pedidoId    = $pedidoId;
     }
 
+    /**
+     * Verifica o status de um pagamento na InfinitePay
+     * 
+     * @param string $orderNsu NSU do pedido
+     * @param string|null $transactionNsu NSU da transação (opcional)
+     * @param string|null $slug Slug da fatura (opcional)
+     * @return array Retorna array com status do pagamento
+     */
     public function verificarPagamento(string $orderNsu, ?string $transactionNsu = null, ?string $slug = null): array
     {
         $payload = [
             'handle' => $this->handle,
             'order_nsu' => $orderNsu
         ];
+
         if ($transactionNsu) $payload['transaction_nsu'] = $transactionNsu;
         if ($slug) $payload['slug'] = $slug;
 
@@ -47,6 +69,15 @@ class InfinitePay
         ];
     }
 
+    /**
+     * Gera um link de pagamento na InfinitePay
+     * 
+     * @param array $itens Lista de itens do pedido
+     * @param string|null $orderNsu NSU do pedido
+     * @param array|null $dadosCliente Dados do cliente (nome, cpf, email, telefone)
+     * @param string|null $redirectUrlCustom URL de redirecionamento customizada
+     * @return array Retorna array com link de pagamento ou erro
+     */
     public function gerarLinkPagamento(
         array $itens,
         ?string $orderNsu = null,
@@ -78,8 +109,18 @@ class InfinitePay
         ];
     }
 
+    /**
+     * Executa requisição HTTP para a API InfinitePay
+     * 
+     * @param string $endpoint Endpoint da API
+     * @param array $dados Dados a serem enviados
+     * @param string $etapa Etapa do processo para log
+     * @return object Resposta da API como objeto
+     */
     private function request(string $endpoint, array $dados, string $etapa): object
     {
+        $tempoInicio = microtime(true);
+
         $ch = curl_init();
         curl_setopt_array($ch, [
             CURLOPT_URL => $this->url . $endpoint,
@@ -88,7 +129,7 @@ class InfinitePay
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
             CURLOPT_TIMEOUT => 20,
-            CURLOPT_SSL_VERIFYPEER => true
+            CURLOPT_SSL_VERIFYPEER => INFINITEPAY_SSL ?? true
         ]);
 
         $res = curl_exec($ch);
@@ -96,26 +137,35 @@ class InfinitePay
         $curlError = curl_errno($ch) ? curl_error($ch) : null;
         curl_close($ch);
 
+        $tempoResposta = round((microtime(true) - $tempoInicio) * 1000, 2); // em milissegundos
+
         $respostaObj = json_decode($res);
 
-        $statusLog = ($httpCode >= 200 && $httpCode < 300) ? 'SUCESSO' : 'ERRO';
-        $msgLog = $curlError ?: ($respostaObj->message ?? null);
+        // Define status baseado no código HTTP e presença de erros
+        $statusLog = ($httpCode >= 200 && $httpCode < 300 && !$curlError) ? 'SUCESSO' : 'ERRO';
 
+        // Registra log da requisição
         $this->log->registrar(
             $this->pedidoId,
             $etapa,
             $statusLog,
-            $msgLog,
+            $curlError ?: null, // Mensagem será extraída do response no modelo
             $dados,
-            $res,
-            $respostaObj->error ?? null,
-            $respostaObj->slug ?? null,
-            $respostaObj->url ?? null,
+            $res, // Passa como string JSON
+            null, // Código de erro será extraído do response no modelo
+            null, // Slug será extraído do response no modelo
+            null, // Link será extraído do response no modelo
             $dados['transaction_nsu'] ?? null,
             $dados['order_nsu'] ?? null,
             $this->url . $endpoint,
             $httpCode
         );
+
+        // Atualiza tempo de resposta após salvar o log
+        if ($this->log->id) {
+            $this->log->tempo_resposta = $tempoResposta;
+            $this->log->salvar();
+        }
 
         if ($curlError) {
             return (object)['error' => 'curl_error', 'message' => $curlError];
@@ -124,15 +174,27 @@ class InfinitePay
         return $respostaObj ?? (object)['error' => 'json_error', 'message' => 'Resposta inválida'];
     }
 
+    /**
+     * Formata itens para o padrão da API InfinitePay
+     * 
+     * @param array $itens Lista de itens
+     * @return array Itens formatados
+     */
     private function formatarItens(array $itens): array
     {
         return array_map(fn($i) => [
             'quantity' => $i['quantidade'] ?? 1,
-            'price' => (int)round(($i['valor'] ?? 0) * 100),
+            'price' => (int)round(($i['valor'] ?? 0) * 100), // Converte para centavos
             'description' => $i['descricao'] ?? 'Voto'
         ], $itens);
     }
 
+    /**
+     * Formata dados do cliente para o padrão da API InfinitePay
+     * 
+     * @param array $d Dados do cliente
+     * @return array Dados formatados
+     */
     private function formatarDadosCliente(array $d): array
     {
         return [

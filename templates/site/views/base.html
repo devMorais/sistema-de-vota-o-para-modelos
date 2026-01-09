@@ -27,9 +27,11 @@
 
 <body class="fundo1">
     <main>
+        {% if mostrarTopo is not defined or mostrarTopo != false %}
         {% block topo %}
         {% include 'topo.html' %}
         {% endblock %}
+        {% endif %}
 
         {% block conteudo %} {% endblock %}
 

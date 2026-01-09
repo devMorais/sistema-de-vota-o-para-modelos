@@ -19,11 +19,23 @@ class PagamentoInfinitepayControlador extends Controlador
         $infinitePay = new InfinitePay($pedido->id);
         $transactionNsu = $_GET['transaction_nsu'] ?? null;
         $slug = $_GET['slug'] ?? $pedido->infinitepay_slug;
+        $receiptUrl = $_GET['receipt_url'] ?? null;
 
         if ($pedido->status === 'AGUARDANDO') {
+
             if ($transactionNsu || $slug) {
+
                 if ($transactionNsu && !$pedido->infinitepay_transaction_nsu) {
                     $pedido->infinitepay_transaction_nsu = $transactionNsu;
+                }
+                if ($slug && !$pedido->infinitepay_slug) {
+                    $pedido->infinitepay_slug = $slug;
+                }
+                if ($receiptUrl && !$pedido->infinitepay_receipt_url) {
+                    $pedido->infinitepay_receipt_url = $receiptUrl;
+                }
+
+                if ($transactionNsu || $slug || $receiptUrl) {
                     $pedido->salvar();
                 }
 
@@ -127,9 +139,16 @@ class PagamentoInfinitepayControlador extends Controlador
             if (isset($dados['transaction_nsu'])) {
                 $pedido->infinitepay_transaction_nsu = $dados['transaction_nsu'];
             }
+            if (isset($dados['invoice_slug'])) {
+                $pedido->infinitepay_slug = $dados['invoice_slug'];
+            }
+            if (isset($dados['receipt_url'])) {
+                $pedido->infinitepay_receipt_url = $dados['receipt_url'];
+            }
 
             $metodo = ($dados['capture_method'] ?? '') === 'pix' ? 'PIX' : 'CARTAO';
             $pedido->metodo_pagamento = $metodo;
+
             $pedido->confirmarPagamento();
 
             http_response_code(200);

@@ -20,7 +20,7 @@ class LogPagamentoInfinitepayModelo extends Modelo
      * @param string $status Status da operação (SUCESSO, ERRO, AVISO)
      * @param string|null $mensagem Mensagem descritiva
      * @param array|null $requestData Dados enviados para InfinitePay
-     * @param mixed $responseData Resposta da API InfinitePay
+     * @param mixed $responseData Resposta da API InfinitePay (string JSON, object ou array)
      * @param string|null $codigoErro Código do erro retornado
      * @param string|null $infinitepaySlug Slug da fatura na InfinitePay
      * @param string|null $infinitepayLink Link de pagamento gerado
@@ -47,12 +47,40 @@ class LogPagamentoInfinitepayModelo extends Modelo
     ): bool {
         $requestSanitizado = $this->sanitizarDados($requestData);
 
+        // Processa response_data e extrai objeto para análise
         $responseJson = null;
+        $responseObj = null;
+
         if ($responseData !== null) {
-            if (is_object($responseData) || is_array($responseData)) {
-                $responseJson = json_encode($responseData);
-            } else {
+            if (is_string($responseData)) {
                 $responseJson = $responseData;
+                $responseObj = json_decode($responseData);
+            } elseif (is_object($responseData) || is_array($responseData)) {
+                $responseJson = json_encode($responseData);
+                $responseObj = is_array($responseData) ? (object)$responseData : $responseData;
+            }
+        }
+
+        // Extrai informações adicionais do response se não foram passadas explicitamente
+        if ($responseObj) {
+            // Código de erro: tenta várias propriedades possíveis
+            if (!$codigoErro) {
+                $codigoErro = $responseObj->error ?? $responseObj->code ?? null;
+            }
+
+            // Mensagem: pega da resposta se não foi passada
+            if (!$mensagem) {
+                $mensagem = $responseObj->message ?? null;
+            }
+
+            // Slug: tenta invoice_slug ou slug
+            if (!$infinitepaySlug) {
+                $infinitepaySlug = $responseObj->slug ?? $responseObj->invoice_slug ?? null;
+            }
+
+            // Link/URL de pagamento
+            if (!$infinitepayLink) {
+                $infinitepayLink = $responseObj->url ?? null;
             }
         }
 
@@ -78,9 +106,10 @@ class LogPagamentoInfinitepayModelo extends Modelo
 
     /**
      * Sanitiza dados sensíveis antes de salvar no log
+     * Remove informações como números de cartão, CVV e parcialmente emails/telefones
      *
-     * @param array|null $dados
-     * @return array|null
+     * @param array|null $dados Dados a serem sanitizados
+     * @return array|null Dados sanitizados ou null
      */
     private function sanitizarDados(?array $dados): ?array
     {
@@ -90,7 +119,7 @@ class LogPagamentoInfinitepayModelo extends Modelo
 
         $sanitizado = $dados;
 
-        // Sanitizar dados de cartão (se houver)
+        // Sanitizar dados de cartão de crédito
         if (isset($sanitizado['customer']['creditCard']['number'])) {
             $numero = $sanitizado['customer']['creditCard']['number'];
             $sanitizado['customer']['creditCard']['number'] = substr($numero, 0, 4) . '****' . substr($numero, -4);
@@ -104,7 +133,7 @@ class LogPagamentoInfinitepayModelo extends Modelo
             $sanitizado['customer']['creditCard']['ccv'] = '***';
         }
 
-        // Sanitizar informações pessoais sensíveis (opcional)
+        // Sanitizar email parcialmente (mantém início e domínio)
         if (isset($sanitizado['customer']['email'])) {
             $email = $sanitizado['customer']['email'];
             $partes = explode('@', $email);
@@ -113,6 +142,7 @@ class LogPagamentoInfinitepayModelo extends Modelo
             }
         }
 
+        // Sanitizar telefone parcialmente
         if (isset($sanitizado['customer']['phone_number'])) {
             $telefone = $sanitizado['customer']['phone_number'];
             $sanitizado['customer']['phone_number'] = substr($telefone, 0, 5) . '****' . substr($telefone, -2);
@@ -124,8 +154,8 @@ class LogPagamentoInfinitepayModelo extends Modelo
     /**
      * Busca todos os logs de um pedido específico
      *
-     * @param int $pedidoId
-     * @return array|null
+     * @param int $pedidoId ID do pedido
+     * @return array|null Lista de logs ou null
      */
     public function buscarPorPedido(int $pedidoId): ?array
     {
@@ -137,8 +167,8 @@ class LogPagamentoInfinitepayModelo extends Modelo
     /**
      * Busca logs de erro
      *
-     * @param int $limite
-     * @return array|null
+     * @param int $limite Quantidade máxima de registros
+     * @return array|null Lista de logs de erro ou null
      */
     public function buscarErros(int $limite = 100): ?array
     {
@@ -151,8 +181,8 @@ class LogPagamentoInfinitepayModelo extends Modelo
     /**
      * Busca logs de sucesso de um pedido específico
      *
-     * @param int $pedidoId
-     * @return array|null
+     * @param int $pedidoId ID do pedido
+     * @return array|null Lista de logs de sucesso ou null
      */
     public function buscarSucessoPorPedido(int $pedidoId): ?array
     {
@@ -164,8 +194,8 @@ class LogPagamentoInfinitepayModelo extends Modelo
     /**
      * Busca logs por slug da InfinitePay
      *
-     * @param string $slug
-     * @return array|null
+     * @param string $slug Slug da fatura
+     * @return array|null Lista de logs ou null
      */
     public function buscarPorSlug(string $slug): ?array
     {
@@ -177,8 +207,8 @@ class LogPagamentoInfinitepayModelo extends Modelo
     /**
      * Busca logs por transaction NSU
      *
-     * @param string $transactionNsu
-     * @return array|null
+     * @param string $transactionNsu NSU da transação
+     * @return array|null Lista de logs ou null
      */
     public function buscarPorTransactionNsu(string $transactionNsu): ?array
     {
@@ -190,8 +220,8 @@ class LogPagamentoInfinitepayModelo extends Modelo
     /**
      * Busca logs por order NSU
      *
-     * @param string $orderNsu
-     * @return array|null
+     * @param string $orderNsu NSU do pedido
+     * @return array|null Lista de logs ou null
      */
     public function buscarPorOrderNsu(string $orderNsu): ?array
     {
@@ -201,11 +231,11 @@ class LogPagamentoInfinitepayModelo extends Modelo
     }
 
     /**
-     * Busca logs por etapa
+     * Busca logs por etapa específica
      *
-     * @param string $etapa
-     * @param int $limite
-     * @return array|null
+     * @param string $etapa Nome da etapa (criar_link, verificar_pagamento, webhook)
+     * @param int $limite Quantidade máxima de registros
+     * @return array|null Lista de logs ou null
      */
     public function buscarPorEtapa(string $etapa, int $limite = 50): ?array
     {
@@ -216,10 +246,10 @@ class LogPagamentoInfinitepayModelo extends Modelo
     }
 
     /**
-     * Busca último log de um pedido
+     * Busca o último log de um pedido
      *
-     * @param int $pedidoId
-     * @return object|null
+     * @param int $pedidoId ID do pedido
+     * @return object|null Último log ou null
      */
     public function buscarUltimoPorPedido(int $pedidoId): ?object
     {
@@ -232,9 +262,9 @@ class LogPagamentoInfinitepayModelo extends Modelo
     }
 
     /**
-     * Estatísticas de logs por status
+     * Retorna estatísticas de logs agrupadas por status e data
      *
-     * @return array
+     * @return array Estatísticas de logs
      */
     public function estatisticasPorStatus(): array
     {

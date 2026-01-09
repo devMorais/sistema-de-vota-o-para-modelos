@@ -19,7 +19,15 @@
             </div>
         </div>
 
-        <div class="d-grid mt-4">
+        {% if pedido.infinitepay_receipt_url %}
+        <div class="d-grid gap-2 mt-4">
+            <a href="{{ pedido.infinitepay_receipt_url }}" target="_blank" class="btn btn-outline-light rounded-pill">
+                <i class="fa-solid fa-receipt me-2"></i>Ver Comprovante
+            </a>
+        </div>
+        {% endif %}
+
+        <div class="d-grid mt-3">
             <a href="{{ url('votar') }}" class="btn btn-success btn-lg rounded-pill shadow-sm">
                 <i class="fa-solid fa-house me-2"></i>Voltar ao Início
             </a>
