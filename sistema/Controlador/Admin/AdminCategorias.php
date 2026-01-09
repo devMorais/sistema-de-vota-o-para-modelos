@@ -134,7 +134,7 @@ class AdminCategorias extends AdminControlador
 
             if ($posts) {
                 $total = $categoria->totalPosts($categoria->id);
-                $this->mensagem->alerta("O concurso {$categoria->titulo} tem {$total} modelos cadastrados, delete ou altere os modelos antes de deletar!")->flash();
+                $this->mensagem->alerta("O concurso " . strip_tags($categoria->titulo) . " tem {$total} modelos cadastrados, delete ou altere os modelos antes de deletar!")->flash();
                 Helpers::redirecionar('admin/categorias/listar');
             } else {
                 if ($categoria->deletar()) {
