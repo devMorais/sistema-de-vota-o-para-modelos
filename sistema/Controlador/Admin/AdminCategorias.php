@@ -51,7 +51,7 @@ class AdminCategorias extends AdminControlador
                 $categoria->status = $dados['status'];
 
                 if ($categoria->salvar()) {
-                    $this->mensagem->sucesso('Categoria cadastrada com sucesso')->flash();
+                    $this->mensagem->sucesso('Concurso cadastrada com sucesso')->flash();
                     Helpers::redirecionar('admin/categorias/listar');
                 } else {
                     $this->mensagem->erro($categoria->erro())->flash();
@@ -87,7 +87,7 @@ class AdminCategorias extends AdminControlador
                 $categoria->atualizado_em = date('Y-m-d H:i:s');
 
                 if ($categoria->salvar()) {
-                    $this->mensagem->sucesso('Categoria atualizada com sucesso')->flash();
+                    $this->mensagem->sucesso('Concurso atualizado com sucesso')->flash();
                     Helpers::redirecionar('admin/categorias/listar');
                 } else {
                     $this->mensagem->erro($categoria->erro())->flash();
@@ -109,7 +109,7 @@ class AdminCategorias extends AdminControlador
     private function validarDados(array $dados): bool
     {
         if (empty($dados['titulo'])) {
-            $this->mensagem->alerta('Escreva um título para a Categoria!')->flash();
+            $this->mensagem->alerta('Escreva um nome para o concurso!')->flash();
             return false;
         }
         return true;
@@ -126,7 +126,7 @@ class AdminCategorias extends AdminControlador
             /** @var \sistema\Modelo\CategoriaModelo|null $categoria */
             $categoria = (new CategoriaModelo())->buscaPorId($id);
             if (!$categoria) {
-                $this->mensagem->alerta('A categoria que você está tentando deletar não existe!')->flash();
+                $this->mensagem->alerta('O concurso que você está tentando deletar não existe!')->flash();
                 Helpers::redirecionar('admin/categorias/listar');
                 return;
             }
@@ -134,7 +134,7 @@ class AdminCategorias extends AdminControlador
 
             if ($posts) {
                 $total = $categoria->totalPosts($categoria->id);
-                $this->mensagem->alerta("A categoria {$categoria->titulo} tem {$total} posts cadastrados, delete ou altere os posts antes de deletar!")->flash();
+                $this->mensagem->alerta("O concurso {$categoria->titulo} tem {$total} modelos cadastrados, delete ou altere os modelos antes de deletar!")->flash();
                 Helpers::redirecionar('admin/categorias/listar');
             } else {
                 if ($categoria->deletar()) {

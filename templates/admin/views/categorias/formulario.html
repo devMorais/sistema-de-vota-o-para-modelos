@@ -9,7 +9,7 @@
             </a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">
-            Categorias
+            Concursos
         </li>
     </ol>
 </nav>
@@ -20,12 +20,12 @@
             action="{% if categoria.id %}{{url('admin/categorias/editar/'~categoria.id)}}{%else%}{{url('admin/categorias/cadastrar')}}{%endif%}"
             method="post">
             <div class="mb-3">
-                <label for="titulo" class="form-label">Título</label>
+                <label for="titulo" class="form-label">Nome</label>
                 <textarea name="titulo" id="titulo" class="form-control ckeditor"
                     rows="1">{{categoria.titulo}}</textarea>
             </div>
             <div class="mb-3">
-                <label for="texto" class="form-label">Texto</label>
+                <label for="texto" class="form-label">Informações</label>
                 <textarea name="texto" id="texto" class="form-control ckeditor" rows="3">{{categoria.texto}}</textarea>
             </div>
 
