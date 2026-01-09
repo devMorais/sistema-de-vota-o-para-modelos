@@ -208,7 +208,7 @@ $(document).ready(function () {
             }
         },
         columns: [
-            { data: 0 },
+            { data: 0 }, 
             { data: 1 },
             {
                 data: null,
@@ -217,7 +217,7 @@ $(document).ready(function () {
                 }
             },
             {
-                data: null,
+                data: null, 
                 render: function (data, type, row) {
                     var status = row[3];
                     if (status === 'PAGO') {
@@ -231,12 +231,15 @@ $(document).ready(function () {
                     }
                 }
             },
-            { data: 4 },
-            { data: 5 }
+            { data: 4 }, 
+            {
+                data: 5, 
+                orderable: false
+            }
         ],
         columnDefs: [
             { className: 'dt-center', targets: [0, 2, 3, 4, 5] },
-            { orderable: false, targets: [-1] }
+            { orderable: false, targets: [5] }
         ]
     });
 
