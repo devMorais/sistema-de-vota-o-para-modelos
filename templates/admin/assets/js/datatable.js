@@ -14,6 +14,9 @@ $(document).ready(function () {
     // ---------------------------------------------------------
     // TABELA CATEGORIAS
     // ---------------------------------------------------------
+    if ($.fn.DataTable.isDataTable('#tabelaCategorias')) {
+        $('#tabelaCategorias').DataTable().destroy();
+    }
     $('#tabelaCategorias').DataTable({
         paging: false,
         columnDefs: [
@@ -28,6 +31,9 @@ $(document).ready(function () {
     // ---------------------------------------------------------
     // TABELA POSTS
     // ---------------------------------------------------------
+    if ($.fn.DataTable.isDataTable('#tabelaPosts')) {
+        $('#tabelaPosts').DataTable().destroy();
+    }
     $('#tabelaPosts').DataTable({
         order: [[0, 'desc']],
         processing: true,
@@ -35,6 +41,7 @@ $(document).ready(function () {
         ajax: {
             url: url + '/admin/posts/datatable',
             type: 'POST',
+            cache: false,
             error: function (xhr, resp, text) {
                 console.log(xhr, resp, text);
             }
@@ -82,6 +89,9 @@ $(document).ready(function () {
     // ---------------------------------------------------------
     // TABELA USUÁRIOS
     // ---------------------------------------------------------
+    if ($.fn.DataTable.isDataTable('#tabelaUsuarios')) {
+        $('#tabelaUsuarios').DataTable().destroy();
+    }
     $('#tabelaUsuarios').DataTable({
         order: [[0, 'desc']],
         processing: true,
@@ -89,6 +99,7 @@ $(document).ready(function () {
         ajax: {
             url: url + '/admin/usuarios/datatable',
             type: 'POST',
+            cache: false,
             error: function (xhr, resp, text) {
                 console.log(xhr, resp, text);
             }
@@ -135,6 +146,9 @@ $(document).ready(function () {
     // ---------------------------------------------------------
     // TABELA INGRESSOS
     // ---------------------------------------------------------
+    if ($.fn.DataTable.isDataTable('#tabelaIngressos')) {
+        $('#tabelaIngressos').DataTable().destroy();
+    }
     $('#tabelaIngressos').DataTable({
         order: [[0, 'desc']],
         processing: true,
@@ -142,6 +156,7 @@ $(document).ready(function () {
         ajax: {
             url: url + '/admin/ingressos/datatable',
             type: 'POST',
+            cache: false,
             error: function (xhr, resp, text) {
                 console.log(xhr, resp, text);
             }
@@ -196,6 +211,9 @@ $(document).ready(function () {
     // ---------------------------------------------------------
     // TABELA PEDIDOS
     // ---------------------------------------------------------
+    if ($.fn.DataTable.isDataTable('#tabelaPedidos')) {
+        $('#tabelaPedidos').DataTable().destroy();
+    }
     $('#tabelaPedidos').DataTable({
         order: [[0, 'desc']],
         processing: true,
@@ -203,6 +221,7 @@ $(document).ready(function () {
         ajax: {
             url: url + '/admin/pedidos/datatable',
             type: 'POST',
+            cache: false,
             error: function (xhr, resp, text) {
                 console.log(xhr, resp, text);
             }
