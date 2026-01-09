@@ -29,11 +29,11 @@ class SiteControlador extends Controlador
 
         if (!$landing) {
             $landing = (object) [
-                'texto_topo' => 'CONCURSO OFICIAL',
-                'titulo_principal' => 'Vote Pela Sua Miss',
-                'subtitulo' => 'A beleza, a elegância e a simpatia estão em jogo.',
-                'texto_botao' => 'VER CANDIDATAS',
-                'url_botao' => 'votar',
+                'texto_topo' => '🚀 SISTEMA DE VOTAÇÃO PROFISSIONAL',
+                'titulo_principal' => 'Crie Sua Própria Landing Page',
+                'subtitulo' => 'Configure textos, imagens e botões personalizados para seu concurso ou votação. Acesse o painel administrativo e comece agora!',
+                'texto_botao' => 'ACESSAR PAINEL ADMIN',
+                'url_botao' => 'admin',
                 'imagem_fundo' => null,
                 'status' => 1
             ];
