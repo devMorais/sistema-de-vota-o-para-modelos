@@ -92,7 +92,7 @@
 
                     <div>
                         <h5 class="mb-1 fw-bold">
-                            {{ candidata.titulo }}
+                           {{ candidata.titulo|striptags }}
                             <small class="text-muted ms-1"><i class="fa-solid fa-external-link-alt fa-xs"></i></small>
                         </h5>
                         <span class="badge bg-primary rounded-pill px-3 py-2">{{ pedido.total_votos }} Votos</span>
