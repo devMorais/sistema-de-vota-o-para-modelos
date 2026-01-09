@@ -48,16 +48,12 @@ class AdminPedidos extends AdminControlador
         $offset = $datatable['start'];
         $busca  = $datatable['search']['value'];
 
-        // Colunas da tabela para ordenação
         $colunas = [
             0 => 'id',
             1 => 'cliente_nome',
-            2 => 'cliente_cpf',
-            3 => 'valor_subtotal',
-            4 => 'valor_taxa',
-            5 => 'valor_total',
-            6 => 'status',
-            7 => 'cadastrado_em'
+            2 => 'valor_total',
+            3 => 'status',
+            4 => 'cadastrado_em'
         ];
 
         $ordem = " " . $colunas[$datatable['order'][0]['column']] . " ";
@@ -69,7 +65,6 @@ class AdminPedidos extends AdminControlador
             $pedidos->busca()->ordem($ordem)->limite($limite)->offset($offset);
             $total = (new PedidoModelo())->busca()->total();
         } else {
-            // Busca por nome, cpf ou email
             $pedidos->busca("cliente_nome LIKE '%{$busca}%' OR cliente_cpf LIKE '%{$busca}%' OR cliente_email LIKE '%{$busca}%' ")
                 ->limite($limite)
                 ->offset($offset);
@@ -83,13 +78,9 @@ class AdminPedidos extends AdminControlador
                 $dados[] = [
                     $pedido->id,
                     $pedido->cliente_nome,
-                    $pedido->cliente_cpf, // Index 2
-                    Helpers::formatarValor($pedido->valor_subtotal), // Index 3
-                    Helpers::formatarValor($pedido->valor_taxa),     // Index 4
-                    Helpers::formatarValor($pedido->valor_total),    // Index 5
-                    $pedido->status,      // Index 6
-                    date('d/m/Y H:i', strtotime($pedido->cadastrado_em)), // Index 7
-                    // Botão Visualizar (Index 8)
+                    Helpers::formatarValor($pedido->valor_total),
+                    $pedido->status,
+                    date('d/m/Y H:i', strtotime($pedido->cadastrado_em)),
                     '<a href="' . Helpers::url('admin/pedidos/ver/' . $pedido->id) . '" class="btn btn-sm btn-secondary" tooltip="tooltip" title="Ver Detalhes"><i class="fa-solid fa-eye"></i></a>'
                 ];
             }

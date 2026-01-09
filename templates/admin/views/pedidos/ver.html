@@ -31,19 +31,6 @@
                         <span>Total Pago:</span>
                         <span class="fw-bold">R$ {{ formatarValor(pedido.valor_total) }}</span>
                     </li>
-                    <li class="list-group-item d-flex justify-content-between text-muted small">
-                        <span>Subtotal (Bruto):</span>
-                        <span>R$ {{ formatarValor(pedido.valor_subtotal) }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between text-muted small">
-                        <span>Taxa Gateway:</span>
-                        <span>- R$ {{ formatarValor(pedido.valor_taxa) }}</span>
-                    </li>
-                    <li class="list-group-item mt-3">
-                        <small class="text-muted d-block">ID Transação Asaas:</small>
-                        <code>{{ pedido.asaas_id }}</code>
-                    </li>
-
                     {% if pedido.status == 'AGUARDANDO' and pedido.pix_qrcode %}
                     <li class="list-group-item mt-3 text-center bg-light rounded">
                         <small class="text-muted d-block mb-2">Recuperar Pagamento para o Cliente</small>
@@ -67,7 +54,7 @@
                 <i class="fa-solid fa-user me-1"></i> Dados do Cliente
             </div>
             <div class="card-body">
-                <p class="mb-1"><strong>Nome:</strong> {{ pedido.cliente_nome }}</p>
+                <p class="mb-1"><strong>Nome:</strong> {{ pedido.cliente_nome|striptags }}</p>
                 <p class="mb-1"><strong>CPF:</strong> {{ pedido.cliente_cpf }}</p>
                 <p class="mb-1"><strong>E-mail:</strong> {{ pedido.cliente_email }}</p>
                 <p class="mb-1">
@@ -125,10 +112,8 @@
     function copiarCodigoPix() {
         var copyText = document.getElementById("pixCodeInput");
         copyText.select();
-        copyText.setSelectionRange(0, 99999); // Mobile
+        copyText.setSelectionRange(0, 99999);
         navigator.clipboard.writeText(copyText.value);
-
-        // Usa o seu sistema de notificação (jBox ou alert)
         if (typeof jBox !== 'undefined') {
             new jBox('Notice', { content: 'Código PIX copiado!', color: 'green' });
         } else {

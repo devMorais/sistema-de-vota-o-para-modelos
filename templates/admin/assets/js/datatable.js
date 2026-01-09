@@ -208,31 +208,18 @@ $(document).ready(function () {
             }
         },
         columns: [
-            { data: 0 }, // ID
-            { data: 1 }, // Nome
-            { data: 2 }, // CPF (Novo)
+            { data: 0 },
+            { data: 1 },
             {
-                data: null, // Subtotal (Novo)
+                data: null,
                 render: function (data, type, row) {
-                    return 'R$ ' + row[3];
+                    return '<strong>R$ ' + row[2] + '</strong>';
                 }
             },
             {
-                data: null, // Taxa (Novo)
+                data: null,
                 render: function (data, type, row) {
-                    return '<span class="text-danger small">R$ ' + row[4] + '</span>';
-                }
-            },
-            {
-                data: null, // Total
-                render: function (data, type, row) {
-                    return '<strong>R$ ' + row[5] + '</strong>';
-                }
-            },
-            {
-                data: null, // Status
-                render: function (data, type, row) {
-                    var status = row[6];
+                    var status = row[3];
                     if (status === 'PAGO') {
                         return '<span class="badge bg-success">PAGO</span>';
                     } else if (status === 'AGUARDANDO') {
@@ -244,11 +231,11 @@ $(document).ready(function () {
                     }
                 }
             },
-            { data: 7 }, // Data
-            { data: 8 }  // Ação (Botão)
+            { data: 4 },
+            { data: 5 }
         ],
         columnDefs: [
-            { className: 'dt-center', targets: [0, 2, 3, 4, 5, 6, 7, 8] }, // Centraliza quase tudo
+            { className: 'dt-center', targets: [0, 2, 3, 4, 5] },
             { orderable: false, targets: [-1] }
         ]
     });

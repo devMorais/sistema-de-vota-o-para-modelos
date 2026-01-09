@@ -16,7 +16,6 @@ use sistema\Modelo\PedidoModelo;
  */
 class AdminDashboard extends AdminControlador
 {
-
     /**
      * Home do admin
      * @return void
@@ -44,6 +43,7 @@ class AdminDashboard extends AdminControlador
                         $financeiro = $pedidoModelo->financeiroPorPost($post->id);
                         $post->valor_bruto = $financeiro->bruto ?? 0;
                         $post->valor_taxas = $financeiro->taxas ?? 0;
+                        // Lucro = bruto - taxas (taxas só existem no Asaas)
                         $post->valor_lucro = $financeiro->lucro ?? 0;
                     }
                 }
