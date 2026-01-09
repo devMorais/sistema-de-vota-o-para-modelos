@@ -205,10 +205,14 @@ $(document).ready(function () {
             type: 'POST',
             error: function (xhr, resp, text) {
                 console.log(xhr, resp, text);
+            },
+            dataSrc: function (json) {
+                console.log('RESPOSTA DO SERVIDOR:', json);
+                return json.data;
             }
         },
         columns: [
-            { data: 0 }, 
+            { data: 0 },
             { data: 1 },
             {
                 data: null,
@@ -217,7 +221,7 @@ $(document).ready(function () {
                 }
             },
             {
-                data: null, 
+                data: null,
                 render: function (data, type, row) {
                     var status = row[3];
                     if (status === 'PAGO') {
@@ -231,9 +235,9 @@ $(document).ready(function () {
                     }
                 }
             },
-            { data: 4 }, 
+            { data: 4 },
             {
-                data: 5, 
+                data: 5,
                 orderable: false
             }
         ],
