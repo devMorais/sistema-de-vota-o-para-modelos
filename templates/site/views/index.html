@@ -21,15 +21,12 @@
                             <a href="{{ url('uploads/imagens/thumbs/'~post.capa) }}" data-fancybox="gallery"
                                 data-caption="{{ post.titulo }}" class="d-block img-container position-relative">
 
-                                <span class="badge text-bg-secondary position-absolute top-0 start-0 m-3 z-1">
-                                    {{ post.categoria().titulo|raw }}
-                                </span>
-
                                 {% if post.capa %}
-                                <img src="{{ url('uploads/imagens/thumbs/'~post.capa) }}" alt="{{ post.titulo }}">
+                                <img src="{{ url('uploads/imagens/thumbs/'~post.capa) }}" alt="{{ post.titulo }}"
+                                    style="height: 350px; object-fit: cover; width: 100%;">
                                 {% else %}
                                 <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop"
-                                    alt="Imagem padrão">
+                                    alt="Imagem padrão" style="height: 350px; object-fit: cover; width: 100%;">
                                 {% endif %}
 
                                 <div class="zoom-icon">
@@ -38,7 +35,15 @@
                             </a>
 
                             <div class="card-info d-flex flex-column h-100">
-                                <h5 class="candidate-name mb-3">{{ resumirTexto(post.titulo, 25)|raw }}</h5>
+
+                                <div class="text-center mt-2 mb-1">
+                                    <span class="badge text-bg-light border text-secondary"
+                                        style="font-weight: normal; font-size: 0.75rem;">
+                                        {{ post.categoria().titulo|raw }}
+                                    </span>
+                                </div>
+
+                                <h5 class="candidate-name mb-3 text-center">{{ resumirTexto(post.titulo, 25)|raw }}</h5>
 
                                 <div class="mt-auto w-100">
                                     <a href="{{url('post/'~post.categoria.slug~'/'~post.slug)}}" class="btn-vote w-100">
