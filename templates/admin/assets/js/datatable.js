@@ -205,10 +205,6 @@ $(document).ready(function () {
             type: 'POST',
             error: function (xhr, resp, text) {
                 console.log(xhr, resp, text);
-            },
-            dataSrc: function (json) {
-                console.log('RESPOSTA DO SERVIDOR:', json);
-                return json.data;
             }
         },
         columns: [
