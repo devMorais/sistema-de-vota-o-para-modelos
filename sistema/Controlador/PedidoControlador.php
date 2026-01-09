@@ -59,7 +59,7 @@ class PedidoControlador extends Controlador
         if ($pedido && $pedido->status !== 'PAGO') {
             if ($pedido->gateway_usado === 'INFINITEPAY') {
                 $controladorIP = new PagamentoInfinitepayControlador();
-                $controladorIP->exibirTelaPagamento($pedido, "");
+                $controladorIP->verificarStatusPagamento($pedido);
             } else {
                 $controladorAsaas = new PagamentoAsaasControlador();
                 $controladorAsaas->verificarStatusPagamento($pedido);

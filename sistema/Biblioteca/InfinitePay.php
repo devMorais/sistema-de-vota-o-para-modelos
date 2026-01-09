@@ -47,14 +47,20 @@ class InfinitePay
         ];
     }
 
-    public function gerarLinkPagamento(array $itens, ?string $orderNsu = null, ?array $dadosCliente = null): array
-    {
+    public function gerarLinkPagamento(
+        array $itens,
+        ?string $orderNsu = null,
+        ?array $dadosCliente = null,
+        ?string $redirectUrlCustom = null
+    ): array {
+        $redirectUrl = $redirectUrlCustom ?? $this->redirectUrl;
+
         $payload = [
             'handle' => $this->handle,
             'items' => $this->formatarItens($itens),
             'order_nsu' => $orderNsu,
             'webhook_url' => $this->webhookUrl,
-            'redirect_url' => $this->redirectUrl,
+            'redirect_url' => $redirectUrl,
             'customer' => $dadosCliente ? $this->formatarDadosCliente($dadosCliente) : null
         ];
 
@@ -64,7 +70,12 @@ class InfinitePay
             return ['erro' => true, 'mensagem' => $resposta->message ?? 'Erro ao gerar link'];
         }
 
-        return ['erro' => false, 'link' => $resposta->url, 'order_nsu' => $orderNsu];
+        return [
+            'erro' => false,
+            'link' => $resposta->url,
+            'order_nsu' => $orderNsu,
+            'slug' => $resposta->slug ?? null
+        ];
     }
 
     private function request(string $endpoint, array $dados, string $etapa): object

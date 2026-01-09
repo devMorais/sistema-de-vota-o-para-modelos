@@ -17,19 +17,32 @@ class PagamentoInfinitepayControlador extends Controlador
     public function exibirTelaPagamento(PedidoModelo $pedido, string $whatsapp): void
     {
         $infinitePay = new InfinitePay($pedido->id);
+        $transactionNsu = $_GET['transaction_nsu'] ?? null;
+        $slug = $_GET['slug'] ?? $pedido->infinitepay_slug;
 
         if ($pedido->status === 'AGUARDANDO') {
-            $res = $infinitePay->verificarPagamento($pedido->infinitepay_order_nsu);
+            if ($transactionNsu || $slug) {
+                if ($transactionNsu && !$pedido->infinitepay_transaction_nsu) {
+                    $pedido->infinitepay_transaction_nsu = $transactionNsu;
+                    $pedido->salvar();
+                }
 
-            if (!$res['erro'] && $res['paid']) {
-                $pedido->confirmarPagamento();
-                $pedido = (new PedidoModelo())->buscaPorId($pedido->id);
+                $res = $infinitePay->verificarPagamento(
+                    $pedido->infinitepay_order_nsu,
+                    $transactionNsu,
+                    $slug
+                );
+
+                if (!$res['erro'] && $res['paid']) {
+                    $metodo = ($res['capture_method'] ?? '') === 'pix' ? 'PIX' : 'CARTAO';
+                    $pedido->metodo_pagamento = $metodo;
+                    $pedido->confirmarPagamento();
+                    $pedido = (new PedidoModelo())->buscaPorId($pedido->id);
+                }
+            } else {
+                header('Location: ' . $pedido->infinitepay_link);
+                exit;
             }
-        }
-
-        if ($pedido->status === 'AGUARDANDO' && empty($_GET['transaction_nsu'])) {
-            header('Location: ' . $pedido->infinitepay_link);
-            exit;
         }
 
         echo $this->template->renderizar('pagamento/infinitepay.html', [
@@ -39,10 +52,32 @@ class PagamentoInfinitepayControlador extends Controlador
         ]);
     }
 
+    public function verificarStatusPagamento(PedidoModelo $pedido): void
+    {
+        if ($pedido->status === 'PAGO') {
+            return;
+        }
+
+        $infinitePay = new InfinitePay($pedido->id);
+
+        $res = $infinitePay->verificarPagamento(
+            $pedido->infinitepay_order_nsu,
+            $pedido->infinitepay_transaction_nsu,
+            $pedido->infinitepay_slug
+        );
+
+        if (!$res['erro'] && $res['paid']) {
+            $metodo = ($res['capture_method'] ?? '') === 'pix' ? 'PIX' : 'CARTAO';
+            $pedido->metodo_pagamento = $metodo;
+            $pedido->confirmarPagamento();
+        }
+    }
 
     public function processar(PedidoModelo $pedido, array $dados): array
     {
         $infinitePay = new InfinitePay($pedido->id);
+        $urlRetorno = Helpers::url('pedido/pagamento/' . $pedido->id);
+
         $resultado = $infinitePay->gerarLinkPagamento(
             [['quantidade' => 1, 'valor' => (float) $pedido->valor_total, 'descricao' => $pedido->total_votos . ' votos']],
             'pedido-' . $pedido->id,
@@ -52,17 +87,19 @@ class PagamentoInfinitepayControlador extends Controlador
                 'email'    => $pedido->cliente_email,
                 'telefone' => $pedido->cliente_telefone
             ],
-            null,
-            Helpers::url('pedido/pagamento/' . $pedido->id)
+            $urlRetorno
         );
 
         if ($resultado['erro']) return $resultado;
 
         $pedido->infinitepay_link = $resultado['link'];
         $pedido->infinitepay_order_nsu = $resultado['order_nsu'];
+        $pedido->infinitepay_slug = $resultado['slug'] ?? null;
         $pedido->gateway_usado = 'INFINITEPAY';
 
-        $pedido->metodo_pagamento = 'CARTAO';
+        if (!$pedido->salvar()) {
+            return ['erro' => true, 'mensagem' => 'Erro ao salvar dados do pedido'];
+        }
 
         return ['erro' => false];
     }
@@ -74,21 +111,32 @@ class PagamentoInfinitepayControlador extends Controlador
 
         if (!$dados || !isset($dados['order_nsu'])) {
             http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'order_nsu não fornecido']);
             exit;
         }
 
         $pedido = (new PedidoModelo())->busca("infinitepay_order_nsu = :nsu", "nsu={$dados['order_nsu']}")->resultado();
 
-        if ($pedido && $pedido->status !== 'PAGO') {
-            $pedido->confirmarPagamento();
-            http_response_code(200);
-            echo json_encode(['status' => 'sucesso']);
+        if (!$pedido) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Pedido não encontrado']);
+            exit;
         }
-    }
 
-    private function confirmarNoBancoInterno($pedido, $dadosPagamento = null)
-    {
-        $metodo = ($dadosPagamento['capture_method'] ?? '') === 'pix' ? 'PIX' : 'CARTAO';
-        return $pedido->confirmarPagamento($metodo);
+        if ($pedido->status !== 'PAGO') {
+            if (isset($dados['transaction_nsu'])) {
+                $pedido->infinitepay_transaction_nsu = $dados['transaction_nsu'];
+            }
+
+            $metodo = ($dados['capture_method'] ?? '') === 'pix' ? 'PIX' : 'CARTAO';
+            $pedido->metodo_pagamento = $metodo;
+            $pedido->confirmarPagamento();
+
+            http_response_code(200);
+            echo json_encode(['success' => true, 'message' => null]);
+        } else {
+            http_response_code(200);
+            echo json_encode(['success' => true, 'message' => 'Já processado']);
+        }
     }
 }
