@@ -20,8 +20,7 @@
                                 {% if post.capa %}
                                 <img src="{{ url('uploads/imagens/thumbs/'~post.capa) }}" alt="{{ post.titulo }}">
                                 {% else %}
-                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop"
-                                    alt="Imagem padrão">
+                                <img src="{{ url('templates/site/assets/img/sem-foto.webp) }}" alt="Imagem padrão">
                                 {% endif %}
                                 <div class="zoom-icon">
                                     <i class="fa-solid fa-magnifying-glass-plus fa-xs"></i>
