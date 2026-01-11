@@ -355,14 +355,20 @@ class Helpers
      */
     public static function resumirTexto(string $texto, int $limite, string $continue = '...'): string
     {
-        $textoLimpo = trim(strip_tags($texto));
+        $textoLimpo = trim(html_entity_decode(strip_tags($texto)));
+
         if (mb_strlen($textoLimpo) <= $limite) {
             return $textoLimpo;
         }
 
-        $resumirTexto = mb_substr($textoLimpo, 0, mb_strrpos(mb_substr($textoLimpo, 0, $limite), ''));
+        $textoCortado = mb_substr($textoLimpo, 0, $limite);
+        $ultimoEspaco = mb_strrpos($textoCortado, ' ');
 
-        return $resumirTexto . $continue;
+        if ($ultimoEspaco !== false) {
+            $textoCortado = mb_substr($textoCortado, 0, $ultimoEspaco);
+        }
+
+        return $textoCortado . $continue;
     }
 
     public static function limparValor(string $valor): float

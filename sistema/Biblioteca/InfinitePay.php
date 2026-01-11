@@ -21,6 +21,9 @@ class InfinitePay
     private ?int $pedidoId;
     private ?string $webhookUrl;
     private ?string $redirectUrl;
+    private const ENDPOINT_PAYMENT_CHECK = '/invoices/public/checkout/payment_check';
+    private const ENDPOINT_CHECKOUT_LINK = '/invoices/public/checkout/links';
+
 
     /**
      * Construtor da classe
@@ -95,7 +98,7 @@ class InfinitePay
             'customer' => $dadosCliente ? $this->formatarDadosCliente($dadosCliente) : null
         ];
 
-        $resposta = $this->request('/invoices/public/checkout/links', array_filter($payload), 'criar_link');
+        $resposta = $this->request('/invoices/public/checkout/links', array_filter($payload, fn($v) => $v !== null), 'criar_link');
 
         if (!isset($resposta->url)) {
             return ['erro' => true, 'mensagem' => $resposta->message ?? 'Erro ao gerar link'];
@@ -137,31 +140,37 @@ class InfinitePay
         $curlError = curl_errno($ch) ? curl_error($ch) : null;
         curl_close($ch);
 
-        $tempoResposta = round((microtime(true) - $tempoInicio) * 1000, 2); // em milissegundos
+        $tempoResposta = round((microtime(true) - $tempoInicio) * 1000, 2);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return (object)[
+                'error' => 'json_error',
+                'message' => 'Resposta inválida da InfinitePay'
+            ];
+        }
 
         $respostaObj = json_decode($res);
 
-        // Define status baseado no código HTTP e presença de erros
+
+
         $statusLog = ($httpCode >= 200 && $httpCode < 300 && !$curlError) ? 'SUCESSO' : 'ERRO';
 
-        // Registra log da requisição
         $this->log->registrar(
             $this->pedidoId,
             $etapa,
             $statusLog,
-            $curlError ?: null, // Mensagem será extraída do response no modelo
+            $curlError ?: null,
             $dados,
-            $res, // Passa como string JSON
-            null, // Código de erro será extraído do response no modelo
-            null, // Slug será extraído do response no modelo
-            null, // Link será extraído do response no modelo
+            $res,
+            null,
+            null,
+            null,
             $dados['transaction_nsu'] ?? null,
             $dados['order_nsu'] ?? null,
             $this->url . $endpoint,
             $httpCode
         );
 
-        // Atualiza tempo de resposta após salvar o log
         if ($this->log->id) {
             $this->log->tempo_resposta = $tempoResposta;
             $this->log->salvar();
@@ -169,6 +178,14 @@ class InfinitePay
 
         if ($curlError) {
             return (object)['error' => 'curl_error', 'message' => $curlError];
+        }
+
+        if ($httpCode < 200 || $httpCode >= 300) {
+            return (object)[
+                'error' => 'http_error',
+                'http_code' => $httpCode,
+                'response' => $respostaObj
+            ];
         }
 
         return $respostaObj ?? (object)['error' => 'json_error', 'message' => 'Resposta inválida'];
@@ -198,8 +215,8 @@ class InfinitePay
     private function formatarDadosCliente(array $d): array
     {
         return [
-            'name' => $d['nome'],
-            'cpf' => Helpers::limparNumero($d['cpf']),
+            'name' => $d['nome'] ?? '',
+            'cpf' => isset($d['cpf']) ? Helpers::limparNumero($d['cpf']) : null,
             'email' => $d['email'] ?? null,
             'phone_number' => Helpers::limparNumero($d['telefone'] ?? '')
         ];

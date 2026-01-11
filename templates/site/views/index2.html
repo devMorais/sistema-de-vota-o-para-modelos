@@ -5,30 +5,9 @@
 {% endblock %}
 
 {% block conteudo %}
+
 <div class="py-4 pb-5">
     <div class="container">
-        <div class="row mb-4">
-            <div class="col-12">
-                <nav aria-label="breadcrumb" class="mb-2">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="{{ url('votar') }}" class="text-secondary text-decoration-none small">
-                                Concursos
-                            </a>
-                        </li>
-                        <li class="breadcrumb-item active text-secondary small" aria-current="page">Categoria</li>
-                    </ol>
-                </nav>
-                <div class="border-bottom border-secondary pb-3">
-                    <div class="text-center">
-                        <h2 class="text-white display-6 fw-bold mt-1 mb-0">
-                            {{ categoriaAtual.titulo|raw }}
-                        </h2>
-                        <p class="lead">{{ categoriaAtual.texto|raw }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="row">
             <div class="col-lg-9 col-md-12 mb-4">
                 {% if posts %}
@@ -43,13 +22,13 @@
                                 {% else %}
                                 <img src="{{ url('templates/site/assets/img/sem-foto.webp') }}" alt="Imagem padrão">
                                 {% endif %}
-
                                 <div class="zoom-icon">
                                     <i class="fa-solid fa-magnifying-glass-plus fa-xs"></i>
                                 </div>
                             </a>
                             <div class="card-info d-flex flex-column h-100">
-                                <h5 class="candidate-name mb-3">{{ resumirTexto(post.titulo, 25) }}</h5>
+                                <h5 class="candidate-name text-center text-capitalize lead">{{ resumirTexto(post.titulo,
+                                    25)|raw }}</h5>
                                 <div class="text-center">
                                     <small class="text-light opacity-25">{{ post.categoria().titulo|raw }}</small>
                                 </div>
@@ -63,24 +42,24 @@
                     </div>
                     {% endfor %}
                 </div>
-                <div class="mt-5 text-center">
+                <div class="mt-5">
                     {{paginacao|raw}}
                     <div class="text-center mt-2">
                         <small class="text-light opacity-25">{{paginacaoInfo}}</small>
                     </div>
                 </div>
                 {% else %}
-                <div class="alert alert-dark text-center border-secondary py-5 mt-3" role="alert">
-                    <i class="fa-solid fa-folder-open fa-3x mb-3 text-secondary opacity-50"></i>
-                    <h4 class="text-white h5">Ops!</h4>
-                    <p class="text-secondary mb-3">Não encontramos participantes nesta categoria no momento.</p>
-                    <a href="{{ url() }}" class="btn btn-outline-light btn-sm">
-                        <i class="fa-solid fa-arrow-left me-2"></i>Voltar para o Início
-                    </a>
+                <div class="alert alert-dark text-center border-secondary py-5" role="alert">
+                    <i class="fa-solid fa-info-circle fa-2x mb-3 text-secondary"></i>
+                    <p class="text-muted">Nenhum participante cadastrado para exibir!</p>
                 </div>
                 {% endif %}
+            </div>
+            <div class="col-lg-3 col-md-12">
+                {% include 'sidebar.html' %}
             </div>
         </div>
     </div>
 </div>
+
 {% endblock %}
