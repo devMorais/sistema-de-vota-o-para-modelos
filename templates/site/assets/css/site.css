@@ -631,3 +631,1637 @@ input[type="file"].form-control-dark:hover::file-selector-button {
 .jBox-overlay {
     background: rgba(0, 0, 0, 0.9) !important;
 }
+
+/* ========================================
+   LANDING PAGE - HERO SECTION
+======================================== */
+
+.hero-section {
+    position: relative;
+    height: 100vh;
+    min-height: 600px;
+    background-size: cover;
+    background-position: center 30%;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.9) 90%);
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 30px;
+    max-width: 900px;
+    animation: fadeInUp 1.5s ease-out;
+}
+
+.hero-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 6px;
+    font-size: 1.1rem;
+    color: #eebb4d;
+    margin-bottom: 15px;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 25px;
+    color: #ffffff;
+    text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.8);
+}
+
+.hero-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.30rem;
+    margin-bottom: 50px;
+    color: white;
+    font-weight: 500;
+    line-height: 1.6;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.8);
+}
+
+.btn-gold {
+    position: relative;
+    background: linear-gradient(90deg, #d4af37, #f6d365, #d4af37);
+    background-size: 200% auto;
+    color: #1a1a1a;
+    padding: 18px 60px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border: none;
+    border-radius: 50px;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.btn-gold:hover {
+    background-position: right center;
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.8);
+    color: #000;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   CONCURSOS - HEADER DA PÁGINA
+======================================== */
+
+.concursos-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    font-size: 0.85rem;
+    color: #d4af37;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.concursos-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 15px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.concursos-description {
+    font-family: 'Montserrat', sans-serif;
+    color: #999;
+    font-size: 1.1rem;
+    font-weight: 400;
+}
+
+/* ========================================
+   CONCURSOS - CARDS CIRCULARES ELEGANTES
+======================================== */
+
+.concurso-card {
+    text-align: center;
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.concurso-card:hover {
+    transform: translateY(-10px);
+}
+
+.concurso-circle {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    margin-bottom: 1.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+    border: 3px solid #222;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.5),
+        inset 0 0 30px rgba(0, 0, 0, 0.3);
+}
+
+.concurso-card:hover .concurso-circle {
+    border-color: #d4af37;
+    box-shadow:
+        0 10px 40px rgba(212, 175, 55, 0.3),
+        0 0 60px rgba(212, 175, 55, 0.2),
+        inset 0 0 30px rgba(212, 175, 55, 0.1);
+    background: linear-gradient(135deg, #1a1a1a 0%, #252525 50%, #1a1a1a 100%);
+}
+
+.circle-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-wrapper {
+    width: 65%;
+    height: 65%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0.05) 70%);
+    border-radius: 50%;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(212, 175, 55, 0.2);
+    transition: all 0.4s ease;
+}
+
+.concurso-card:hover .icon-wrapper {
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.25) 0%, rgba(212, 175, 55, 0.1) 70%);
+    border-color: rgba(212, 175, 55, 0.4);
+    box-shadow:
+        0 0 30px rgba(212, 175, 55, 0.3),
+        inset 0 0 20px rgba(212, 175, 55, 0.1);
+}
+
+.icon-wrapper i {
+    font-size: 2.8rem;
+    background: linear-gradient(135deg, #d4af37 0%, #f6d365 50%, #d4af37 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 8px rgba(212, 175, 55, 0.5));
+    transition: all 0.4s ease;
+    animation: trophyGlow 3s ease-in-out infinite;
+}
+
+.concurso-card:hover .icon-wrapper i {
+    transform: scale(1.15) rotateY(180deg);
+    filter: drop-shadow(0 4px 15px rgba(212, 175, 55, 0.8));
+}
+
+@keyframes trophyGlow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 2px 8px rgba(212, 175, 55, 0.5));
+    }
+
+    50% {
+        filter: drop-shadow(0 2px 15px rgba(212, 175, 55, 0.8));
+    }
+}
+
+.circle-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.95) 0%, rgba(0, 0, 0, 0.95) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.concurso-card:hover .circle-overlay {
+    opacity: 1;
+}
+
+.ver-mais {
+    color: #000;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 10px 25px;
+    background: linear-gradient(90deg, #d4af37, #f6d365, #d4af37);
+    background-size: 200% auto;
+    border: 2px solid #000;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.concurso-card:hover .ver-mais {
+    background-position: right center;
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.concurso-info {
+    padding: 0 10px;
+}
+
+.concurso-titulo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #eee;
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+    min-height: 2.6rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: color 0.3s ease;
+}
+
+.concurso-card:hover .concurso-titulo {
+    color: #d4af37;
+}
+
+.concurso-badge {
+    font-family: 'Montserrat', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #4ade80;
+    background: linear-gradient(135deg, rgba(74, 222, 128, 0.15) 0%, rgba(74, 222, 128, 0.05) 100%);
+    padding: 5px 14px;
+    border-radius: 15px;
+    border: 1px solid rgba(74, 222, 128, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 8px rgba(74, 222, 128, 0.2);
+}
+
+.empty-state {
+    padding: 4rem 1rem;
+}
+
+.empty-state i {
+    color: #333;
+}
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 3rem;
+    }
+
+    .hero-subtitle {
+        font-size: 0.9rem;
+        letter-spacing: 3px;
+    }
+
+    .hero-text {
+        font-size: 1rem;
+    }
+
+    .btn-gold {
+        padding: 15px 40px;
+        font-size: 1rem;
+        width: 100%;
+    }
+
+    .concursos-title {
+        font-size: 2rem;
+    }
+
+    .concursos-subtitle {
+        font-size: 0.75rem;
+        letter-spacing: 3px;
+    }
+
+    .concursos-description {
+        font-size: 0.95rem;
+    }
+
+    .concurso-titulo {
+        font-size: 0.95rem;
+        min-height: 2.4rem;
+    }
+
+    .icon-wrapper i {
+        font-size: 2.2rem;
+    }
+
+    .ver-mais {
+        font-size: 0.7rem;
+        padding: 8px 18px;
+        letter-spacing: 1.5px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .concurso-titulo {
+        font-size: 1rem;
+    }
+
+    .icon-wrapper i {
+        font-size: 2.5rem;
+    }
+}
+
+@media (min-width: 992px) {
+    .icon-wrapper i {
+        font-size: 3.2rem;
+    }
+
+    .concurso-titulo {
+        font-size: 1.15rem;
+    }
+}
+
+/* ========================================
+   PÁGINA DE CONTATO
+======================================== */
+
+.contato-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    font-size: 0.85rem;
+    color: #d4af37;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.contato-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 15px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.contato-description {
+    font-family: 'Montserrat', sans-serif;
+    color: #999;
+    font-size: 1.1rem;
+    font-weight: 400;
+}
+
+.card-contato {
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+    border: 2px solid #222;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.5),
+        0 0 60px rgba(212, 175, 55, 0.1);
+}
+
+.contato-icon-section {
+    background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+    padding: 3rem 2rem;
+    border-right: 1px solid #222;
+}
+
+.icon-circle {
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0.05) 70%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid rgba(212, 175, 55, 0.3);
+    animation: pulseGlow 3s ease-in-out infinite;
+}
+
+.icon-circle i {
+    font-size: 4rem;
+    background: linear-gradient(135deg, #d4af37 0%, #f6d365 50%, #d4af37 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 4px 15px rgba(212, 175, 55, 0.5));
+}
+
+@keyframes pulseGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        transform: scale(1);
+    }
+
+    50% {
+        box-shadow: 0 0 40px rgba(212, 175, 55, 0.5);
+        transform: scale(1.05);
+    }
+}
+
+.contato-form-section {
+    padding: 3rem 2.5rem;
+}
+
+/* Correção COMPLETA dos Labels do Form Floating */
+.contato-form-section .form-floating {
+    position: relative;
+}
+
+.contato-form-section .form-floating>label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    padding: 1rem 0.75rem;
+    pointer-events: none;
+    border: 1px solid transparent;
+    transform-origin: 0 0;
+    transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
+    color: #666 !important;
+    background-color: transparent !important;
+}
+
+.contato-form-section .form-floating>.form-control-dark {
+    padding: 1rem 0.75rem;
+}
+
+.contato-form-section .form-floating>.form-control-dark:focus~label,
+.contato-form-section .form-floating>.form-control-dark:not(:placeholder-shown)~label {
+    opacity: 0.65;
+    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+    color: #d4af37 !important;
+    background-color: transparent !important;
+}
+
+.contato-form-section .form-floating>textarea.form-control-dark {
+    padding-top: 1rem;
+}
+
+/* Input Group Dark */
+.contato-form-section .input-group-text-dark {
+    background-color: #000;
+    border: 1px solid #333;
+    border-right: none;
+    color: #d4af37;
+}
+
+.contato-form-section .form-control-dark {
+    background-color: #000 !important;
+    border: 1px solid #333 !important;
+    color: #fff !important;
+    border-radius: 6px;
+}
+
+.contato-form-section .form-control-dark:focus {
+    background-color: #000 !important;
+    border-color: #d4af37 !important;
+    color: #fff !important;
+    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.15);
+}
+
+.contato-form-section .input-group .form-control-dark {
+    border-left: none !important;
+}
+
+.btn-enviar-contato {
+    background: linear-gradient(90deg, #d4af37, #f6d365, #d4af37);
+    background-size: 200% auto;
+    color: #000;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 15px;
+    border: none;
+    border-radius: 50px;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    width: 100%;
+}
+
+.btn-enviar-contato:hover:not(.disabled) {
+    background-position: right center;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(212, 175, 55, 0.5);
+}
+
+.btn-enviar-contato.disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Cards de Informações */
+.info-card {
+    background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+    border: 1px solid #222;
+    border-radius: 15px;
+    padding: 2.5rem 1.5rem;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-card:hover {
+    border-color: rgba(212, 175, 55, 0.5);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.info-card i {
+    color: #d4af37;
+}
+
+.info-card h6 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    margin-top: 1rem;
+    margin-bottom: 0.75rem;
+    color: #fff;
+}
+
+.info-card p {
+    font-family: 'Montserrat', sans-serif;
+    color: #999;
+    text-align: center;
+    line-height: 1.6;
+}
+
+/* Responsividade */
+@media (max-width: 991px) {
+    .contato-icon-section {
+        border-right: none;
+        border-bottom: 1px solid #222;
+        padding: 2rem;
+    }
+
+    .icon-circle {
+        width: 140px;
+        height: 140px;
+    }
+
+    .icon-circle i {
+        font-size: 3rem;
+    }
+
+    .contato-form-section {
+        padding: 2rem 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .contato-title {
+        font-size: 2rem;
+    }
+
+    .contato-subtitle {
+        font-size: 0.75rem;
+        letter-spacing: 3px;
+    }
+
+    .contato-description {
+        font-size: 0.95rem;
+    }
+
+    .info-card {
+        padding: 2rem 1rem;
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .contato-form-section {
+        padding: 1.5rem 1rem;
+    }
+
+    .icon-circle {
+        width: 120px;
+        height: 120px;
+    }
+
+    .icon-circle i {
+        font-size: 2.5rem;
+    }
+}
+
+/* ========================================
+   PÁGINA DE CATEGORIA/CANDIDATOS
+======================================== */
+
+/* Breadcrumb com toque dourado */
+.breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 1rem;
+}
+
+.breadcrumb-item a {
+    color: #999;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb-item a:hover {
+    color: #d4af37;
+}
+
+.breadcrumb-item.active {
+    color: #666;
+}
+
+.breadcrumb-item+.breadcrumb-item::before {
+    color: #666;
+}
+
+/* Header da Categoria com estilo elegante */
+.border-bottom.border-secondary {
+    border-color: #333 !important;
+}
+
+.border-bottom.border-secondary h2 {
+    font-family: 'Playfair Display', serif;
+    position: relative;
+    display: inline-block;
+}
+
+.border-bottom.border-secondary h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #d4af37, transparent);
+}
+
+.border-bottom.border-secondary .lead {
+    color: #999;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Cards de Candidatos com detalhes dourados */
+.candidate-card {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.candidate-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(212, 175, 55, 0.4);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(212, 175, 55, 0.1);
+}
+
+.img-container {
+    position: relative;
+    width: 100%;
+    padding-top: 133%;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+}
+
+.img-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transition: transform 0.5s ease;
+}
+
+.candidate-card:hover .img-container img {
+    transform: scale(1.08);
+}
+
+.zoom-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(212, 175, 55, 0.9);
+    color: #000;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+    font-weight: 700;
+}
+
+.candidate-card:hover .zoom-icon {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.card-info {
+    padding: 1.5rem;
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
+}
+
+.candidate-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #eee;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+    transition: color 0.3s ease;
+}
+
+.candidate-card:hover .candidate-name {
+    color: #d4af37;
+}
+
+.card-info small {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.btn-vote {
+    background: linear-gradient(90deg, #d4af37, #f6d365, #d4af37);
+    background-size: 200% auto;
+    color: #000;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 10px 30px;
+    border-radius: 25px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.btn-vote:hover {
+    background-position: right center;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(212, 175, 55, 0.5);
+    color: #000;
+}
+
+/* Paginação com estilo dourado */
+.pagination {
+    margin-top: 2rem;
+}
+
+.pagination .page-link {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    color: #999;
+    font-family: 'Montserrat', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.pagination .page-link:hover {
+    background-color: rgba(212, 175, 55, 0.1);
+    border-color: #d4af37;
+    color: #d4af37;
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #d4af37 0%, #f6d365 100%);
+    border-color: #d4af37;
+    color: #000;
+    font-weight: 700;
+}
+
+.pagination .page-item.disabled .page-link {
+    background-color: #0f0f0f;
+    border-color: #222;
+    color: #444;
+}
+
+/* Estado vazio elegante */
+.alert-dark {
+    background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+    border: 2px solid #333;
+    border-radius: 15px;
+}
+
+.alert-dark i {
+    color: #d4af37;
+    opacity: 0.3;
+}
+
+.alert-dark h4 {
+    font-family: 'Playfair Display', serif;
+    color: #d4af37;
+}
+
+.alert-dark .btn-outline-light {
+    border-color: #d4af37;
+    color: #d4af37;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.alert-dark .btn-outline-light:hover {
+    background: linear-gradient(90deg, #d4af37, #f6d365);
+    border-color: #d4af37;
+    color: #000;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .candidate-name {
+        font-size: 1rem;
+    }
+
+    .btn-vote {
+        font-size: 0.75rem;
+        padding: 8px 20px;
+        letter-spacing: 1px;
+    }
+
+    .zoom-icon {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+/* ========================================
+   PÁGINA DE VOTAÇÃO (POST)
+======================================== */
+
+/* Card Principal - Foto e Info */
+.card.bg-dark {
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%) !important;
+    border: 2px solid #222 !important;
+    border-radius: 15px !important;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+.card.bg-dark .card-body {
+    background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
+}
+
+.card.bg-dark h1 {
+    font-family: 'Playfair Display', serif;
+    color: #fff;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.card.bg-dark h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #d4af37, transparent);
+}
+
+.card.bg-dark .lead {
+    font-family: 'Montserrat', sans-serif;
+    color: #ccc;
+}
+
+.card.bg-dark .text-light.opacity-75 {
+    color: #999 !important;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Efeito Hover na Imagem */
+.card.bg-dark img {
+    transition: transform 0.5s ease;
+}
+
+.card.bg-dark a:hover img {
+    transform: scale(1.05);
+}
+
+.card.bg-dark .position-absolute i {
+    filter: drop-shadow(0 4px 8px rgba(212, 175, 55, 0.8));
+    color: #d4af37;
+}
+
+/* Lista de Pacotes Refinada */
+.lista-pacotes {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.pacote-card {
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+    border: 1px solid #333;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.pacote-card:hover {
+    border-color: rgba(212, 175, 55, 0.4);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    transform: translateY(-2px);
+}
+
+.pacote-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, #d4af37, #f6d365);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.pacote-card:hover::before {
+    opacity: 1;
+}
+
+/* Tipografia dos Pacotes */
+.tipo-ingresso {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.5rem;
+}
+
+.pacote-card h5 {
+    font-family: 'Playfair Display', serif;
+    color: #eee;
+    font-weight: 600;
+}
+
+.preco-destaque {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.5rem;
+    color: #d4af37;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.taxa-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Select Minimalista Aprimorado */
+.input-qtd-wrapper label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #666;
+    font-weight: 600;
+}
+
+.minimal-select {
+    background-color: #000;
+    color: #eee;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 10px 14px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 100%;
+    max-width: 120px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    transition: all 0.3s ease;
+
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23d4af37%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    background-size: 0.65rem auto;
+    padding-right: 2.5rem;
+}
+
+.minimal-select:focus {
+    outline: none;
+    border-color: #d4af37;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.minimal-select:hover {
+    border-color: rgba(212, 175, 55, 0.5);
+}
+
+/* Total e Botão Checkout Elegantes */
+.total-summary {
+    border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+    padding-bottom: 1rem;
+}
+
+.total-summary .fs-6 {
+    font-family: 'Montserrat', sans-serif;
+    color: #999;
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+.total-summary .fs-2 {
+    font-family: 'Montserrat', sans-serif;
+    color: #d4af37;
+    font-weight: 700;
+    text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+}
+
+.checkout-button {
+    background: linear-gradient(90deg, #d4af37, #f6d365, #d4af37);
+    background-size: 200% auto;
+    color: #000;
+    font-family: 'Montserrat', sans-serif;
+    border: none;
+    border-radius: 50px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+}
+
+.checkout-button:hover {
+    background-position: right center;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(212, 175, 55, 0.6);
+    color: #000;
+}
+
+.checkout-button i {
+    transition: transform 0.3s ease;
+}
+
+.checkout-button:hover i {
+    transform: translateX(5px);
+}
+
+/* Alert de Aviso */
+.alert-warning {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.05) 100%);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    color: #ffc107;
+    border-radius: 10px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .card.bg-dark h1 {
+        font-size: 2rem;
+    }
+
+    .pacote-card {
+        padding: 1.5rem 1rem !important;
+    }
+
+    .pacote-card .row {
+        text-align: center;
+    }
+
+    .pacote-card .col-md-3 {
+        text-align: center !important;
+    }
+
+    .minimal-select {
+        max-width: 100%;
+    }
+
+    .preco-destaque {
+        font-size: 1.25rem;
+        margin-top: 1rem;
+    }
+
+    .checkout-button {
+        font-size: 0.9rem;
+        padding: 1rem !important;
+    }
+}
+
+/* ========================================
+   PÁGINAS DE PAGAMENTO
+======================================== */
+
+.payment-wrapper {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+}
+
+/* Cards de Status */
+.card-status {
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+    border: 2px solid #333;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
+}
+
+.card-dark,
+.bg-dark {
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%) !important;
+    border: 2px solid #333 !important;
+}
+
+/* Spinner Personalizado */
+.spinner-border.text-primary {
+    border-color: rgba(212, 175, 55, 0.2);
+    border-top-color: #d4af37;
+}
+
+.spinner-border.text-info {
+    border-color: rgba(100, 181, 246, 0.2);
+    border-top-color: #64B5F6;
+}
+
+/* Títulos */
+.card-status h4,
+.card-status h5 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+}
+
+/* Badge Personalizado */
+.badge.bg-primary,
+.badge.bg-info {
+    background: linear-gradient(135deg, #d4af37 0%, #f6d365 100%) !important;
+    color: #000;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 8px 20px;
+    font-size: 0.75rem;
+}
+
+/* Valores em Destaque */
+.card-status h2 {
+    font-family: 'Montserrat', sans-serif;
+    color: #d4af37;
+    font-weight: 700;
+    text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+}
+
+/* Box de Informações */
+.bg-black.bg-opacity-25 {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, transparent 100%) !important;
+    border: 1px solid rgba(212, 175, 55, 0.2) !important;
+}
+
+/* QR Code Container */
+.bg-white {
+    background: #fff !important;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Input Group PIX */
+.input-group .form-control {
+    background-color: #0f0f0f;
+    border: 1px solid #333;
+    color: #d4af37;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.input-group .btn-primary {
+    background: linear-gradient(135deg, #d4af37 0%, #f6d365 100%);
+    border: none;
+    color: #000;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.input-group .btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+}
+
+/* Status em Tempo Real */
+.border-top.border-secondary {
+    border-color: rgba(212, 175, 55, 0.2) !important;
+    padding-top: 1rem;
+}
+
+.spinner-border-sm.text-primary {
+    border-color: rgba(212, 175, 55, 0.2);
+    border-top-color: #d4af37;
+}
+
+/* ========================================
+   CARD DE SUCESSO
+======================================== */
+
+.card.border-success {
+    border: 2px solid rgba(74, 222, 128, 0.5) !important;
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%) !important;
+    box-shadow: 0 0 30px rgba(74, 222, 128, 0.2);
+}
+
+.card-header.bg-success {
+    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%) !important;
+    border: none;
+}
+
+.card-header.bg-success i {
+    font-size: 3rem;
+    animation: successPulse 1.5s ease-in-out;
+}
+
+@keyframes successPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.list-group-item {
+    font-family: 'Montserrat', sans-serif;
+    padding: 0.75rem 0;
+}
+
+.list-group-item .text-secondary {
+    color: #999 !important;
+    font-size: 0.9rem;
+}
+
+.list-group-item .fw-bold {
+    font-size: 1rem;
+}
+
+.list-group-item .text-info {
+    color: #d4af37 !important;
+}
+
+.list-group-item .text-success {
+    color: #4ade80 !important;
+}
+
+/* Botões do Card de Sucesso */
+.btn-outline-light {
+    border: 2px solid rgba(212, 175, 55, 0.5);
+    color: #d4af37;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-light:hover {
+    background: linear-gradient(135deg, #d4af37 0%, #f6d365 100%);
+    border-color: #d4af37;
+    color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+    border: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(74, 222, 128, 0.4);
+}
+
+/* ========================================
+   CARD DE ERRO
+======================================== */
+
+.card.border-danger {
+    border: 2px solid rgba(239, 68, 68, 0.5) !important;
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%) !important;
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.2);
+}
+
+.card.border-danger i {
+    animation: errorShake 0.5s ease-in-out;
+}
+
+@keyframes errorShake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-10px);
+    }
+
+    75% {
+        transform: translateX(10px);
+    }
+}
+
+.card.border-danger h4 {
+    font-family: 'Playfair Display', serif;
+    color: #ef4444;
+    font-weight: 600;
+}
+
+.card.border-danger .text-secondary {
+    color: #999 !important;
+}
+
+.btn-link.text-secondary {
+    color: #999 !important;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.btn-link.text-secondary:hover {
+    color: #d4af37 !important;
+}
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+
+@media (max-width: 768px) {
+    .card-status {
+        border-radius: 15px;
+        padding: 2rem 1rem !important;
+    }
+
+    .card-header.bg-success i {
+        font-size: 2.5rem;
+    }
+
+    .card.border-danger i {
+        font-size: 3rem;
+    }
+
+    h2 {
+        font-size: 1.75rem;
+    }
+
+    .btn-lg {
+        padding: 0.75rem 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .payment-wrapper {
+        min-height: auto;
+        padding: 2rem 0;
+    }
+
+    .bg-white {
+        max-width: 180px !important;
+    }
+
+    .input-group .form-control {
+        font-size: 0.75rem;
+    }
+
+    .input-group .btn-primary {
+        font-size: 0.8rem;
+    }
+}
+
+/* ========================================
+   AJUSTES MOBILE - CARDS DE CONCURSO
+   Adicione este CSS ao final do seu arquivo de estilos
+======================================== */
+
+/* Tablet e mobile grande */
+@media (max-width: 768px) {
+    .concursos-title {
+        font-size: 2rem;
+    }
+
+    .concursos-subtitle {
+        font-size: 0.75rem;
+        letter-spacing: 3px;
+    }
+
+    .concursos-description {
+        font-size: 0.95rem;
+        padding: 0 1rem;
+    }
+
+    /* Ajustar espaçamento do container */
+    .py-5 {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
+
+    .mb-5 {
+        margin-bottom: 2rem !important;
+    }
+}
+
+/* Mobile - AJUSTES PRINCIPAIS */
+@media (max-width: 576px) {
+
+    /* Container com padding reduzido */
+    .container {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+    /* Grid de cards - 2 por linha alinhados */
+    .row.g-4 {
+        --bs-gutter-x: 0.75rem;
+        --bs-gutter-y: 0.75rem;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    /* Forçar 2 cards por linha com tamanho fixo */
+    .row.g-4>.col-6 {
+        flex: 0 0 48%;
+        max-width: 48%;
+        padding-left: 0.375rem !important;
+        padding-right: 0.375rem !important;
+    }
+
+    /* Ajustar o card para ser mais compacto */
+    .concurso-card {
+        padding: 0;
+    }
+
+    /* Círculo menor e proporcional */
+    .concurso-circle {
+        margin-bottom: 0.75rem;
+        border-width: 2px;
+    }
+
+    /* Ícone menor */
+    .icon-wrapper {
+        width: 55%;
+        height: 55%;
+        border-width: 1px;
+    }
+
+    .icon-wrapper i {
+        font-size: 1.6rem;
+    }
+
+    /* Área de informações mais compacta */
+    .concurso-info {
+        padding: 0 0.25rem;
+    }
+
+    /* Título menor e com altura fixa */
+    .concurso-titulo {
+        font-size: 0.8rem;
+        min-height: 2rem;
+        line-height: 1.1;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Badge menor */
+    .concurso-badge {
+        font-size: 0.55rem;
+        padding: 3px 8px;
+        letter-spacing: 0.5px;
+    }
+
+    /* Botão overlay menor */
+    .ver-mais {
+        font-size: 0.6rem;
+        padding: 6px 12px;
+        letter-spacing: 1px;
+    }
+
+    /* Garantir centralização */
+    .row.justify-content-center {
+        justify-content: center !important;
+    }
+}
+
+/* Telas extra pequenas - ajuste fino */
+@media (max-width: 400px) {
+
+    /* Cards ainda mais compactos */
+    .row.g-4>.col-6 {
+        flex: 0 0 49%;
+        max-width: 49%;
+    }
+
+    .concurso-titulo {
+        font-size: 0.75rem;
+        min-height: 1.8rem;
+    }
+
+    .icon-wrapper i {
+        font-size: 1.4rem;
+    }
+
+    .concurso-badge {
+        font-size: 0.5rem;
+        padding: 2px 6px;
+    }
+
+    .ver-mais {
+        font-size: 0.55rem;
+        padding: 5px 10px;
+    }
+}
+
+/* Ajuste para landscape mobile */
+@media (max-width: 767px) and (orientation: landscape) {
+    .row.g-4>.col-6 {
+        flex: 0 0 32%;
+        max-width: 32%;
+    }
+}
+
+/* Garantir que sempre mostre 2 por linha em mobile portrait */
+@media (max-width: 576px) and (orientation: portrait) {
+    .row.g-4>.col-6.col-md-4.col-lg-3 {
+        flex: 0 0 48% !important;
+        max-width: 48% !important;
+    }
+}

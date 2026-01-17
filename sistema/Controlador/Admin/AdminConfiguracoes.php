@@ -22,6 +22,11 @@ class AdminConfiguracoes extends AdminControlador
                 $config->ordenacao_posts = $dados['ordenacao_posts'];
                 $config->gateway_pagamento = $dados['gateway_pagamento'] ?? 'ASAAS';
 
+                // Novos campos de contato
+                $config->horario_atendimento = $dados['horario_atendimento'] ?? 'Segunda a Sexta - 9h às 18h';
+                $config->email_contato = $dados['email_contato'] ?? 'contato@seusite.com.br';
+                $config->telefone_contato = $dados['telefone_contato'] ?? '(00) 0000-0000';
+
                 if ($config->salvar()) {
                     $this->mensagem->sucesso('Configurações atualizadas com sucesso!')->flash();
                     Helpers::redirecionar('admin/configuracoes/editar');
@@ -46,6 +51,12 @@ class AdminConfiguracoes extends AdminControlador
 
         if (empty($dados['posts_por_pagina']) || $dados['posts_por_pagina'] < 1) {
             $this->mensagem->alerta('A quantidade de posts por página deve ser no mínimo 1!')->flash();
+            return false;
+        }
+
+        // Validação de email
+        if (!empty($dados['email_contato']) && !filter_var($dados['email_contato'], FILTER_VALIDATE_EMAIL)) {
+            $this->mensagem->alerta('E-mail de contato inválido!')->flash();
             return false;
         }
 

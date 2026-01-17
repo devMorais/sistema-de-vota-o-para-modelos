@@ -5,7 +5,7 @@ namespace sistema\Biblioteca;
 /**
  * Classe Upload
  *
- * @author Ronaldo Aires
+ * @author Fernando Aguiar
  */
 class Upload
 {

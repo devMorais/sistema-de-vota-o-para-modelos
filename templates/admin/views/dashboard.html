@@ -23,7 +23,7 @@
                             <h5 class="fw-bold mb-1">
                                 <i class="fa-solid fa-trophy text-warning me-2"></i> Ranking Concurso:
                                 <span class="badge bg-primary rounded-pill px-3">
-                                    {{ ranking.titulo|striptags }}
+                                    {{ ranking.titulo|raw }}
                                 </span>
                             </h5>
                             <p class="text-muted small mb-0">Desempenho financeiro e popularidade das candidatas.</p>
@@ -103,7 +103,6 @@
         {% else %}
         <div class="alert alert-info">Nenhuma categoria ativa para exibir o ranking.</div>
         {% endif %}
-
         <div class="row">
             <div class="col-12 mb-4">
                 <div class="card border-0 shadow-sm">

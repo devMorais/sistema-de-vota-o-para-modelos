@@ -11,18 +11,24 @@
 <form action="{{url('admin/configuracoes/editar')}}" method="post">
     <div class="row g-4">
 
+        <!-- Pagamento -->
         <div class="col-md-6">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
-                    <h6 class="fw-bold mb-3"><i class="fa-solid fa-credit-card me-2"></i>Pagamento</h6>
+                    <h6 class="fw-bold mb-3">
+                        <i class="fa-solid fa-credit-card me-2"></i>Pagamento
+                    </h6>
 
                     <div class="mb-3">
                         <label class="form-label small fw-bold">Empresa de Pagamento Ativa</label>
                         <select class="form-select" name="gateway_pagamento" id="gateway_pagamento">
-                            <option value="ASAAS" {% if config.gateway_pagamento=='ASAAS' %}selected{% endif %}>Asaas
-                                (Pix e Cartão)</option>
+                            <option value="ASAAS" {% if config.gateway_pagamento=='ASAAS' %}selected{% endif %}>
+                                Asaas (Pix e Cartão)
+                            </option>
                             <option value="INFINITEPAY" {% if config.gateway_pagamento=='INFINITEPAY' %}selected{% endif
-                                %}>InfinitePay (Link Externo)</option>
+                                %}>
+                                InfinitePay (Link Externo)
+                            </option>
                         </select>
                     </div>
 
@@ -34,13 +40,16 @@
             </div>
         </div>
 
+        <!-- WhatsApp -->
         <div class="col-md-6">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
-                    <h6 class="fw-bold mb-3"><i class="fa-brands fa-whatsapp me-2"></i>Atendimento</h6>
+                    <h6 class="fw-bold mb-3">
+                        <i class="fa-brands fa-whatsapp me-2"></i>WhatsApp de Suporte
+                    </h6>
 
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">WhatsApp de Suporte</label>
+                    <div class="mb-0">
+                        <label class="form-label small fw-bold">Número do WhatsApp</label>
                         <input type="text" name="whatsapp" class="form-control" placeholder="Ex: 5561999999999"
                             value="{{config.whatsapp}}">
                         <div class="form-text small">Apenas números (Código país + DDD + Número)</div>
@@ -49,10 +58,13 @@
             </div>
         </div>
 
+        <!-- Visualização das Candidatas -->
         <div class="col-12">
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
-                    <h6 class="fw-bold mb-3"><i class="fa-solid fa-list me-2"></i>Visualização das Candidatas</h6>
+                    <h6 class="fw-bold mb-3">
+                        <i class="fa-solid fa-list me-2"></i>Visualização das Candidatas
+                    </h6>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label small fw-bold">Quantidade por Página</label>
@@ -63,21 +75,63 @@
                             <label class="form-label small fw-bold">Organizar por</label>
                             <select class="form-select" name="ordenacao_posts">
                                 <option value="titulo ASC" {% if config.ordenacao_posts=='titulo ASC' %}selected{% endif
-                                    %}>Nome (A-Z)</option>
+                                    %}>
+                                    Nome (A-Z)
+                                </option>
                                 <option value="votos DESC" {% if config.ordenacao_posts=='votos DESC' %}selected{% endif
-                                    %}>Mais Votadas</option>
+                                    %}>
+                                    Mais Votadas
+                                </option>
                                 <option value="id DESC" {% if config.ordenacao_posts=='id DESC' %}selected{% endif %}>
-                                    Mais Recentes</option>
+                                    Mais Recentes
+                                </option>
                             </select>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- NOVOS CAMPOS: Informações de Contato -->
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">
+                        <i class="fa-solid fa-address-card me-2"></i>Informações de Contato (Exibidas no Site)
+                    </h6>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label small fw-bold">Horário de Atendimento</label>
+                            <input type="text" name="horario_atendimento" class="form-control"
+                                placeholder="Ex: Segunda a Sexta - 9h às 18h"
+                                value="{{config.horario_atendimento|default('Segunda a Sexta - 9h às 18h')}}">
+                            <div class="form-text small">Exibido na página de contato</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label small fw-bold">E-mail de Contato</label>
+                            <input type="email" name="email_contato" class="form-control"
+                                placeholder="Ex: contato@seusite.com.br"
+                                value="{{config.email_contato|default('contato@seusite.com.br')}}">
+                            <div class="form-text small">E-mail público para contato</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label small fw-bold">Telefone de Contato</label>
+                            <input type="text" name="telefone_contato" class="form-control"
+                                placeholder="Ex: (61) 99999-9999"
+                                value="{{config.telefone_contato|default('(00) 0000-0000')}}">
+                            <div class="form-text small">Telefone público para contato</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <div class="mt-4 text-end">
-        <button type="submit" class="btn btn-primary px-5 shadow-sm">Salvar Alterações</button>
+        <button type="submit" class="btn btn-primary px-5 shadow-sm">
+            <i class="fa-solid fa-save me-2"></i>Salvar Alterações
+        </button>
     </div>
 </form>
 {% endblock %}

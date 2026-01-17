@@ -1,54 +1,109 @@
 {% extends 'base.html' %}
+
 {% block conteudo %}
 
-<div class="container my-5">
+<div class="py-5">
+    <div class="container">
 
-    <div class="card border-0">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-lg-5 col-md-12 d-flex justify-content-center align-items-center">
-                    <i class="fa-solid fa-envelope-open-text iconeEmail"></i>
+        <!-- Header da Página -->
+        <div class="text-center mb-5">
+            <div class="contato-subtitle">Entre em Contato</div>
+            <h1 class="contato-title">Fale Conosco</h1>
+            <p class="contato-description">Envie sua mensagem que retornaremos em breve</p>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card-contato">
+                    <div class="row g-0">
+
+                        <!-- Coluna do Ícone -->
+                        <div class="col-lg-5 d-flex justify-content-center align-items-center contato-icon-section">
+                            <div class="icon-circle">
+                                <i class="fa-solid fa-envelope-open-text"></i>
+                            </div>
+                        </div>
+
+                        <!-- Coluna do Formulário -->
+                        <div class="col-lg-7">
+                            <div class="contato-form-section">
+                                <form class="formularioAjax" method="post" action="{{url('contato')}}"
+                                    enctype="multipart/form-data">
+
+                                    <div class="form-floating mb-3">
+                                        <input type="text" name="nome" id="nome" class="form-control form-control-dark"
+                                            placeholder="Nome" required>
+                                        <label for="nome">Nome</label>
+                                    </div>
+
+                                    <div class="form-floating mb-3">
+                                        <input type="email" name="email" id="email"
+                                            class="form-control form-control-dark" placeholder="E-mail" required>
+                                        <label for="email">E-mail</label>
+                                    </div>
+
+                                    <div class="form-floating mb-3">
+                                        <input type="text" name="assunto" id="assunto"
+                                            class="form-control form-control-dark" placeholder="Assunto" required>
+                                        <label for="assunto">Assunto</label>
+                                    </div>
+
+                                    <div class="form-floating mb-3">
+                                        <textarea name="mensagem" id="mensagem" class="form-control form-control-dark"
+                                            placeholder="Mensagem" style="height: 120px" required></textarea>
+                                        <label for="mensagem">Mensagem</label>
+                                    </div>
+
+                                    <div class="input-group mb-4">
+                                        <span class="input-group-text input-group-text-dark">
+                                            <i class="fa-solid fa-paperclip"></i>
+                                        </span>
+                                        <input type="file" name="anexos[]" multiple id="anexos"
+                                            class="form-control form-control-dark">
+                                    </div>
+
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn-enviar-contato">
+                                            <i class="fa-solid fa-paper-plane me-2"></i>
+                                            Enviar Mensagem
+                                        </button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
-
-                <div class="col-lg-7 mt-4">
-                    <h2 class="text-center mb-4">Fale Conosco</h2>
-                    {{flash()}}
-
-                    <form class="formulario" method="post" action="{{url('contato')}}" enctype="multipart/form-data">
-                        <div class="form-floating  mb-3">
-                            <input type="text" name="nome" id="nome" class="form-control" placeholder="Nome">
-                            <label for="nome">Nome</label>
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="text" name="email" id="email" class="form-control" placeholder="E-mail">
-                            <label for="email">E-mail</label>
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div class="form-floating  mb-3">
-                            <input type="text" name="assunto" id="assunto" class="form-control" placeholder="Assunto">
-                            <label for="nome">Assunto</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <textarea name="mensagem" id="mensagem" class="form-control"
-                                placeholder="Mensagem"></textarea>
-                            <label for="mensagem">Mensagem</label>
-                        </div>
-                        <div class="input-group mb-3">
-                            <label class="input-group-text" for="anexos">Anexos</label>
-                            <input type="file" name="anexos[]" multiple id="anexos" accept="" class="form-control">
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-secondary">Enviar Mensagem</button>
-                        </div>
-                    </form>
-
-                </div>
-
             </div>
         </div>
-    </div>
 
+        <!-- Informações Adicionais - DINÂMICAS -->
+        <div class="row mt-5 g-4">
+            <div class="col-md-4">
+                <div class="info-card">
+                    <i class="fa-solid fa-clock fa-2x mb-3"></i>
+                    <h6>Horário de Atendimento</h6>
+                    <p class="mb-0">{{ config.horario_atendimento|default('Segunda a Sexta<br>9h às 18h')|raw }}</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-card">
+                    <i class="fa-solid fa-envelope fa-2x mb-3"></i>
+                    <h6>Email</h6>
+                    <p class="mb-0">{{ config.email_contato|default('contato@seusite.com.br') }}</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-card">
+                    <i class="fa-solid fa-phone fa-2x mb-3"></i>
+                    <h6>Telefone</h6>
+                    <p class="mb-0">{{ config.telefone_contato|default('(00) 0000-0000') }}</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
 
 {% endblock %}

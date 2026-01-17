@@ -14,6 +14,7 @@ $(document).ready(function () {
 
         var carregando = $('.ajaxLoading');
         var botao = $(':input[type="submit"]');
+        var formulario = $(this);
 
         $.ajax({
             type: 'POST',
@@ -24,31 +25,34 @@ $(document).ready(function () {
             processData: false,
             beforeSend: function () {
                 carregando.show().fadeIn(200);
-                botao.prop('disable', false).addClass('disabled');
+                botao.prop('disabled', true).addClass('disabled');
             },
             success: function (retorno) {
 
                 if (retorno.erro) {
-                    alerta(retorno.erro, 'yellow');
+                    alerta(retorno.erro, 'red');
                 }
-                if (retorno.successo) {
-                    $('.formularioAjax')[0].reset();
-                    $('#contatoModal').modal('hide');
 
-                    alerta(retorno.successo, 'green');
+                if (retorno.successo || retorno.sucesso) {
+                    formulario[0].reset();
+                    $('#contatoModal').modal('hide');
+                    alerta(retorno.successo || retorno.sucesso, 'green');
                 }
 
                 if (retorno.redirecionar) {
-                    window.location.href = retorno.redirecionar;
+                    setTimeout(function () {
+                        window.location.href = retorno.redirecionar;
+                    }, 2000);
                 }
 
             },
             complete: function () {
                 carregando.hide().fadeOut(200);
-                botao.removeClass('disabled');
+                botao.prop('disabled', false).removeClass('disabled');
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR, textStatus, errorThrown);
+                console.log('Erro AJAX:', jqXHR, textStatus, errorThrown);
+                alerta('Erro ao enviar mensagem. Tente novamente.', 'red');
             }
         });
 
@@ -62,6 +66,7 @@ function alerta(mensagem, cor) {
         content: mensagem,
         color: cor,
         animation: 'pulse',
-        showCountdown: true
+        showCountdown: true,
+        autoClose: 5000
     });
 }

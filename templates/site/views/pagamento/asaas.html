@@ -1,53 +1,57 @@
 {% extends 'base.html' %}
 
 {% block conteudo %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-5 col-lg-4">
+<div class="payment-wrapper py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-4">
 
-            {% if pedido.status == 'PAGO' %}
-            {% include 'pagamento/partials/sucesso.html' %}
-            {% elseif pedido.status == 'ERRO' %}
-            {% include 'pagamento/partials/erro.html' %}
-            {% else %}
-            <div class="card bg-dark text-white border-secondary shadow-sm rounded-4 text-center p-4">
-
-                {% if pedido.metodo_pagamento == 'CARTAO' %}
-                {# --- INTERFACE PARA CARTÃO DE CRÉDITO --- #}
-                <span class="badge bg-info rounded-pill mb-3 mx-auto">CARTÃO DE CRÉDITO</span>
-                <h2 class="fw-bold mb-1">R$ {{ pedido.valor_total|number_format(2, ',', '.') }}</h2>
-                <p class="text-muted small mb-4">Pedido #{{ pedido.id }}</p>
-
-                <div class="py-5">
-                    <div class="spinner-border text-info mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
-                    <h5 class="fw-bold">Analisando Pagamento</h5>
-                    <p class="text-muted small">Aguardando confirmação da operadora...</p>
-                </div>
-
+                {% if pedido.status == 'PAGO' %}
+                {% include 'pagamento/partials/sucesso.html' %}
+                {% elseif pedido.status == 'ERRO' %}
+                {% include 'pagamento/partials/erro.html' %}
                 {% else %}
-                {# --- INTERFACE PARA PIX --- #}
-                <span class="badge bg-primary rounded-pill mb-3 mx-auto">AGUARDANDO PIX</span>
-                <h2 class="fw-bold mb-1">R$ {{ pedido.valor_total|number_format(2, ',', '.') }}</h2>
-                <p class="text-muted small mb-4">Pedido #{{ pedido.id }} [cite: 28]</p>
+                <div class="card bg-dark text-white border-secondary shadow-lg rounded-4 text-center p-4">
 
-                <div class="bg-white p-3 rounded-4 mb-4 mx-auto shadow-sm" style="max-width: 220px;">
-                    <img src="data:image/png;base64,{{ imagemQrcode }}" class="img-fluid" alt="QR Code PIX">
-                </div>
+                    {% if pedido.metodo_pagamento == 'CARTAO' %}
+                    {# INTERFACE CARTÃO #}
+                    <span class="badge bg-info rounded-pill mb-3 mx-auto">CARTÃO DE CRÉDITO</span>
+                    <h2 class="fw-bold mb-2">R$ {{ pedido.valor_total|number_format(2, ',', '.') }}</h2>
+                    <p class="text-muted small mb-4">Pedido #{{ pedido.id }}</p>
 
-                <div class="input-group input-group-sm mb-4">
-                    <input type="text" class="form-control bg-black border-secondary text-white text-center"
-                        value="{{ copiaCola }}" id="pixKey" readonly>
-                    <button class="btn btn-primary" onclick="copiarPix()">COPIAR</button>
+                    <div class="py-5">
+                        <div class="spinner-border text-info mb-3" style="width: 3rem; height: 3rem;"></div>
+                        <h5 class="fw-bold text-white">Analisando Pagamento</h5>
+                        <p class="text-muted small">Aguardando confirmação da operadora...</p>
+                    </div>
+
+                    {% else %}
+                    {# INTERFACE PIX #}
+                    <span class="badge bg-primary rounded-pill mb-3 mx-auto">AGUARDANDO PIX</span>
+                    <h2 class="fw-bold mb-2">R$ {{ pedido.valor_total|number_format(2, ',', '.') }}</h2>
+                    <p class="text-muted small mb-4">Pedido #{{ pedido.id }}</p>
+
+                    <div class="bg-white p-3 rounded-4 mb-4 mx-auto shadow-sm" style="max-width: 220px;">
+                        <img src="data:image/png;base64,{{ imagemQrcode }}" class="img-fluid" alt="QR Code PIX">
+                    </div>
+
+                    <div class="input-group input-group-sm mb-4">
+                        <input type="text" class="form-control bg-black border-secondary text-white text-center"
+                            value="{{ copiaCola }}" id="pixKey" readonly>
+                        <button class="btn btn-primary" onclick="copiarPix()">
+                            <i class="fa-solid fa-copy me-1"></i>COPIAR
+                        </button>
+                    </div>
+                    {% endif %}
+
+                    <div class="py-2 border-top border-secondary opacity-50 mt-3">
+                        <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                        <span class="small text-secondary">Verificando status em tempo real...</span>
+                    </div>
                 </div>
                 {% endif %}
 
-                <div class="py-2 border-top border-secondary opacity-50 mt-2">
-                    <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
-                    <span class="small text-secondary">Verificando status em tempo real...</span>
-                </div>
             </div>
-            {% endif %}
-
         </div>
     </div>
 </div>
@@ -61,7 +65,14 @@
             copyText.select();
             copyText.setSelectionRange(0, 99999);
             document.execCommand("copy");
-            alert("Código PIX copiado com sucesso!");
+
+            // Feedback visual
+            var btn = event.target.closest('button');
+            var originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check me-1"></i>COPIADO!';
+            setTimeout(function () {
+                btn.innerHTML = originalText;
+            }, 2000);
         }
     }
 

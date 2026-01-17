@@ -43,8 +43,13 @@ class AdminLanding extends AdminControlador
                 $landing->titulo_principal = $dados['titulo_principal'];
                 $landing->subtitulo = $dados['subtitulo'];
                 $landing->texto_botao = $dados['texto_botao'];
-                $landing->url_botao = $dados['url_botao'] ?? URL_INICIAL;
+                $landing->url_botao = $dados['url_botao'] ?? 'votar';
                 $landing->status = $dados['status'] ?? STATUS_ATIVO;
+
+                $landing->subtitulo_votar = $dados['subtitulo_votar'] ?? 'Esse texto é dinâmico';
+                $landing->titulo_concursos = $dados['titulo_concursos'] ?? 'Esse texto é dinâmico';
+                $landing->descricao_concursos = $dados['descricao_concursos'] ?? 'Esse texto é dinâmico';
+
                 $landing->atualizado_em = date('Y-m-d H:i:s');
 
                 if (!empty($_FILES['imagem_fundo']["name"])) {

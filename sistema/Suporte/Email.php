@@ -129,5 +129,4 @@ final class Email
     {
         return "<hr><small>Enviado por " . SITE_NOME . " em: " . date('d/m/Y') . " às " . date('H:i') . "</small>";
     }
-
 }

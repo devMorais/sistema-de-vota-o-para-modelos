@@ -5,37 +5,58 @@
 {% endblock %}
 
 {% block conteudo %}
-<div class="py-4 pb-5">
+<div class="py-5">
     <div class="container">
-        <div class="card bg-transparent border-secondary mb-4">
-            <div class="card-header bg-dark text-white border-secondary fw-bold text-center">
-                Concursos ativos
+        <!-- Header da seção com textos dinâmicos -->
+        <div class="text-center mb-5">
+            <div class="concursos-subtitle">
+                {{ landing.subtitulo_votar|default('Vote Agora') }}
             </div>
-            <div class="card-body p-0">
-                {% if categorias %}
-                <ul class="list-group list-group-flush">
-                    {% for cat in categorias %}
-                    <li class="list-group-item bg-transparent border-secondary">
-                        <a href="{{url('categoria/'~cat.slug)}}"
-                            class="text-decoration-none text-light d-flex justify-content-between align-items-center py-2"
-                            title="{{cat.titulo}}">
+            <h1 class="concursos-title">
+                {{ landing.titulo_concursos|default('Concursos Ativos') }}
+            </h1>
+            <p class="concursos-description">
+                {{ landing.descricao_concursos|default('Escolha um concurso e vote no seu favorito') }}
+            </p>
+        </div>
 
-                            <span>{{cat.titulo|raw}}</span>
-
-                            <span class="badge text-bg-dark rounded-pill">
-                                <i class="fa-solid fa-chevron-right fa-xs"></i>
-                            </span>
-                        </a>
-                    </li>
-                    {% endfor %}
-                </ul>
-                {% else %}
-                <div class="p-3 text-secondary text-center">
-                    Nenhuma categoria encontrada.
-                </div>
-                {% endif %}
+        {% if categorias %}
+        <!-- Grid de cards -->
+        <div class="row g-4 justify-content-center">
+            {% for cat in categorias %}
+            <div class="col-6 col-md-4 col-lg-3">
+                <a href="{{url('categoria/'~cat.slug)}}" class="text-decoration-none">
+                    <div class="concurso-card">
+                        <div class="concurso-circle">
+                            <div class="circle-content">
+                                <div class="icon-wrapper">
+                                    <i class="fa-solid fa-trophy"></i>
+                                </div>
+                            </div>
+                            <div class="circle-overlay">
+                                <span class="ver-mais">Ver Concurso</span>
+                            </div>
+                        </div>
+                        <div class="concurso-info">
+                            <h3 class="concurso-titulo">{{cat.titulo|raw}}</h3>
+                            <div class="concurso-badge">
+                                <i class="fa-solid fa-circle-dot fa-xs me-1"></i>
+                                <span>Ativo</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <div class="empty-state">
+                <i class="fa-solid fa-inbox fa-3x mb-3"></i>
+                <p class="text-secondary">Nenhum concurso disponível no momento.</p>
             </div>
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

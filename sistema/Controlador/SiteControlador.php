@@ -67,12 +67,16 @@ class SiteControlador extends Controlador
             ->offset($paginar->offset())
             ->resultado(true);
 
+        $landingModelo = new LandingPageModelo();
+        $landing = $landingModelo->buscaPorId(1);
+
         echo $this->template->renderizar('index.html', [
             'posts' => $postsParaCards,
             'paginacao' => $paginar->renderizar(),
             'paginacaoInfo' => $paginar->info(),
             'categorias' => $this->categorias(),
-            'config' => $this->config
+            'config' => $this->config,
+            'landing' => $landing
         ]);
     }
 
@@ -297,6 +301,7 @@ class SiteControlador extends Controlador
 
         echo $this->template->renderizar('contato.html', [
             'categorias' => $this->categorias(),
+            'config' => $this->config // Adicionar config aqui
         ]);
     }
 }

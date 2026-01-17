@@ -4,13 +4,9 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item">
-            <a href="{{url('admin/dashboard')}}">
-                Dashboard
-            </a>
+            <a href="{{url('admin/dashboard')}}">Dashboard</a>
         </li>
-        <li class="breadcrumb-item active" aria-current="page">
-            Landing Page
-        </li>
+        <li class="breadcrumb-item active" aria-current="page">Landing Page</li>
     </ol>
 </nav>
 
@@ -26,92 +22,112 @@
     <div class="card-body">
         <form action="{{url('admin/landing/editar')}}" method="post" enctype="multipart/form-data">
 
-            <!-- Imagem de Fundo -->
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="mb-3">
-                        <label for="imagem_fundo" class="form-label">Imagem de Fundo</label>
-                        {% if landing.imagem_fundo %}
-                        <div class="mb-3 text-center p-3 bg-light rounded">
-                            <img src="{{url('uploads/imagens/thumbs/'~landing.imagem_fundo)}}"
-                                class="img-fluid rounded shadow"
-                                style="max-height: 300px; width: auto; object-fit: contain;">
-                            <div class="mt-2">
-                                <small class="text-muted">
-                                    <i class="fa-solid fa-image me-1"></i>
-                                    Imagem atual
-                                </small>
+            <!-- ============================================ -->
+            <!-- SEÇÃO: PÁGINA INICIAL (HERO) -->
+            <!-- ============================================ -->
+            <div class="mb-4">
+                <h6 class="text-primary fw-bold mb-3">
+                    <i class="fa-solid fa-image me-2"></i>
+                    Página Inicial (Hero Section)
+                </h6>
+                <hr class="mb-4">
+
+                <!-- Imagem de Fundo -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            <label for="imagem_fundo" class="form-label">Imagem de Fundo</label>
+                            {% if landing.imagem_fundo %}
+                            <div class="mb-3 text-center p-3 bg-light rounded">
+                                <img src="{{url('uploads/imagens/thumbs/'~landing.imagem_fundo)}}"
+                                    class="img-fluid rounded shadow"
+                                    style="max-height: 300px; width: auto; object-fit: contain;">
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        <i class="fa-solid fa-image me-1"></i>
+                                        Imagem atual
+                                    </small>
+                                </div>
                             </div>
+                            {% endif %}
+                            <input class="form-control" type="file" id="imagem_fundo" name="imagem_fundo"
+                                accept=".png, .jpg, .jpeg, .webp">
+                            <small class="text-muted">Tamanho recomendado: 1920x1080px</small>
                         </div>
-                        {% endif %}
-                        <input class="form-control" type="file" id="imagem_fundo" name="imagem_fundo"
-                            accept=".png, .jpg, .jpeg, .webp">
-                        <small class="text-muted">Tamanho recomendado: 1920x1080px</small>
                     </div>
                 </div>
-            </div>
 
-            <!-- Texto do Topo -->
-            <div class="mb-3">
-                <label for="texto_topo" class="form-label">Texto do Topo</label>
-                <input type="text" name="texto_topo" id="texto_topo" class="form-control" value="{{landing.texto_topo}}"
-                    placeholder="Ex: CONCURSO OFICIAL">
-                <small class="text-muted">Texto pequeno que aparece acima do título principal</small>
-            </div>
+                <!-- Texto do Topo -->
+                <div class="mb-3">
+                    <label for="texto_topo" class="form-label">Texto do Topo</label>
+                    <input type="text" name="texto_topo" id="texto_topo" class="form-control"
+                        value="{{landing.texto_topo}}" placeholder="Ex: 🚀 CONCURSO OFICIAL">
+                    <small class="text-muted">Texto pequeno que aparece acima do título principal</small>
+                </div>
 
-            <!-- Título Principal -->
-            <div class="mb-3">
-                <label for="titulo_principal" class="form-label">Título Principal</label>
-                <input type="text" name="titulo_principal" id="titulo_principal" class="form-control"
-                    value="{{landing.titulo_principal}}" placeholder="Ex: Vote Pela Sua Miss" required>
-            </div>
+                <!-- Título Principal -->
+                <div class="mb-3">
+                    <label for="titulo_principal" class="form-label">Título Principal</label>
+                    <input type="text" name="titulo_principal" id="titulo_principal" class="form-control"
+                        value="{{landing.titulo_principal}}" placeholder="Ex: Vote Pela Sua Miss" required>
+                </div>
 
-            <!-- Subtítulo -->
-            <div class="mb-3">
-                <label for="subtitulo" class="form-label">Subtítulo / Descrição</label>
-                <textarea name="subtitulo" id="subtitulo" class="form-control" rows="3"
-                    placeholder="Digite a descrição que aparecerá na landing page...">{{landing.subtitulo}}</textarea>
-            </div>
+                <!-- Subtítulo -->
+                <div class="mb-3">
+                    <label for="subtitulo" class="form-label">Subtítulo / Descrição</label>
+                    <textarea name="subtitulo" id="subtitulo" class="form-control" rows="3"
+                        placeholder="Digite a descrição que aparecerá na landing page...">{{landing.subtitulo}}</textarea>
+                </div>
 
-            <div class="row">
                 <!-- Texto do Botão -->
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="texto_botao" class="form-label">Texto do Botão</label>
-                        <input type="text" name="texto_botao" id="texto_botao" class="form-control"
-                            value="{{landing.texto_botao}}" placeholder="Ex: VER CANDIDATAS">
-                    </div>
+                <div class="mb-3">
+                    <label for="texto_botao" class="form-label">Texto do Botão</label>
+                    <input type="text" name="texto_botao" id="texto_botao" class="form-control"
+                        value="{{landing.texto_botao}}" placeholder="Ex: VER CANDIDATAS">
                 </div>
-
-                <!-- URL do Botão -->
-                <!-- <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="url_botao" class="form-label">URL do Botão</label>
-                        <input type="text" name="url_botao" id="url_botao" class="form-control"
-                            value="{{landing.url_botao}}" placeholder="Ex: votar">
-                        <small class="text-muted">Apenas o caminho, sem o domínio</small>
-                    </div>
-                </div> -->
             </div>
 
-            <!-- Status -->
-            <!-- <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="status" class="form-label">Status</label>
-                        <select class="form-select" name="status">
-                            <option value="1" {% if landing.status=='1' %}selected{%endif%}>Ativo</option>
-                            <option value="0" {% if landing.status=='0' %}selected{%endif%}>Inativo</option>
-                        </select>
-                        <small class="text-muted">Desativar fará o site pular direto para a lista de votação</small>
-                    </div>
-                </div>
-            </div> -->
+            <!-- ============================================ -->
+            <!-- SEÇÃO: PÁGINA DE CONCURSOS -->
+            <!-- ============================================ -->
+            <div class="mb-4">
+                <h6 class="text-success fw-bold mb-3">
+                    <i class="fa-solid fa-trophy me-2"></i>
+                    Página de Concursos
+                </h6>
+                <hr class="mb-4">
 
+                <!-- Subtítulo "Vote Agora" -->
+                <div class="mb-3">
+                    <label for="subtitulo_votar" class="form-label">Subtítulo Superior</label>
+                    <input type="text" name="subtitulo_votar" id="subtitulo_votar" class="form-control"
+                        value="{{landing.subtitulo_votar|default('Vote Agora')}}" placeholder="Ex: Vote Agora">
+                    <small class="text-muted">Texto pequeno dourado que aparece acima do título</small>
+                </div>
+
+                <!-- Título "Concursos Ativos" -->
+                <div class="mb-3">
+                    <label for="titulo_concursos" class="form-label">Título da Página</label>
+                    <input type="text" name="titulo_concursos" id="titulo_concursos" class="form-control"
+                        value="{{landing.titulo_concursos|default('Concursos Ativos')}}"
+                        placeholder="Ex: Concursos Ativos">
+                </div>
+
+                <!-- Descrição -->
+                <div class="mb-3">
+                    <label for="descricao_concursos" class="form-label">Descrição</label>
+                    <input type="text" name="descricao_concursos" id="descricao_concursos" class="form-control"
+                        value="{{landing.descricao_concursos|default('Escolha um concurso e vote no seu favorito')}}"
+                        placeholder="Ex: Escolha um concurso e vote no seu favorito">
+                    <small class="text-muted">Texto de descrição abaixo do título</small>
+                </div>
+            </div>
+
+            <!-- Botões de Ação -->
             <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary btn-lg">
                     <i class="fa-solid fa-save me-2"></i>
-                    Salvar Configurações
+                    Salvar Todas as Configurações
                 </button>
                 <a href="{{url('admin/dashboard')}}" class="btn btn-outline-secondary">
                     <i class="fa-solid fa-times me-2"></i>

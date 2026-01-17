@@ -1,12 +1,16 @@
-/* Estilos do Checkout Profissional */
+/* ========================================
+   CHECKOUT PROFISSIONAL COM TOQUES DOURADOS
+======================================== */
+
+/* Animação suave */
 .checkout-step {
-    animation: fadeIn 0.3s ease-in;
+    animation: fadeIn 0.4s ease-in;
 }
 
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(15px);
     }
 
     to {
@@ -15,9 +19,33 @@
     }
 }
 
-.section-title {
+/* Botão WhatsApp elegante */
+.btn-whatsapp {
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
     color: #fff;
-    font-size: 1.5rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    border-radius: 50px;
+    padding: 12px 30px;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+}
+
+.btn-whatsapp:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+    color: #fff;
+}
+
+/* Títulos das seções */
+.section-title {
+    font-family: 'Playfair Display', serif;
+    color: #fff;
+    font-size: 1.6rem;
     font-weight: 600;
     margin-bottom: 1.5rem;
     display: flex;
@@ -29,24 +57,27 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, #d4af37 0%, #f6d365 100%);
     border-radius: 50%;
     font-size: 1rem;
-    font-weight: bold;
+    font-weight: 700;
+    color: #000;
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
 }
 
+/* Métodos de Pagamento */
 .payment-methods {
     display: grid;
     gap: 1rem;
 }
 
 .payment-method-card {
-    background: #1a1a1a;
+    background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
     border: 2px solid #333;
     border-radius: 12px;
-    padding: 1.25rem;
+    padding: 1.5rem;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
@@ -56,9 +87,10 @@
 }
 
 .payment-method-card:hover {
-    border-color: #667eea;
-    background: #222;
-    transform: translateY(-2px);
+    border-color: rgba(212, 175, 55, 0.5);
+    background: linear-gradient(135deg, #222 0%, #1a1a1a 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
 }
 
 .payment-method-card input[type="radio"] {
@@ -66,18 +98,21 @@
     opacity: 0;
 }
 
-.payment-method-card input[type="radio"]:checked~.payment-method-content {
-    opacity: 1;
-}
-
-.payment-method-card input[type="radio"]:checked+.payment-method-content+.payment-method-check {
-    opacity: 1;
-    color: #667eea;
-}
-
 .payment-method-card:has(input:checked) {
-    border-color: #667eea;
-    background: #222;
+    border-color: #d4af37;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, transparent 100%);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+}
+
+.payment-method-card:has(input:checked)::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #d4af37, #f6d365);
+    border-radius: 12px 0 0 12px;
 }
 
 .payment-method-content {
@@ -88,39 +123,277 @@
 }
 
 .payment-method-icon {
-    font-size: 2rem;
+    font-size: 2.2rem;
+}
+
+.payment-method-icon .fa-pix {
+    color: #32BCAD;
+}
+
+.payment-method-icon .fa-credit-card {
+    color: #d4af37;
+}
+
+.payment-method-info {
+    font-family: 'Montserrat', sans-serif;
 }
 
 .payment-method-info strong {
     display: block;
     color: #fff;
     font-size: 1.1rem;
+    font-weight: 600;
     margin-bottom: 4px;
 }
 
 .payment-method-info small {
     color: #999;
-    font-size: 0.875rem;
+    font-size: 0.85rem;
 }
 
 .payment-method-check {
     opacity: 0;
-    transition: opacity 0.3s;
-    font-size: 1.5rem;
+    transition: all 0.3s;
+    font-size: 1.6rem;
+    color: #d4af37;
+}
+
+.payment-method-card:has(input:checked) .payment-method-check {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Labels e Inputs */
+.form-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    color: #ccc;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-control-dark,
+.form-select.form-control-dark {
+    background-color: #0f0f0f;
+    border: 1px solid #333;
+    color: #fff;
+    border-radius: 8px;
+    padding: 12px 15px;
+    font-family: 'Montserrat', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.form-control-dark:focus,
+.form-select.form-control-dark:focus {
+    background-color: #0f0f0f;
+    border-color: #d4af37;
+    color: #fff;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+}
+
+.form-control-dark::placeholder {
+    color: #666;
+}
+
+/* Bandeiras de Cartão */
+.card-brands {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
 }
 
 .card-brands img {
-    width: 32px;
+    width: 36px;
     height: auto;
-    opacity: 0.6;
-    margin-right: 8px;
-    transition: opacity 0.3s;
+    opacity: 0.5;
+    transition: all 0.3s;
+    filter: grayscale(100%);
 }
 
 .card-brands img:hover {
     opacity: 1;
+    filter: grayscale(0%);
+    transform: scale(1.1);
+}
+
+/* Alertas */
+.alert-info {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    color: #f0e6d2;
+    border-radius: 10px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.alert-info i {
+    color: #d4af37;
+}
+
+/* Botão Finalizar */
+.btn-votar {
+    background: linear-gradient(90deg, #d4af37, #f6d365, #d4af37);
+    background-size: 200% auto;
+    color: #000;
+    font-family: 'Montserrat', sans-serif;
+    border: none;
+    border-radius: 50px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 6px 25px rgba(212, 175, 55, 0.4);
+}
+
+.btn-votar:hover {
+    background-position: right center;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 35px rgba(212, 175, 55, 0.6);
+    color: #000;
+}
+
+.btn-votar i {
+    transition: transform 0.3s ease;
+}
+
+.btn-votar:hover i {
+    transform: translateX(5px);
+}
+
+/* ========================================
+   RESUMO DO PEDIDO (SIDEBAR)
+======================================== */
+
+.timer-box {
+    background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+    border: 1px solid #333;
+    border-left: 3px solid #d4af37;
+    color: #ddd;
+    text-align: center;
+    padding: 15px;
+    font-size: 0.95rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    border-radius: 10px;
+}
+
+.timer-box i {
+    color: #d4af37;
+}
+
+.timer-box strong {
+    color: #d4af37;
+    font-size: 1.1rem;
+}
+
+.summary-box {
+    border: 2px solid #333;
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.summary-content {
+    padding: 2rem;
+}
+
+.summary-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: #fff;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(212, 175, 55, 0.2);
 }
 
 .summary-item {
-    border: 1px solid #333;
+    background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+    border: 1px solid rgba(212, 175, 55, 0.2) !important;
+    border-radius: 10px;
+    padding: 1.25rem !important;
+}
+
+.summary-item .fs-5 {
+    font-family: 'Montserrat', sans-serif;
+}
+
+.summary-item .text-warning {
+    color: #d4af37 !important;
+    font-weight: 700;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+    color: #ccc;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.summary-row span:last-child {
+    font-weight: 600;
+    color: #fff;
+}
+
+.summary-row.total {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    border-top: 2px solid rgba(212, 175, 55, 0.3);
+    font-size: 1.3rem;
+    color: #fff;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, transparent 100%);
+    margin: 0 -2rem -2rem -2rem;
+    border-radius: 0 0 15px 15px;
+}
+
+.summary-row.total span:last-child {
+    color: #d4af37;
+    font-weight: 700;
+    text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+}
+
+/* Responsividade */
+@media (max-width: 991px) {
+    .sticky-top {
+        position: relative !important;
+        top: 0 !important;
+        margin-top: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.4rem;
+    }
+
+    .payment-method-card {
+        padding: 1.25rem;
+    }
+
+    .btn-votar {
+        font-size: 0.9rem;
+        padding: 1rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .payment-method-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .payment-method-icon {
+        font-size: 2rem;
+    }
+
+    .summary-content {
+        padding: 1.5rem;
+    }
+
+    .btn-whatsapp {
+        font-size: 0.85rem;
+        padding: 10px 20px;
+    }
 }
